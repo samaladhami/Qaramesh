@@ -38,9 +38,12 @@ export default function RestaurantHeader() {
       <CircularDecoration right className="-right-24 top-8 w-[260px] text-[#c39b53] sm:-right-8 sm:top-3 sm:w-[350px] lg:w-[400px]" />
 
       <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-12 lg:px-20">
-        <div dir="ltr" className="header-meta flex items-center justify-between gap-4 border-b py-3 sm:py-4">
-          <span lang="en" className="text-[9px] tracking-[.16em] sm:text-xs sm:tracking-[.22em]">QARAMESH RESTAURANT</span>
-          <span dir="rtl" className="shrink-0 text-xs sm:text-sm">نكهة تجمعنا</span>
+        <div className="header-meta restaurant-topline flex items-center justify-between border-b py-3 sm:py-4">
+          <span className="restaurant-hours">
+            <span className="open-status-dot" aria-hidden="true" />
+            مفتوح 24 ساعة
+          </span>
+          <span className="restaurant-address"><svg className="address-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>الأعظمية — شارع قاسم أبو الكَص</span></span>
         </div>
 
         <div className="header-lockup flex flex-col items-center text-center">
@@ -56,6 +59,13 @@ export default function RestaurantHeader() {
             className="header-logo block h-auto w-full"
           />
           <p className="header-welcome text-base font-medium sm:text-xl">أهلاً بكم على سفرتنا</p>
+
+            <div className="restaurant-phones" aria-label="هاتف المطعم">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m8 3 3 5-3 3a16 16 0 0 0 5 5l3-3 5 3c0 3-2 5-5 5C9 21 3 15 3 8c0-3 2-5 5-5Z" strokeLinejoin="round"/></svg>
+              <a href="tel:07722883899" dir="ltr">07722883899</a>
+              <span className="phone-separator" aria-hidden="true">·</span>
+              <a href="tel:07712319666" dir="ltr">07712319666</a>
+            </div>
           <GoldDivider />
         </div>
       </div>
