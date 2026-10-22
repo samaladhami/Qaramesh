@@ -47,4 +47,12 @@ node scripts/cache-images.mjs
 
 Reimport regenerates menu data; caching requires network access. The workbook's display names differ from its internal XML filenames: Sheet1 → sheet1.xml, Sheet3 → sheet2.xml, Sheet4 → sheet3.xml.
 
-Supabase, authentication, administration and Vercel deployment remain later phases.
+Supabase, authentication and administration remain later phases.
+
+## Deployment and milestone workflow
+
+- Vercel deployment was completed through the GitHub integration on October 22, 2026.
+- Repository: https://github.com/samaladhami/Qaramesh; production branch: main.
+- Push completed milestones to origin/main so Vercel can rebuild and update the live site.
+- The production URL has not been recorded; find it in the Vercel project dashboard.
+- Current dish card padding: desktop 8px 6px 7px; mobile (max-width: 540px) 0px 6px.

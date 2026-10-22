@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Delivery workflow
+
+The site is deployed on Vercel through GitHub. After completing a meaningful milestone, run appropriate checks, commit the relevant changes, and push to origin/main to update the deployment. The user has authorized this ongoing milestone workflow; do not ask for confirmation each time. Avoid pushing incomplete experiments. Preserve unrelated user changes and exclude them from milestone commits. See README.md for deployment notes.
