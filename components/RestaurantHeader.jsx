@@ -53,7 +53,7 @@ export default function RestaurantHeader() {
           <span dir="rtl" className="shrink-0 text-xs sm:text-sm">نكهة تجمعنا</span>
         </div>
 
-        <div className="flex flex-col items-center pb-5 pt-6 text-center sm:pb-7 sm:pt-8">
+        <div className="flex flex-col items-center pt-[10px] pb-[6px] text-center md:pb-7 md:pt-8">
           <h1 className="sr-only">مطعم قراميش</h1>
           {/* The existing transparent lockup includes the emblem, Arabic name,
               FAST FOOD and RESTAURANT, so no duplicate lettering is needed. */}
