@@ -11,9 +11,9 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 /* Keep search and category browsing available while reading the menu. */
 .sticky-marker{height:1px;pointer-events:none}
 .menu-controls{position:sticky;top:0;z-index:30;padding:12px 0 0;background:transparent;transition:box-shadow .25s ease,background-color .25s ease}
-.menu-controls.is-sticky{background:#fffdf8;box-shadow:0 10px 24px -14px #073e3c55}
-.menu-controls::before{content:'';position:absolute;inset:0 -20px;background:inherit;z-index:-1;border-bottom:1px solid transparent;transition:border-color .25s ease}
-.menu-controls.is-sticky::before{border-bottom-color:var(--line)}
+.menu-controls.is-sticky{background:#fffdf8}
+.menu-controls::before{content:'';position:absolute;inset:0 -20px;background:inherit;z-index:-1;border-bottom:1px solid transparent;box-shadow:0 0 0 transparent;transition:border-color .25s ease,box-shadow .3s ease}
+.menu-controls.is-sticky::before{border-bottom-color:#dfcda966;box-shadow:0 4px 8px -4px #30281912,0 12px 24px -12px #30281924}
 .menu-controls .search-wrap{margin-bottom:16px}
 .menu-controls .section-label{margin-bottom:10px}
 .menu-controls .category-nav{padding-bottom:12px}
