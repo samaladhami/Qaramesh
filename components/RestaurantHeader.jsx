@@ -58,7 +58,7 @@ export default function RestaurantHeader() {
           {/* The existing transparent lockup includes the emblem, Arabic name,
               FAST FOOD and RESTAURANT, so no duplicate lettering is needed. */}
           <img
-            src="/logo-transparent.png"
+            src="/logo-hollow-text.png"
             alt="قراميش — FAST FOOD RESTAURANT"
             width="2172"
             height="724"
