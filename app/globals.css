@@ -7,3 +7,21 @@
 /* Typography weights; existing sizes and spacing are preserved. */
 button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .category-card>span:last-child,h1,h2,h3,.price,footer strong{font-weight:700}
+
+/* Keep search and category browsing available while reading the menu. */
+.sticky-marker{height:1px;pointer-events:none}
+.menu-controls{position:sticky;top:0;z-index:30;padding:12px 0 0;background:transparent;transition:box-shadow .25s ease,background-color .25s ease}
+.menu-controls.is-sticky{background:#fffdf8;box-shadow:0 10px 24px -14px #073e3c55}
+.menu-controls::before{content:'';position:absolute;inset:0 -20px;background:inherit;z-index:-1;border-bottom:1px solid transparent;transition:border-color .25s ease}
+.menu-controls.is-sticky::before{border-bottom-color:var(--line)}
+.menu-controls .search-wrap{margin-bottom:16px}
+.menu-controls .section-label{margin-bottom:10px}
+.menu-controls .category-nav{padding-bottom:12px}
+@media(max-width:540px){.menu-controls{padding-top:8px}.menu-controls::before{inset-inline:-14px}.menu-controls .search-wrap{margin-bottom:10px}.menu-controls .section-label{margin-bottom:6px}.menu-controls .category-nav{padding-bottom:10px}}
+/* Short landscape screens retain room for dishes below the controls. */
+@media(max-height:500px){.menu-controls .category-card>.food-image,.menu-controls .all-icon{display:none}.menu-controls .category-card>span:last-child{padding:6px 0}.menu-controls .search-wrap input{height:40px}}
+.sticky-search-row{display:flex;align-items:center;max-width:900px;margin:0 auto 16px;gap:0}
+.menu-controls .sticky-search-row .search-wrap{flex:1;min-width:0;width:100%;margin:0 auto}
+.scroll-logo{display:block;width:0;height:40px;object-fit:contain;opacity:0;transform:translateY(-5px);transition:width .25s ease,margin .25s ease,opacity .3s ease,transform .3s ease;pointer-events:none}
+.is-sticky .scroll-logo{width:90px;margin-inline-end:16px;opacity:1;transform:translateY(0)}
+@media(max-width:540px){.sticky-search-row{margin-bottom:10px}.is-sticky .scroll-logo{width:64px;margin-inline-end:10px}.scroll-logo{height:30px}}

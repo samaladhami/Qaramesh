@@ -1,15 +1,28 @@
 Continue Qaramesh at C:\Users\samal\Desktop\dev\Qaramesh.
 
-Read AGENTS.md and README.md first, plus the relevant installed Next.js guides before editing code.
+Read AGENTS.md and README.md first. Read the relevant installed Next.js guides in node_modules/next/dist/docs/ before editing code. Inspect git status and preserve unrelated changes.
 
-The site is deployed on Vercel through GitHub. After completing meaningful milestones, run appropriate checks, commit relevant changes, and push to origin/main. This workflow is already authorized.
+This is an Arabic RTL restaurant menu built with Next.js App Router, React, JavaScript and Tailwind CSS. Menu data is in data/menu.json, with 145 dishes across 20 categories. No ordering, backend or admin features yet.
 
-Check git status first and preserve unrelated changes, especially test.txt. Commit 7ddc8e0 documents the deployment/workflow but still needs pushing.
+Deployment/workflow:
+- GitHub: https://github.com/samaladhami/Qaramesh, branch main.
+- Vercel is connected to GitHub; pushes to main update the live site. The production URL is available in the Vercel dashboard but is not recorded here.
+- After meaningful completed milestones, run appropriate checks, commit relevant changes and push to origin/main. The user has authorized this workflow.
+- Previous deployment notes and continuation prompt commits have already been pushed; do not treat 7ddc8e0 as pending.
 
-Current dish card padding:
-- Desktop: 8px 6px 7px
-- Mobile (max-width: 540px): 0px 6px
+Latest completed work (approved by the user):
+- Search bar, the اكتشف قائمتنا heading and category navigation remain sticky while scrolling.
+- Controls are transparent at the top; background color and a soft shadow appear only once they stick. Avoid restoring the separate white panel at the top.
+- A compact teal Arabic wordmark fades in beside the search bar when the controls stick and disappears when returning to the top.
+- public/logo-teal-scroll.png is transparent, 320 x 131 pixels, about 22 KB. Keep it small.
+- components/Menu.jsx uses an IntersectionObserver marker to toggle is-sticky; app/globals.css styles the sticky controls, logo and transitions.
+- Reduced-motion preferences are respected. Short landscape screens hide category thumbnails to preserve space.
+- Desktop dish card padding: 8px 6px 7px. Mobile (max-width: 540px): 0px 6px.
+- Tajawal weights 400, 500 and 700; existing transparent main logo and decorative card corners remain.
+- Keep heading weights and header flourish opacity as they are; heavier headings and lighter flourishes were tried and reverted.
 
-Keep the current heading weights and header flourish opacity; previous experiments were reverted.
+Validation: npm.cmd run build passed for the sticky menu and fading logo. Browser interaction testing has not been automated; the user reviewed and approved the appearance.
 
-Wait for my next requested adjustment.
+Environment: Windows PowerShell. Use npm.cmd because npm.ps1 is blocked by execution policy. Start locally with npm.cmd run dev.
+
+Wait for my next requested adjustment; do not recreate the app or start unrelated features.
