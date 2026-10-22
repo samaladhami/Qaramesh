@@ -1,0 +1,6 @@
+const nextConfig = {
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: 'storage.googleapis.com', pathname: '/glide-prod.appspot.com/**' }],
+  },
+};
+export default nextConfig;

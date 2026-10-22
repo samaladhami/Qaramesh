@@ -1,0 +1,80 @@
+Continue helping me build my restaurant QR menu app.
+
+Workspace: C:\Users\samal\Desktop\dev\Qaramesh
+
+First read AGENTS.md and README.md, then inspect the current files. Phase one is already implemented—do not recreate or overwrite it.
+
+Stack:
+- Next.js App Router, React, JavaScript (.js/.jsx), Tailwind CSS
+- No TypeScript
+- Supabase and Vercel are for later phases
+
+Completed:
+- Mobile-first Arabic RTL customer menu
+- Cream background, deep teal, gold accents, restaurant logo
+- Image category navigation, search combined with category filtering
+- Dish descriptions, expandable details, Iraqi dinar prices
+- Loading skeletons, empty state, image fallback
+- 145 dishes across 20 categories imported from the workbook
+- All 145 image URLs matched by dish name and downloaded into public/menu/
+- Local data lives separately from reusable components
+- No cart, ordering, admin, or Supabase
+
+Important files:
+- app/: pages, layout, loading state, styles
+- components/: Menu.jsx, DishCard.jsx, FoodImage.jsx
+- data/menu.json: current menu data
+- data/workbook-raw.json: extracted spreadsheet values
+- data/import-report.json: reconciliation and availability differences
+- data/image-report.json: image sources and download results
+- scripts/: workbook extraction, import, image caching
+- README.md: setup and data assumptions
+
+Original assets:
+- C:\Users\samal\Downloads\IMG_7617.png — design reference
+- C:\Users\samal\Downloads\logo.png
+- C:\Users\samal\Downloads\Qaramesh.xlsx
+
+Data rules:
+- Sheet1 is authoritative for menu records.
+- Sheet3 provides category order; trim category whitespace.
+- Sheet4 has NO header: names in A, image URLs in E.
+- All 145 names matched, with no missing or duplicate matches.
+- Workbook prices are thousands of Iraqi dinars: 4.0 = 4,000 د.ع.
+- Sheet1 blank availability currently means available; explicit 0 means unavailable.
+- Only فاهيتا لحم is unavailable under that policy.
+- Sheet4 availability differs substantially; differences are recorded for review.
+- All images downloaded successfully, but only two representative photos were visually inspected.
+
+Previously passed:
+- npm.cmd run build
+- npm.cmd run verify:data
+- HTTP 200 for the homepage and a resized Next.js image
+- All 145 cached image files verified
+- Full browser visual/interaction testing remains unverified
+
+Environment:
+- Windows, PowerShell, VS Code
+- Node v24.22.1 and npm 11.19.1
+- Use npm.cmd because PowerShell blocks npm.ps1.
+- Start with npm.cmd run dev, then open http://localhost:3000.
+- The server might not currently be running; check first.
+
+CURRENT TASK: Put this project on GitHub.
+- Repository name: qaramesh
+- Private was proposed as the default; public visibility was not requested.
+- Nothing has been confirmed uploaded.
+- Git and GitHub CLI were initially unavailable.
+- I have now installed Git, but detection and repository status need checking.
+- I am using VS Code and need simple, one-step-at-a-time guidance.
+- A GitHub integration was suggested but has NOT been confirmed connected.
+- .gitignore already excludes node_modules, .next, environment files, logs, .vercel, out, and OS metadata.
+- Check whether Git is detected and whether a repository or remote already exists before initializing or publishing.
+- Help complete the upload; do not repeat confusing integration instructions if VS Code/Git can do it.
+
+Later phases:
+2. Supabase schema, menu retrieval, storage
+3. Authorized admin controls and RLS
+4. Deployment, domain, QR code, optimization
+
+Ask before destructive operations. Keep changes small and explain them clearly.

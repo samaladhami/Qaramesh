@@ -1,0 +1,1162 @@
+[
+  {
+    "name": "تشكن ستروغونوف",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/GiVfDKqEyAmhw25yPhxg.png",
+    "local": "/menu/dish-1.png",
+    "status": 200,
+    "bytes": 694297,
+    "type": "image/png"
+  },
+  {
+    "name": "فاهيتا لحم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/6IRZshwPfnFYMMGnilx9.png",
+    "local": "/menu/dish-5.png",
+    "status": 200,
+    "bytes": 680455,
+    "type": "image/png"
+  },
+  {
+    "name": "كوردون بلو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/rQyQVKNV2pv56RwdUqGY.png",
+    "local": "/menu/dish-2.png",
+    "status": 200,
+    "bytes": 552660,
+    "type": "image/png"
+  },
+  {
+    "name": "قوزي الشام",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/rUrApl1skXdnzn3CmdXv.png",
+    "local": "/menu/dish-6.png",
+    "status": 200,
+    "bytes": 682802,
+    "type": "image/png"
+  },
+  {
+    "name": "تشكن شروم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/rVMH1HaVgkZE0G7j3rNn.png",
+    "local": "/menu/dish-3.png",
+    "status": 200,
+    "bytes": 698643,
+    "type": "image/png"
+  },
+  {
+    "name": "لازانيا لحم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/WqDkPFEjbETyjJQXAClz.png",
+    "local": "/menu/dish-4.png",
+    "status": 200,
+    "bytes": 738032,
+    "type": "image/png"
+  },
+  {
+    "name": "فيتوتشيني الفريدو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/0s4mc2zJxCYKap9Xi94o.png",
+    "local": "/menu/dish-7.png",
+    "status": 200,
+    "bytes": 683492,
+    "type": "image/png"
+  },
+  {
+    "name": "معكرونه البشميل",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/AzK31SeccBCFG8gExTmk.png",
+    "local": "/menu/dish-9.png",
+    "status": 200,
+    "bytes": 703163,
+    "type": "image/png"
+  },
+  {
+    "name": "شيش طاووق",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Vb3HNFyNOODSgQE66w6Y.png",
+    "local": "/menu/dish-12.png",
+    "status": 200,
+    "bytes": 691592,
+    "type": "image/png"
+  },
+  {
+    "name": "فاهيتا دجاج",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/83zXFZBqTgi7cSjqu1YU.png",
+    "local": "/menu/dish-11.png",
+    "status": 200,
+    "bytes": 706613,
+    "type": "image/png"
+  },
+  {
+    "name": "سكالوب",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/ngPWBrvjxV1k2ZKOzAJc.png",
+    "local": "/menu/dish-8.png",
+    "status": 200,
+    "bytes": 721109,
+    "type": "image/png"
+  },
+  {
+    "name": "بانيه لحم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/pgj9OtOd0kxStxbgauvQ.png",
+    "local": "/menu/dish-10.png",
+    "status": 200,
+    "bytes": 832910,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش صولو لحم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/SVdl1ET7AmNxqt8gghJT.png",
+    "local": "/menu/dish-14.png",
+    "status": 200,
+    "bytes": 657432,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش فرانشيسكو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/b7JIfBnunWyn6WDXX8yn.png",
+    "local": "/menu/dish-18.png",
+    "status": 200,
+    "bytes": 434856,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش تشكن بربيكيو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/tYzRUl7B9MGYXNA4Yy2r.png",
+    "local": "/menu/dish-17.png",
+    "status": 200,
+    "bytes": 456796,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش فاهيتا",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/bb3CtKIVRJYNd5pMxyyK.png",
+    "local": "/menu/dish-16.png",
+    "status": 200,
+    "bytes": 531705,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش تويستر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/YzNmurezs2D2jDY2wNm5.png",
+    "local": "/menu/dish-15.png",
+    "status": 200,
+    "bytes": 553167,
+    "type": "image/png"
+  },
+  {
+    "name": "بانيه دجاج",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/JhUdBV9PinGg9qrmrg8H.png",
+    "local": "/menu/dish-13.png",
+    "status": 200,
+    "bytes": 846516,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش ميكسيكانو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/f8DDvtWNsT0Z7Xyrfe8t.png",
+    "local": "/menu/dish-19.png",
+    "status": 200,
+    "bytes": 459014,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش سكالوب",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/tycBlQMzXuvM0OeESvKG.png",
+    "local": "/menu/dish-21.png",
+    "status": 200,
+    "bytes": 444131,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش زنجر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/W5DqjpRqeRDa32uBBRyB.png",
+    "local": "/menu/dish-20.png",
+    "status": 200,
+    "bytes": 524817,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر لحم كلاسك",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/kCy8QWvJOVJsdYxUBh1W.png",
+    "local": "/menu/dish-23.png",
+    "status": 200,
+    "bytes": 597616,
+    "type": "image/png"
+  },
+  {
+    "name": "ساندويتش شيش طاووق",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/0wQ8CPEPpe3BqiyQzxOK.png",
+    "local": "/menu/dish-22.png",
+    "status": 200,
+    "bytes": 448870,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر لحم بالجبن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/F6LtOorfWXqnjICOjLBT.png",
+    "local": "/menu/dish-24.png",
+    "status": 200,
+    "bytes": 516066,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر دجاج",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/f9CDX0WdUBN9bPdNoQZp.png",
+    "local": "/menu/dish-26.png",
+    "status": 200,
+    "bytes": 551851,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر دجاج بالجبن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/qnXYiToblH5TCOW7Maon.png",
+    "local": "/menu/dish-27.png",
+    "status": 200,
+    "bytes": 548166,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر لحم باربيكيو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/1OaQsHohHHLQzfKllI7r.png",
+    "local": "/menu/dish-25.png",
+    "status": 200,
+    "bytes": 500356,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر دجاج بالفطر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/NiF7YuI2c0txyFNd5WiL.png",
+    "local": "/menu/dish-28.png",
+    "status": 200,
+    "bytes": 635948,
+    "type": "image/png"
+  },
+  {
+    "name": "دبل بركَر لحم بالجبن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/THPSc8XYeRzKjFNgaM8X.png",
+    "local": "/menu/dish-30.png",
+    "status": 200,
+    "bytes": 562308,
+    "type": "image/png"
+  },
+  {
+    "name": "كومبير دايت",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/SIN3aGxGLGSXPCKgy1Bn.png",
+    "local": "/menu/dish-33.png",
+    "status": 200,
+    "bytes": 685512,
+    "type": "image/png"
+  },
+  {
+    "name": "بركَر لحم ماشروم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/DEd5m8CpIkX1dZD4AcA5.png",
+    "local": "/menu/dish-31.png",
+    "status": 200,
+    "bytes": 550381,
+    "type": "image/png"
+  },
+  {
+    "name": "كومبير هالبينو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/2A8VIV9RZW3xcDS5N6FT.png",
+    "local": "/menu/dish-34.png",
+    "status": 200,
+    "bytes": 702056,
+    "type": "image/png"
+  },
+  {
+    "name": "كومبير قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/QDK98GIF3xXkplXzU39f.png",
+    "local": "/menu/dish-35.png",
+    "status": 200,
+    "bytes": 719730,
+    "type": "image/png"
+  },
+  {
+    "name": "كومبير كلاسيك",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/hhG1XX0GEh5l9f27d7ve.png",
+    "local": "/menu/dish-32.png",
+    "status": 200,
+    "bytes": 625922,
+    "type": "image/png"
+  },
+  {
+    "name": "دبل بركَر لحم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/nTMMqEFVZZxtTqjYsvu5.png",
+    "local": "/menu/dish-29.png",
+    "status": 200,
+    "bytes": 574042,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا بيستو مكس وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/gpDKezPvomGpN8WDhIni.png",
+    "local": "/menu/dish-38.png",
+    "status": 200,
+    "bytes": 675736,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا بيستو مكس صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/KTN3CJsrKTtQiCcXYHv4.png",
+    "local": "/menu/dish-37.png",
+    "status": 200,
+    "bytes": 675736,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا بيستو مكس عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/qbhMV1qnuvhMte8m82Uh.png",
+    "local": "/menu/dish-39.png",
+    "status": 200,
+    "bytes": 675736,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا دجاج عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/mkudFzXFoTXUjRbqaAgS.png",
+    "local": "/menu/dish-42.png",
+    "status": 200,
+    "bytes": 710130,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا دجاج باربيكيو صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/JXJ7JgKkKMHVY5MCFZCE.png",
+    "local": "/menu/dish-43.png",
+    "status": 200,
+    "bytes": 537122,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا دجاج باربيكيو وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/IhBhPVqvcogTlA1Hwa6X.png",
+    "local": "/menu/dish-44.png",
+    "status": 200,
+    "bytes": 537122,
+    "type": "image/png"
+  },
+  {
+    "name": "كومبير لحم وفطر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/YtPRYbycMESuQniBSZLC.png",
+    "local": "/menu/dish-36.png",
+    "status": 200,
+    "bytes": 742501,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا دجاج صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/lWOztplaumdbyD2ImlfQ.png",
+    "local": "/menu/dish-40.png",
+    "status": 200,
+    "bytes": 710130,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا دجاج باربيكيوعائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/yuVQ9dHAMXeCqsKjgCy4.png",
+    "local": "/menu/dish-45.png",
+    "status": 200,
+    "bytes": 537122,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا دجاج وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/aCC1rvm3umVAHrZ6voZb.png",
+    "local": "/menu/dish-41.png",
+    "status": 200,
+    "bytes": 710130,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا خضارصغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/RJHuglYc304SaoKdPRjk.png",
+    "local": "/menu/dish-46.png",
+    "status": 200,
+    "bytes": 494634,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا خضارعائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/BVT2h74bHJsBzNXn4lVH.png",
+    "local": "/menu/dish-48.png",
+    "status": 200,
+    "bytes": 494634,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا خضاروسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/oNQOhiBR2SFMCX9yh8Ew.png",
+    "local": "/menu/dish-47.png",
+    "status": 200,
+    "bytes": 494634,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا لحم وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/5ZFZWW5s8JJQucMcaMUK.png",
+    "local": "/menu/dish-50.png",
+    "status": 200,
+    "bytes": 478349,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا لحم صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/QlQfBrfPcCwtJsUTiiak.png",
+    "local": "/menu/dish-49.png",
+    "status": 200,
+    "bytes": 478349,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا لحم عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Hu278atzlzBOagXsWwk7.png",
+    "local": "/menu/dish-51.png",
+    "status": 200,
+    "bytes": 478349,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا فصول أربعة وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Oee9tT3oGZcvArKm9qzT.png",
+    "local": "/menu/dish-53.png",
+    "status": 200,
+    "bytes": 506083,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا فصول أربعة صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/HEKORmnedARgRE89pE8U.png",
+    "local": "/menu/dish-52.png",
+    "status": 200,
+    "bytes": 506083,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا ببروني صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/NddNcNcEPGmkMLwKIYqA.png",
+    "local": "/menu/dish-55.png",
+    "status": 200,
+    "bytes": 559737,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا فصول أربعة عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Di6AbXdeoHRFGm4cns7t.png",
+    "local": "/menu/dish-54.png",
+    "status": 200,
+    "bytes": 506083,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا ببروني وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/qsRHfkdOU9ZuO5MrhvYE.png",
+    "local": "/menu/dish-56.png",
+    "status": 200,
+    "bytes": 559737,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا ببروني عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/8hP1HB84B9bJfdU24BRl.png",
+    "local": "/menu/dish-57.png",
+    "status": 200,
+    "bytes": 559737,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا مارغريتا وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/8y3EMQgQtnLiRjlGmvI5.png",
+    "local": "/menu/dish-59.png",
+    "status": 200,
+    "bytes": 458337,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا مارغريتا صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/3ec1PA5mw3CvNrfdpFRj.png",
+    "local": "/menu/dish-58.png",
+    "status": 200,
+    "bytes": 458337,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا مارغريتا عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/oLTicbqq2kfrkIP8e4kn.png",
+    "local": "/menu/dish-60.png",
+    "status": 200,
+    "bytes": 458337,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا قراميش صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Dkj3mBUz6uN1jUZC0ZjR.png",
+    "local": "/menu/dish-61.png",
+    "status": 200,
+    "bytes": 564297,
+    "type": "image/png"
+  },
+  {
+    "name": "5 قطع كنتاكي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/6VpWfGsZwGSWIokOkFQ4.png",
+    "local": "/menu/dish-65.png",
+    "status": 200,
+    "bytes": 440722,
+    "type": "image/png"
+  },
+  {
+    "name": "كنتاكي 3 قطع",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/mjURjPTbHhftkZyp8yp9.png",
+    "local": "/menu/dish-64.png",
+    "status": 200,
+    "bytes": 466679,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا قراميش وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Ojw1Z9VGNxPeuURVMrKG.png",
+    "local": "/menu/dish-62.png",
+    "status": 200,
+    "bytes": 564297,
+    "type": "image/png"
+  },
+  {
+    "name": "15 قطعة كنتاكي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/iN4KmLWgbvN48ae69dDD.png",
+    "local": "/menu/dish-68.png",
+    "status": 200,
+    "bytes": 440722,
+    "type": "image/png"
+  },
+  {
+    "name": "بيتزا قراميش عائلي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/skiYxbDMTEq4FLn4vIRL.png",
+    "local": "/menu/dish-63.png",
+    "status": 200,
+    "bytes": 564297,
+    "type": "image/png"
+  },
+  {
+    "name": "10 قطع كنتاكي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/BJRCrXnUvumHsKf5XroR.png",
+    "local": "/menu/dish-67.png",
+    "status": 200,
+    "bytes": 440722,
+    "type": "image/png"
+  },
+  {
+    "name": "8 قطع كنتاكي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/CGNuKXRJCe3yc0Nd5AXV.png",
+    "local": "/menu/dish-66.png",
+    "status": 200,
+    "bytes": 440722,
+    "type": "image/png"
+  },
+  {
+    "name": "إيطالي فوتوتشيني صولو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/UwjHCZbqke5agdcIbrWC.png",
+    "local": "/menu/dish-70.png",
+    "status": 200,
+    "bytes": 544840,
+    "type": "image/png"
+  },
+  {
+    "name": "صاج إيطالي لحم",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/ayP0oexUuQfWBcZSaK1b.png",
+    "local": "/menu/dish-71.png",
+    "status": 200,
+    "bytes": 516034,
+    "type": "image/png"
+  },
+  {
+    "name": "صاج إيطالي دجاج",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/hEH2EV4ASKa7WymtTuyI.png",
+    "local": "/menu/dish-69.png",
+    "status": 200,
+    "bytes": 475706,
+    "type": "image/png"
+  },
+  {
+    "name": "6 قطع زنجر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/8sAvp66S8CBc9B0X5gvR.png",
+    "local": "/menu/dish-74.png",
+    "status": 200,
+    "bytes": 454449,
+    "type": "image/png"
+  },
+  {
+    "name": "4 قطع زنجر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/DcPrNLaqt3PVCtOZTY31.png",
+    "local": "/menu/dish-72.png",
+    "status": 200,
+    "bytes": 431913,
+    "type": "image/png"
+  },
+  {
+    "name": "5 قطع زنجر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/HebzM6d1wU0LG27lH6wW.png",
+    "local": "/menu/dish-73.png",
+    "status": 200,
+    "bytes": 454449,
+    "type": "image/png"
+  },
+  {
+    "name": "10 قطع زنجر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/osHA9RqSrMLB4Q8YI5v7.png",
+    "local": "/menu/dish-76.png",
+    "status": 200,
+    "bytes": 454449,
+    "type": "image/png"
+  },
+  {
+    "name": "8 قطع زنجر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/uDpMRZuymsBymYFe6e1V.png",
+    "local": "/menu/dish-75.png",
+    "status": 200,
+    "bytes": 454449,
+    "type": "image/png"
+  },
+  {
+    "name": "ريزو قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/kXRkre6DODI3XdIpo7K9.png",
+    "local": "/menu/dish-77.png",
+    "status": 200,
+    "bytes": 498025,
+    "type": "image/png"
+  },
+  {
+    "name": "ريزو أعشاب",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/NudmlSZvvIpEz92psXnq.png",
+    "local": "/menu/dish-78.png",
+    "status": 200,
+    "bytes": 523025,
+    "type": "image/png"
+  },
+  {
+    "name": "ريزو بطاطا",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/HvgNL0pvb2aqYkjkTU1b.png",
+    "local": "/menu/dish-80.png",
+    "status": 200,
+    "bytes": 456044,
+    "type": "image/png"
+  },
+  {
+    "name": "ريزو جبن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/9flG9Ryr7uZpQAqVivh0.png",
+    "local": "/menu/dish-79.png",
+    "status": 200,
+    "bytes": 499045,
+    "type": "image/png"
+  },
+  {
+    "name": "ريزو سبايسي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/tsuYDWATvgpUxm2EXPVT.png",
+    "local": "/menu/dish-81.png",
+    "status": 200,
+    "bytes": 437757,
+    "type": "image/png"
+  },
+  {
+    "name": "ريزو مدخن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/D5x72e3D5w7ZTZtUxGjJ.png",
+    "local": "/menu/dish-82.png",
+    "status": 200,
+    "bytes": 525297,
+    "type": "image/png"
+  },
+  {
+    "name": "فتوش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/N1iNOnnyC3yR0g1LVg4g.png",
+    "local": "/menu/dish-84.png",
+    "status": 200,
+    "bytes": 469751,
+    "type": "image/png"
+  },
+  {
+    "name": "سلطة باستا",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/YSR1smVEq66sDVxicjlF.png",
+    "local": "/menu/dish-86.png",
+    "status": 200,
+    "bytes": 461845,
+    "type": "image/png"
+  },
+  {
+    "name": "سيزر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/L2FIESuvfYUJmYq8l9kN.png",
+    "local": "/menu/dish-85.png",
+    "status": 200,
+    "bytes": 449611,
+    "type": "image/png"
+  },
+  {
+    "name": "تبولة",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/vfs4eUdRsq2QddMnacqY.png",
+    "local": "/menu/dish-83.png",
+    "status": 200,
+    "bytes": 446701,
+    "type": "image/png"
+  },
+  {
+    "name": "فنكَر بالجبن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/dhJE3LmxSdwczA1HnYQ5.png",
+    "local": "/menu/dish-91.png",
+    "status": 200,
+    "bytes": 639564,
+    "type": "image/png"
+  },
+  {
+    "name": "فنكَر كَلاص",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/hPgnqISWu5AySd0q8cF4.png",
+    "local": "/menu/dish-89.png",
+    "status": 200,
+    "bytes": 639564,
+    "type": "image/png"
+  },
+  {
+    "name": "فنكَر ماعون",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/hj5f6IaywlLruVl8IURS.png",
+    "local": "/menu/dish-90.png",
+    "status": 200,
+    "bytes": 639564,
+    "type": "image/png"
+  },
+  {
+    "name": "سلطة جرجير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/FqMXki3dtenluvZnwl5d.png",
+    "local": "/menu/dish-88.png",
+    "status": 200,
+    "bytes": 484326,
+    "type": "image/png"
+  },
+  {
+    "name": "سلطة قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/PlsG0s1v5HDv2Ki3lvk3.png",
+    "local": "/menu/dish-87.png",
+    "status": 200,
+    "bytes": 426647,
+    "type": "image/png"
+  },
+  {
+    "name": "حلقات بصل",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/AduCNdsVpGS90jYwVDC6.png",
+    "local": "/menu/dish-92.png",
+    "status": 200,
+    "bytes": 655708,
+    "type": "image/png"
+  },
+  {
+    "name": "شاي عراقي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/clelrYzVTc2pF0cx5o6Z.png",
+    "local": "/menu/dish-96.png",
+    "status": 200,
+    "bytes": 57976,
+    "type": "image/png"
+  },
+  {
+    "name": "مقبلات مشكلة صغير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/tCbzkPUO4NHolBOWAHki.png",
+    "local": "/menu/dish-93.png",
+    "status": 200,
+    "bytes": 676185,
+    "type": "image/png"
+  },
+  {
+    "name": "شاي أخضر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/RupEToseKZHGnV2qxKCH.png",
+    "local": "/menu/dish-97.png",
+    "status": 200,
+    "bytes": 73588,
+    "type": "image/png"
+  },
+  {
+    "name": "مقبلات مشكلة وسط",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/vRHowLMReB8J9GtPsWNo.png",
+    "local": "/menu/dish-94.png",
+    "status": 200,
+    "bytes": 676185,
+    "type": "image/png"
+  },
+  {
+    "name": "مقبلات مشكلة كبير",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Fxsh9ofq3JQWrrwZXqlS.png",
+    "local": "/menu/dish-95.png",
+    "status": 200,
+    "bytes": 676185,
+    "type": "image/png"
+  },
+  {
+    "name": "قهوة تركية",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/8TNNsqhuemlcIuINZzN6.png",
+    "local": "/menu/dish-98.png",
+    "status": 200,
+    "bytes": 45005,
+    "type": "image/png"
+  },
+  {
+    "name": "قهوة بندق",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/gUTSHgqZxBpPwU8MtZEW.png",
+    "local": "/menu/dish-100.png",
+    "status": 200,
+    "bytes": 75512,
+    "type": "image/png"
+  },
+  {
+    "name": "قهوة جوكليت",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/lP94zzulMplSLwZ1u5vK.png",
+    "local": "/menu/dish-99.png",
+    "status": 200,
+    "bytes": 51715,
+    "type": "image/png"
+  },
+  {
+    "name": "اسبريسو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/VX4DjXji6GPpcGBuBDf7.png",
+    "local": "/menu/dish-101.png",
+    "status": 200,
+    "bytes": 82676,
+    "type": "image/png"
+  },
+  {
+    "name": "هوت جوكليت",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/BwNqdbhqF4JMVJNwjpLL.png",
+    "local": "/menu/dish-103.png",
+    "status": 200,
+    "bytes": 68865,
+    "type": "image/png"
+  },
+  {
+    "name": "سحلب",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/IamM7mzTFD4FhVUmYJED.png",
+    "local": "/menu/dish-104.png",
+    "status": 200,
+    "bytes": 81803,
+    "type": "image/png"
+  },
+  {
+    "name": "نسكافيه",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/G9e2uq9ZrWbUQjk2VyaA.png",
+    "local": "/menu/dish-102.png",
+    "status": 200,
+    "bytes": 72522,
+    "type": "image/png"
+  },
+  {
+    "name": "كابتشينو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/g7lOOw6GOld75mXOfEeo.png",
+    "local": "/menu/dish-105.png",
+    "status": 200,
+    "bytes": 68506,
+    "type": "image/png"
+  },
+  {
+    "name": "آيس لاتيه",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/qw9YZTqw3FsU6CY7aAtC.png",
+    "local": "/menu/dish-106.png",
+    "status": 200,
+    "bytes": 124872,
+    "type": "image/png"
+  },
+  {
+    "name": "بلو لاتيه",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/MsgKSXZhAKU4yStWjoo3.png",
+    "local": "/menu/dish-107.png",
+    "status": 200,
+    "bytes": 123214,
+    "type": "image/png"
+  },
+  {
+    "name": "برتقال",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Q9hmHhI6eHPlLjTZ2AiL.png",
+    "local": "/menu/dish-111.png",
+    "status": 200,
+    "bytes": 88308,
+    "type": "image/png"
+  },
+  {
+    "name": "فربتشينو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/fbYo5pkW7TnR7r2Pb5r5.png",
+    "local": "/menu/dish-108.png",
+    "status": 200,
+    "bytes": 135274,
+    "type": "image/png"
+  },
+  {
+    "name": "سباش لاتيه",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/sLbQXZOWd5bI2p411pia.png",
+    "local": "/menu/dish-109.png",
+    "status": 200,
+    "bytes": 111201,
+    "type": "image/png"
+  },
+  {
+    "name": "بنسبي مشين",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/vAxEjxBHH15ko9Y0zhK6.png",
+    "local": "/menu/dish-110.png",
+    "status": 200,
+    "bytes": 123668,
+    "type": "image/png"
+  },
+  {
+    "name": "أناناس",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/OeuEmjuMwapYUDm05yMY.png",
+    "local": "/menu/dish-113.png",
+    "status": 200,
+    "bytes": 125540,
+    "type": "image/png"
+  },
+  {
+    "name": "ليمون",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/jAlaAqinrSH5vxvIQKDb.png",
+    "local": "/menu/dish-114.png",
+    "status": 200,
+    "bytes": 90863,
+    "type": "image/png"
+  },
+  {
+    "name": "أفوكادو وعسل ومكسرات",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/MfvUkWMXwMknWua9YatR.png",
+    "local": "/menu/dish-117.png",
+    "status": 200,
+    "bytes": 62204,
+    "type": "image/png"
+  },
+  {
+    "name": "مانجو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/u4N8gQ3PVnhbdWgUZSCu.png",
+    "local": "/menu/dish-115.png",
+    "status": 200,
+    "bytes": 89206,
+    "type": "image/png"
+  },
+  {
+    "name": "فراولة",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/GONiMJnkFeYBAyFve5d1.png",
+    "local": "/menu/dish-112.png",
+    "status": 200,
+    "bytes": 125840,
+    "type": "image/png"
+  },
+  {
+    "name": "سولو إضافة مكس",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/G8IGhL4N0Rp2qxIpVNe1.png",
+    "local": "/menu/dish-118.png",
+    "status": 200,
+    "bytes": 59330,
+    "type": "image/png"
+  },
+  {
+    "name": "موهيتو بلو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/CQ8xHQZqHTyrJKGxT0lQ.png",
+    "local": "/menu/dish-119.png",
+    "status": 200,
+    "bytes": 64434,
+    "type": "image/png"
+  },
+  {
+    "name": "موهيتو رمان",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/lAhvAx2cPSgSCXDhu1MO.png",
+    "local": "/menu/dish-121.png",
+    "status": 200,
+    "bytes": 83495,
+    "type": "image/png"
+  },
+  {
+    "name": "بطيخ",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/BhKrHIMce4j4MOGDwlOj.png",
+    "local": "/menu/dish-116.png",
+    "status": 200,
+    "bytes": 103462,
+    "type": "image/png"
+  },
+  {
+    "name": "موهيتو فراولة",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/hlmBSZjBfZiVspp23VlQ.png",
+    "local": "/menu/dish-120.png",
+    "status": 200,
+    "bytes": 76652,
+    "type": "image/png"
+  },
+  {
+    "name": "موهيتو قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/mRBaeO47xD1jFguXfkId.png",
+    "local": "/menu/dish-122.png",
+    "status": 200,
+    "bytes": 75492,
+    "type": "image/png"
+  },
+  {
+    "name": "ميلك شيك نوتيلا",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Vjd7MA57CeCj4Cqdgfzl.jpg",
+    "local": "/menu/dish-123.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "ميلك شيك كندر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/ZIDVAZl3VuQDG6L1rmre.jpg",
+    "local": "/menu/dish-124.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "ميلك شيك لوتس",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/FBecKD0UGHSeSfJhizjz.jpg",
+    "local": "/menu/dish-125.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "ميلك شيك أوريو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/g55HcGwRERHo7wRmAHaz.jpg",
+    "local": "/menu/dish-126.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "ميلك شيك فراولة",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/FnWC9UE4He5PtIMk8ABO.jpg",
+    "local": "/menu/dish-128.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "ميلك شيك بستاشيو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/kFOpINXfQ3Z7gtKv099w.jpg",
+    "local": "/menu/dish-127.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "ميلك شيك قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/KuvGyYeUQDy9B8tNzVw6.jpg",
+    "local": "/menu/dish-129.jpg",
+    "status": 200,
+    "bytes": 78051,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "طبق فواكه",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/8C24gg2rAMa9N7KpjyIS.jpg",
+    "local": "/menu/dish-130.jpg",
+    "status": 200,
+    "bytes": 150662,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "كنافة جبن",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/hpsjckUrQTsEDIZVdhIu.jpg",
+    "local": "/menu/dish-135.jpg",
+    "status": 200,
+    "bytes": 112306,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "رز بلبن قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/QNAcgaFaDwOIDvczlZcA.png",
+    "local": "/menu/dish-132.png",
+    "status": 200,
+    "bytes": 206406,
+    "type": "image/png"
+  },
+  {
+    "name": "رز بلبن جوكليت",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/PhQFzHWNdKpqVm8PK7e3.png",
+    "local": "/menu/dish-131.png",
+    "status": 200,
+    "bytes": 206406,
+    "type": "image/png"
+  },
+  {
+    "name": "كنافة جوكليت",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/wjmvgOtnklwgygyDD6XP.jpg",
+    "local": "/menu/dish-134.jpg",
+    "status": 200,
+    "bytes": 112306,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "معجنات",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Y4iWapZnDxwC3LnB7rXD.png",
+    "local": "/menu/dish-133.png",
+    "status": 200,
+    "bytes": 128474,
+    "type": "image/png"
+  },
+  {
+    "name": "كنافة قشطة",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/DgcnfzDvA8NmgRRVtnuH.jpg",
+    "local": "/menu/dish-136.jpg",
+    "status": 200,
+    "bytes": 112306,
+    "type": "image/jpeg"
+  },
+  {
+    "name": "علكة ونعناع",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/VXO9YpB7FwbZ7jnDAiqM.png",
+    "local": "/menu/dish-141.png",
+    "status": 200,
+    "bytes": 80279,
+    "type": "image/png"
+  },
+  {
+    "name": "وافل لوتس",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/6Ska9QLJgwUBe9NOTubD.png",
+    "local": "/menu/dish-138.png",
+    "status": 200,
+    "bytes": 784905,
+    "type": "image/png"
+  },
+  {
+    "name": "ليمون ونعناع",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/5OiK7h5VNqPuvgbcKMYA.png",
+    "local": "/menu/dish-142.png",
+    "status": 200,
+    "bytes": 80260,
+    "type": "image/png"
+  },
+  {
+    "name": "وافل قراميش",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/Ied31sdSLjzj1m7G9fgx.png",
+    "local": "/menu/dish-137.png",
+    "status": 200,
+    "bytes": 784905,
+    "type": "image/png"
+  },
+  {
+    "name": "تفاحتين",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/3dcQ6sn5tEXB8XH6VXrk.png",
+    "local": "/menu/dish-144.png",
+    "status": 200,
+    "bytes": 50451,
+    "type": "image/png"
+  },
+  {
+    "name": "وافل بستاشيو",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/sfBYvaQW1mqKCjcsYsJE.png",
+    "local": "/menu/dish-140.png",
+    "status": 200,
+    "bytes": 784905,
+    "type": "image/png"
+  },
+  {
+    "name": "فواكه استوائية",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/jOAtczV8Uf1Cxdq6VPEd.png",
+    "local": "/menu/dish-145.png",
+    "status": 200,
+    "bytes": 82600,
+    "type": "image/png"
+  },
+  {
+    "name": "وافل كندر",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/BIi4QtApYCLRJr2FZp91.png",
+    "local": "/menu/dish-139.png",
+    "status": 200,
+    "bytes": 784905,
+    "type": "image/png"
+  },
+  {
+    "name": "إنكليزي",
+    "source": "https://storage.googleapis.com/glide-prod.appspot.com/uploads-v2/C6BpDheAkvl3u0yUQqYk/pub/ShHEiFq6WxX3TzZeDd6C.png",
+    "local": "/menu/dish-143.png",
+    "status": 200,
+    "bytes": 32470,
+    "type": "image/png"
+  }
+]
