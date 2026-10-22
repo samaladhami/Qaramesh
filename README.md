@@ -56,3 +56,9 @@ Supabase, authentication and administration remain later phases.
 - Push completed milestones to origin/main so Vercel can rebuild and update the live site.
 - The production URL has not been recorded; find it in the Vercel project dashboard.
 - Current dish card padding: desktop 8px 6px 7px; mobile (max-width: 540px) 0px 6px.
+
+## Mobile menu navigation
+
+On screens up to 540px wide, scrolling past the menu controls reveals a compact 52px logo/search row and a 72px category row. Search expands in place and preserves the query when closed. Category taps show only that category and return to the beginning of its results; the all-categories button restores the full menu. Scrolling the full menu updates the active icon, which stays visible in the RTL navigation. Search still filters the menu, and desktop category filtering is unchanged. The expanded controls keep their space to prevent content jumping when compact mode starts or ends. Category icons use inline SVGs in `components/CategoryIcon.jsx` and `components/category-icon-art.json`.
+
+Validated with a production build and headless Edge checks at 390px and 320px widths: search focus/filter/close, category navigation and tracking, RTL visibility, stable content position, return to the top, reduced motion, and desktop filtering.

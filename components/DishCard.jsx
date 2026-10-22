@@ -1,7 +1,8 @@
 import FoodImage from './FoodImage';
+import { memo } from 'react';
 const priceFormat = new Intl.NumberFormat('en-US');
-export default function DishCard({ item }) {
-  return <article className={`dish-card ${!item.available ? 'unavailable' : ''}`}>
+function DishCard({ item }) {
+  return <article className={`dish-card ${!item.available ? 'unavailable' : ''}`} data-dish-category={item.category}>
     <div className="dish-photo"><FoodImage src={item.image} alt={item.name} />{!item.available && <span className="availability">غير متوفر حالياً</span>}</div>
     <div className="dish-content"><span className="dish-category">{item.category}</span><h3>{item.name}</h3><p className="dish-summary">{item.shortDescription || item.description || 'من قائمة قراميش'}</p>
       {item.description && item.description !== item.shortDescription && <details><summary>تفاصيل الطبق</summary><p>{item.description}</p></details>}
@@ -9,3 +10,4 @@ export default function DishCard({ item }) {
     </div>
   </article>;
 }
+export default memo(DishCard);
