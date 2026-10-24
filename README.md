@@ -51,7 +51,7 @@ Supabase, authentication and administration remain later phases.
 
 ## Hero carousel
 
-The hero uses the eight supplied restaurant images in `public/hero/`. `data/hero-slides.json` is the single list of image IDs, URLs, and Arabic descriptions; a future admin feature can supply the same records without changing the carousel presentation.
+The hero uses the six selected restaurant images in `public/hero/`. `data/hero-slides.json` is the single list of image IDs, URLs, and Arabic descriptions; a future admin feature can supply the same records without changing the carousel presentation.
 
 Images advance every five seconds in a shuffled order, with each image shown once before the next shuffle and no immediate repeat at the cycle boundary. Horizontal swipes move through the shuffled sequence; there is no navigation-dot section. There are no visible carousel buttons; hovering or hiding the browser tab temporarily pauses autoplay. Reduced-motion users start with autoplay paused and no fade animation.
 

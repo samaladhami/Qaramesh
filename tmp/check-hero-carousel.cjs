@@ -1,5 +1,6 @@
 const { chromium } = require('C:/Users/samal/AppData/Local/npm-cache/_npx/420ff84f11983ee5/node_modules/playwright');
 const assert = require('node:assert/strict');
+const slideCount = require('../data/hero-slides.json').length;
 
 (async () => {
   const browser = await chromium.launch({ executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', headless: true });
@@ -13,7 +14,7 @@ const assert = require('node:assert/strict');
       assert.equal(await carousel.getByRole('group', { name: 'اختيار الصورة' }).count(), 0);
       const stage = page.locator('#hero-slides');
       const height = (await stage.boundingBox()).height;
-      for (let index = 0; index < 8; index++) {
+      for (let index = 0; index < slideCount; index++) {
         if (index > 0) {
           await stage.dispatchEvent('pointerdown', { clientX: 200, clientY: 180, pointerId: 1, isPrimary: true, pointerType: 'touch' });
           await stage.dispatchEvent('pointerup', { clientX: 100, clientY: 185, pointerId: 1, isPrimary: true, pointerType: 'touch' });
@@ -42,7 +43,7 @@ const assert = require('node:assert/strict');
       }
       await page.locator('#search').fill('zzzzzz');
       assert.equal(await page.locator('.dish-card').count(), 0);
-      console.log(`${width}px: 8 images, no dots section, fixed height, contain, swipe, category and search passed`);
+      console.log(`${width}px: ${slideCount} images, no dots section, fixed height, contain, swipe, category and search passed`);
       await page.close();
     }
     const page = await browser.newPage({ viewport: { width: 390, height: 900 } });
@@ -52,14 +53,14 @@ const assert = require('node:assert/strict');
     await page.waitForFunction(() => document.querySelector('#hero-slides [aria-hidden="false"] img[alt]:not([alt=""])')?.naturalWidth > 0);
     const current = () => page.locator('#hero-slides [aria-hidden="false"]').getAttribute('aria-label');
     const seen = [await current()];
-    for (let index = 0; index < 7; index++) {
+    for (let index = 0; index < slideCount - 1; index++) {
       await page.waitForTimeout(150);
       await page.clock.runFor(5100);
       await page.waitForFunction(() => document.querySelector('#hero-slides [aria-hidden="false"] img[alt]:not([alt=""])')?.naturalWidth > 0);
       seen.push(await current());
     }
     console.log('Autoplay sequence:', seen);
-    assert.equal(new Set(seen).size, 8, 'Autoplay must show every slide once before reshuffling');
+    assert.equal(new Set(seen).size, slideCount, 'Autoplay must show every slide once before reshuffling');
     await page.waitForTimeout(150);
     await page.clock.runFor(5100);
     await page.waitForFunction(() => document.querySelector('#hero-slides [aria-hidden="false"] img[alt]:not([alt=""])')?.naturalWidth > 0);
