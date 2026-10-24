@@ -1,0 +1,10 @@
+[
+  { "id": "rizo", "src": "/hero/rizo.jpg", "alt": "ريزو قراميش بالدجاج المقرمش" },
+  { "id": "chicken-tikka", "src": "/hero/chicken-tikka.jpg", "alt": "وجبة تكة دجاج مع الخضار والمخللات" },
+  { "id": "mojito", "src": "/hero/mojito.jpg", "alt": "موهيتو منعش بالليمون والنعناع" },
+  { "id": "meat-kebab", "src": "/hero/meat-kebab.jpg", "alt": "كباب قراميش لحم مع الخضار المشوية" },
+  { "id": "chicken-kebab", "src": "/hero/chicken-kebab.jpg", "alt": "كباب قراميش دجاج" },
+  { "id": "grilled-chicken", "src": "/hero/grilled-chicken.jpg", "alt": "دجاجة مشوية على الفحم مع الرز" },
+  { "id": "shawarma", "src": "/hero/shawarma.jpg", "alt": "شاورما على الفحم من قراميش" },
+  { "id": "pizza-box", "src": "/hero/pizza-box.jpg", "alt": "بوكس قراميش بالبيتزا والبطاطا" }
+]

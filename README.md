@@ -49,6 +49,16 @@ Reimport regenerates menu data; caching requires network access. The workbook's 
 
 Supabase, authentication and administration remain later phases.
 
+## Hero carousel
+
+The hero uses the eight supplied restaurant images in `public/hero/`. `data/hero-slides.json` is the single list of image IDs, URLs, and Arabic descriptions; a future admin feature can supply the same records without changing the carousel presentation.
+
+Images advance every five seconds in a shuffled order, with each image shown once before the next shuffle and no immediate repeat at the cycle boundary. Horizontal swipes move through the shuffled sequence; there is no navigation-dot section. There are no visible carousel buttons; hovering or hiding the browser tab temporarily pauses autoplay. Reduced-motion users start with autoplay paused and no fade animation.
+
+The hero height stays fixed between slides. Foreground images use `object-fit: contain` to preserve all artwork and text; an enlarged, blurred, faded copy fills unused space. Background and foreground fade together. The next image is loaded ahead of time.
+
+Validated against a production build at 320px, 390px, and 1280px: every image, swipe, stable height, overflow, shuffled autoplay, menu categories, and search. The browser check is `tmp/check-hero-carousel.cjs` and uses the existing local Playwright/Edge setup with a production server on port 3001.
+
 ## Deployment and milestone workflow
 
 - Vercel deployment was completed through the GitHub integration on October 22, 2026.

@@ -1,0 +1,8 @@
+.carousel { position: relative; background: var(--cream); }
+.stage { position: relative; height: min(600px, 76svh); min-height: 300px; overflow: hidden; isolation: isolate; background: #e7dfd2; touch-action: pan-y pinch-zoom; }
+.slide { position: absolute; inset: 0; opacity: 0; transition: opacity 650ms ease; pointer-events: none; }
+.active { opacity: 1; z-index: 1; }
+.backdrop { object-fit: cover; filter: blur(28px); transform: scale(1.12); opacity: .42; user-select: none; }
+.foreground { object-fit: contain; user-select: none; }
+@media (max-width: 540px) { .stage { height: min(125vw, 70svh); min-height: 280px; } }
+@media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
