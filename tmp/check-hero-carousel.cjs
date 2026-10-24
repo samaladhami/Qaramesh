@@ -23,7 +23,8 @@ const assert = require('node:assert/strict');
           return image && image.complete && image.naturalWidth > 0;
         });
         const image = stage.locator('[aria-hidden="false"] img').last();
-        assert.equal(await image.evaluate(element => getComputedStyle(element).objectFit), 'contain');
+        const tablet = await page.evaluate(() => matchMedia('(min-width: 541px) and (max-width: 1199px), (min-width: 541px) and (hover: none) and (pointer: coarse)').matches);
+        assert.equal(await image.evaluate(element => getComputedStyle(element).objectFit), tablet ? 'cover' : 'contain');
         assert.equal((await stage.boundingBox()).height, height);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       }
