@@ -62,7 +62,12 @@ export default function Menu({ categories, items }) {
   }, [compact]);
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
-      setIsSticky(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      const sticky = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      setIsSticky(sticky);
+      if (!sticky) {
+        setSearchOpen(false);
+        if (document.activeElement === inputRef.current) inputRef.current.blur();
+      }
     });
     observer.observe(stickyMarker.current);
     return () => observer.disconnect();
