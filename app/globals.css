@@ -26,8 +26,8 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .sticky-search-row{display:flex;align-items:center;max-width:900px;margin:0 auto 16px;gap:0}
 .menu-controls .sticky-search-row .search-wrap{flex:1;min-width:0;width:100%;margin:0 auto}
 .scroll-logo{display:block;width:0;height:40px;object-fit:contain;opacity:0;transform:translateY(-5px);transition:width .25s ease,margin .25s ease,opacity .3s ease,transform .3s ease;pointer-events:none}
-.is-sticky .scroll-logo{width:90px;margin-inline-end:16px;opacity:1;transform:translateY(0)}
-@media(max-width:540px){.sticky-search-row{margin-bottom:10px}.is-sticky .scroll-logo{width:64px;margin-inline-end:10px}.scroll-logo{height:30px}}
+.is-sticky .scroll-logo{width:88px;margin-inline-end:16px;opacity:1;transform:translateY(0)}
+@media(max-width:540px){.sticky-search-row{margin-bottom:10px}.is-sticky .scroll-logo{width:88px;margin-inline-end:10px}.scroll-logo{height:44px}}
 /* Category symbols inherit teal or the selected card's white. */
 .category-icon{display:grid;place-items:center;height:82px;color:inherit}
 .category-icon svg{display:block;width:58px;height:58px}
@@ -43,9 +43,9 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .menu-controls-slot{display:block;height:var(--expanded-controls-height,auto)}
   .menu-controls{position:relative}
   .menu-controls.is-compact{position:fixed;top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px));inset-inline:14px;padding:0;background:var(--surface)}
-  .is-compact .sticky-search-row{height:var(--compact-search-height);max-width:none;margin:0;gap:12px;animation:compact-menu-in .2s ease-out}
-  .is-compact .scroll-logo{width:76px;height:32px;margin:0;opacity:1;transform:none;flex-shrink:0}
-  .is-compact .compact-search-toggle{display:grid;place-items:center;width:44px;height:44px;padding:10px;border:0;border-radius:50%;background:transparent;color:var(--teal)}
+  .is-compact .sticky-search-row{height:var(--compact-search-height);max-width:none;margin:0;gap:4px;animation:compact-menu-in .2s ease-out}
+  .is-compact .scroll-logo{width:88px;height:44px;margin:0;opacity:1;transform:none;flex-shrink:0}
+  .is-compact .compact-search-toggle{display:grid;place-items:center;width:44px;height:44px;padding:10px;border:0;border-radius:50%;background:transparent;color:var(--red)}
   .compact-search-toggle svg{width:23px;height:23px}
   .is-compact:not(.search-open) .search-wrap{display:none}
   .is-compact .section-label{display:none}

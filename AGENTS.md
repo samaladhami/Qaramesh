@@ -11,3 +11,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Delivery workflow
 
 The site is deployed on Vercel through GitHub. After completing a meaningful milestone, run appropriate checks, commit the relevant changes, and push to origin/main to update the deployment. The user has authorized this ongoing milestone workflow; do not ask for confirmation each time. Avoid pushing incomplete experiments. Preserve unrelated user changes and exclude them from milestone commits. See README.md for deployment notes.
+
+## Brand colors
+
+When the user names a color, use these project values without asking for the hex again:
+
+- Red: `#DB4D49` (`var(--red)`)
+- Teal: `#429198` (`var(--teal)`)
+- Yellow: `#F7D54F` (`var(--yellow)`)
+- White: `#FFFFFF` (`var(--white)`)
+
+The CSS variables are defined in `app/globals.css`. Use them for interface styling and preserve this palette unless the user requests a change.
