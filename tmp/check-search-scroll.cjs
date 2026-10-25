@@ -21,6 +21,25 @@ const assert = require('node:assert/strict');
         assert(await page.evaluate(() => scrollY > 0));
         const calls = await page.evaluate(() => window.searchScrolls);
         assert(calls.some(call => call.behavior === (motion === 'reduce' ? 'instant' : 'smooth')));
+        // Simulate an iOS webview panning its visual viewport above the keyboard.
+        await page.evaluate(() => {
+          window.testViewportTop = 0;
+          Object.defineProperty(window.visualViewport, 'offsetTop', { configurable: true, get: () => window.testViewportTop });
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        });
+        for (const offset of [80, 160, 0]) {
+          await page.evaluate(top => {
+            window.testViewportTop = top;
+            window.visualViewport.dispatchEvent(new Event('scroll'));
+            window.visualViewport.dispatchEvent(new Event('resize'));
+          }, offset);
+          await page.waitForTimeout(100);
+          const input = await page.locator('#search').boundingBox();
+          assert(input.y >= offset && input.y + input.height <= offset + 300, 'Search must remain in the visible viewport above the keyboard');
+          assert(await page.locator('#search').evaluate(input => document.activeElement === input));
+          assert.equal(await page.locator('.is-compact.search-open').count(), 1);
+        }
+        await page.evaluate(() => { delete window.visualViewport.offsetTop; });
         await page.locator('#search').fill('zzzzzz');
         assert.equal(await page.locator('.dish-card').count(), 0);
         await page.locator('.compact-search-close').click();

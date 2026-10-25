@@ -21,7 +21,7 @@ export default function Menu({ categories, items }) {
   const searchButtonRef = useRef(null);
   const resultsRef = useRef(null);
   const [expandedHeight, setExpandedHeight] = useState(null);
-  const compact = isMobile && isSticky;
+  const compact = isMobile && (isSticky || searchOpen);
   const activeCategory = compact && category === 'الكل' && !query.trim() ? visibleCategory : category;
   useEffect(() => {
     const media = window.matchMedia('(max-width: 540px)');
@@ -30,6 +30,24 @@ export default function Menu({ categories, items }) {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+  useEffect(() => {
+    if (!isMobile) return;
+    const viewport = window.visualViewport;
+    const updateViewport = () => {
+      // iOS webviews can pan the visible viewport without scrolling the page.
+      document.documentElement.style.setProperty('--visual-viewport-top', `${Math.max(0, viewport?.offsetTop || 0)}px`);
+    };
+    updateViewport();
+    viewport?.addEventListener('resize', updateViewport);
+    viewport?.addEventListener('scroll', updateViewport);
+    window.addEventListener('resize', updateViewport);
+    return () => {
+      viewport?.removeEventListener('resize', updateViewport);
+      viewport?.removeEventListener('scroll', updateViewport);
+      window.removeEventListener('resize', updateViewport);
+      document.documentElement.style.removeProperty('--visual-viewport-top');
+    };
+  }, [isMobile]);
   useEffect(() => {
     if (!isMobile || compact) return;
     const controls = controlsRef.current;

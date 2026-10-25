@@ -32,6 +32,9 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .category-icon{display:grid;place-items:center;height:82px;color:inherit}
 .category-icon svg{display:block;width:58px;height:58px}
 @media(max-width:540px){.category-icon{height:71px}.category-icon svg{width:50px;height:50px}}
+.menu-controls:not(.is-compact) .category-icon,.menu-controls:not(.is-compact) .all-icon{height:64px}
+.menu-controls:not(.is-compact) .category-card>span:last-child{padding-bottom:5px}
+@media(max-width:540px){.menu-controls:not(.is-compact) .category-icon,.menu-controls:not(.is-compact) .all-icon{height:56px}}
 @media(max-height:500px){.menu-controls .category-icon{display:none}}
 
 .menu-controls-slot{display:contents}
@@ -39,7 +42,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 @media(max-width:540px){
   .menu-controls-slot{display:block;height:var(--expanded-controls-height,auto)}
   .menu-controls{position:relative}
-  .menu-controls.is-compact{position:fixed;top:0;inset-inline:14px;padding:0;background:var(--surface)}
+  .menu-controls.is-compact{position:fixed;top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px));inset-inline:14px;padding:0;background:var(--surface)}
   .is-compact .sticky-search-row{height:var(--compact-search-height);max-width:none;margin:0;gap:12px;animation:compact-menu-in .2s ease-out}
   .is-compact .scroll-logo{width:76px;height:32px;margin:0;opacity:1;transform:none;flex-shrink:0}
   .is-compact .compact-search-toggle{display:grid;place-items:center;width:44px;height:44px;padding:10px;border:0;border-radius:50%;background:transparent;color:var(--teal)}
@@ -63,8 +66,8 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .is-compact .category-card>span:last-child{padding:0;font-size:9px;line-height:16px;white-space:nowrap}
   .dish-card{scroll-margin-top:136px}
   /* scrollIntoView adds the page scroll padding to this margin. */
-  .results{scroll-margin-top:calc(var(--compact-search-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
-  .menu-controls-slot:has(.search-open)+.results{scroll-margin-top:calc(var(--compact-search-open-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
+  .results{scroll-margin-top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px) + var(--compact-search-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
+  .menu-controls-slot:has(.search-open)+.results{scroll-margin-top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px) + var(--compact-search-open-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
 }
 @keyframes compact-menu-in{from{opacity:.7}to{opacity:1}}
 
