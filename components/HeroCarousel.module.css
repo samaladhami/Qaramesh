@@ -1,6 +1,6 @@
-.carousel { position: relative; background: var(--cream); }
-.stage { position: relative; height: min(600px, 76svh, calc(100svh - 88px)); overflow: hidden; isolation: isolate; background: #e7dfd2; touch-action: pan-y pinch-zoom; }
-.stage::after { content: ''; position: absolute; inset: auto 0 0; height: min(100%, calc(var(--hero-controls-overlap) + 120px)); z-index: 2; background: linear-gradient(to bottom, rgb(255 255 255 / 0), rgb(255 255 255 / .5) 25%, rgb(255 255 255 / .9) 55%, #fff 90%); pointer-events: none; }
+.carousel { position: relative; background: var(--white); }
+.stage { position: relative; height: min(600px, 76svh, calc(100svh - 88px)); overflow: hidden; isolation: isolate; background: #FFFFFF; touch-action: pan-y pinch-zoom; }
+.stage::after { content: ''; position: absolute; inset: auto 0 0; height: min(100%, calc(var(--hero-controls-overlap) + 120px)); z-index: 2; background: linear-gradient(to bottom, rgb(255 255 255 / 0), rgb(255 255 255 / .5) 25%, rgb(255 255 255 / .9) 55%, #FFFFFF 90%); pointer-events: none; }
 .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 650ms ease; pointer-events: none; }
 .active { opacity: 1; z-index: 1; }
 .backdrop { object-fit: cover; filter: blur(28px); transform: scale(1.12); opacity: .42; user-select: none; }
