@@ -6,7 +6,7 @@ import CategoryIcon from './CategoryIcon';
 import RestaurantHeader from './RestaurantHeader';
 import StickyPhone from './StickyPhone';
 import FooterContact from './FooterContact';
-const normalize = value => value.normalize('NFKD').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
+const normalize = value => value.normalize('NFKD').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
 export default function Menu({ categories, items }) {
   const [category, setCategory] = useState('الكل');
   const [query, setQuery] = useState('');
@@ -99,13 +99,7 @@ export default function Menu({ categories, items }) {
   function selectCategory(name) {
     setQuery('');
     setCategory(name);
-    if (isMobile) {
-      setVisibleCategory(name);
-      // Show the selected category from its beginning beneath the compact controls.
-      requestAnimationFrame(() => {
-        resultsRef.current.scrollIntoView({ block: 'start', behavior: 'instant' });
-      });
-    }
+    if (isMobile) setVisibleCategory(name);
   }
   function scrollToSearch() {
     if (!isMobile || compact) return;
