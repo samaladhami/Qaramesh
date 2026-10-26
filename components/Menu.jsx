@@ -92,16 +92,23 @@ export default function Menu({ categories, items }) {
     if (!compact) setSearchOpen(false);
   }, [compact]);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      const sticky = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+    function updateSticky() {
+      const sticky = stickyMarker.current.getBoundingClientRect().top < 0;
       setIsSticky(sticky);
       if (!sticky && !searchNavigation.current) {
         setSearchOpen(false);
         if (document.activeElement === inputRef.current) inputRef.current.blur();
       }
-    });
+    }
+    // A marker can remain intersecting while scrolling back to the top after
+    // search navigation, so intersection changes alone are not sufficient.
+    const observer = new IntersectionObserver(updateSticky);
     observer.observe(stickyMarker.current);
-    return () => observer.disconnect();
+    window.addEventListener('scroll', updateSticky, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', updateSticky);
+    };
   }, []);
   const filtered = useMemo(() => items.filter(item => (category === 'الكل' || item.category === category) && normalize(`${item.name} ${item.category} ${item.shortDescription} ${item.description}`).includes(normalize(query))), [items, category, query]);
   useEffect(() => {

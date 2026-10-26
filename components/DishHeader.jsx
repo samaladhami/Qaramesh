@@ -45,9 +45,8 @@ export default function DishHeader() {
       document.removeEventListener('touchcancel', cancel);
     };
   }, [goBack]);
-  return <header className="dish-detail-header">
-    <Link className="dish-detail-brand" href="/?search=1" scroll={false} aria-label="قراميش — البحث في القائمة"><img src="/logo-scroll.png" alt="قراميش" width="1774" height="887" /></Link>
-    <Link className="dish-detail-search" href="/?search=1" scroll={false} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg></Link>
-    <button className="dish-detail-back" type="button" onClick={goBack}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m15 4-8 8 8 8" /></svg><span>العودة</span></button>
-  </header>;
+  return <nav className="dish-photo-actions" aria-label="التنقل في الطبق">
+    <button className="dish-photo-action" type="button" onClick={goBack} aria-label="إغلاق والعودة إلى القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg></button>
+    <Link className="dish-photo-action" href="/?search=1" scroll={false} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></svg></Link>
+  </nav>;
 }
