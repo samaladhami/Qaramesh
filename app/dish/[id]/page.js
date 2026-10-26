@@ -29,8 +29,8 @@ export default async function DishPage({ params }) {
           </div>
           {item.size && <p className="size">{item.size}</p>}
           {!item.available && <p className="dish-detail-unavailable">غير متوفر حالياً</p>}
+          {(item.description || item.shortDescription) && <details className="dish-detail-description" key={item.id}><summary>وصف الطبق<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></summary><p>{item.description || item.shortDescription}</p></details>}
         </section>
-        {(item.description || item.shortDescription) && <section className="dish-detail-description" aria-labelledby="dish-description"><h2 id="dish-description">وصف الطبق</h2><p>{item.description || item.shortDescription}</p></section>}
         {related.length > 0 && <section className="related-dishes" aria-labelledby="related-heading" dir="rtl">
           <h2 id="related-heading">قد يهمك أيضاً</h2>
           <ul className="related-dishes-track" aria-label="أطباق أخرى من نفس القسم" tabIndex={0} key={item.id}>
