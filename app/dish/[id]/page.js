@@ -34,14 +34,16 @@ export default async function DishPage({ params }) {
         {related.length > 0 && <section className="related-dishes" aria-labelledby="related-heading" dir="rtl">
           <div className="related-dishes-heading"><h2 id="related-heading">قد يهمك أيضاً</h2><span className="dish-detail-badge">{item.category}</span></div>
           <ul className="related-dishes-track" aria-label="أطباق أخرى من نفس القسم" tabIndex={0} key={item.id}>
-            {related.map(dish => <li key={dish.id} className="related-dish">
-              <Link href={`/dish/${dish.id}`} replace className="related-dish-link">
+            {related.map(dish => {
+              const Wrapper = dish.available ? Link : 'div';
+              return <li key={dish.id} className={`related-dish${dish.available ? '' : ' related-dish-disabled'}`}>
+              <Wrapper {...(dish.available ? { href: `/dish/${dish.id}`, replace: true } : { 'aria-disabled': true })} className="related-dish-link">
                 <div className="related-dish-photo"><FoodImage src={dish.image} alt={dish.name} sizes="(max-width: 540px) 150px, 180px" /></div>
                 <h3>{dish.name}</h3>
                 <p className="price"><bdi>{new Intl.NumberFormat('en-US').format(dish.price)}</bdi> <span>د.ع</span></p>
-                {!dish.available && <span className="related-dish-unavailable">غير متوفر حالياً</span>}
-              </Link>
-            </li>)}
+              </Wrapper>
+            </li>;
+            })}
           </ul>
         </section>}
       </div>
