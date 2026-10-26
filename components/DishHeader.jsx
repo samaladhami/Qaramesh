@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
-export default function DishHeader({ category }) {
+export default function DishHeader() {
   const router = useRouter();
   const goBack = useCallback(() => {
     try {
@@ -46,9 +46,8 @@ export default function DishHeader({ category }) {
     };
   }, [goBack]);
   return <header className="dish-detail-header">
-    <Link className="dish-detail-brand" href="/" aria-label="قراميش — القائمة"><img src="/logo-scroll.png" alt="قراميش" width="1774" height="887" /></Link>
+    <Link className="dish-detail-brand" href="/?search=1" scroll={false} aria-label="قراميش — البحث في القائمة"><img src="/logo-scroll.png" alt="قراميش" width="1774" height="887" /></Link>
     <Link className="dish-detail-search" href="/?search=1" scroll={false} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg></Link>
-    <span className="dish-detail-category">{category}</span>
     <button className="dish-detail-back" type="button" onClick={goBack}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m15 4-8 8 8 8" /></svg><span>العودة</span></button>
   </header>;
 }

@@ -17,12 +17,12 @@ export default async function DishPage({ params }) {
   if (!item) notFound();
   const related = menu.items.filter(dish => dish.category === item.category && dish.id !== item.id);
   return <>
-    <DishHeader category={item.category} />
+    <DishHeader />
     <main className="dish-detail">
       <div className="dish-detail-photo"><FoodImage src={item.image} alt={item.name} eager sizes="(max-width: 720px) 100vw, 720px" /></div>
       <div className="dish-detail-content">
         <section className="dish-detail-overview" aria-labelledby="dish-name">
-          <h1 id="dish-name"><span>{item.name}</span><svg className="heading-rays" viewBox="0 0 50 70" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" aria-hidden="true" focusable="false"><path d="m24 8 16 14M8 35h27M24 62l16-14" /></svg></h1>
+          <div className="dish-detail-title-row"><h1 id="dish-name"><span>{item.name}</span><svg className="heading-rays" viewBox="0 0 50 70" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" aria-hidden="true" focusable="false"><path d="m24 8 16 14M8 35h27M24 62l16-14" /></svg></h1><span className="dish-detail-badge">{item.category}</span></div>
           <div className="dish-detail-summary-row">
             <p>{item.shortDescription || item.description}</p>
             <p className="price"><bdi>{new Intl.NumberFormat('en-US').format(item.price)}</bdi> <span>د.ع</span></p>
@@ -32,7 +32,7 @@ export default async function DishPage({ params }) {
           {(item.description || item.shortDescription) && <details className="dish-detail-description" key={item.id}><summary>وصف الطبق<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></summary><p>{item.description || item.shortDescription}</p></details>}
         </section>
         {related.length > 0 && <section className="related-dishes" aria-labelledby="related-heading" dir="rtl">
-          <h2 id="related-heading">قد يهمك أيضاً</h2>
+          <div className="related-dishes-heading"><h2 id="related-heading">قد يهمك أيضاً</h2><span className="dish-detail-badge">{item.category}</span></div>
           <ul className="related-dishes-track" aria-label="أطباق أخرى من نفس القسم" tabIndex={0} key={item.id}>
             {related.map(dish => <li key={dish.id} className="related-dish">
               <Link href={`/dish/${dish.id}`} replace className="related-dish-link">
@@ -45,6 +45,7 @@ export default async function DishPage({ params }) {
           </ul>
         </section>}
       </div>
+      <div className="dish-detail-end-logo"><span className="footer-stars" aria-hidden="true">{[0, 1, 2, 3, 4].map(star => <svg key={star} viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2L5.8 21 7 14.2 2 9.3l6.9-1Z" /></svg>)}</span><img className="footer-logo" src="/logo-footer-transparent.png" alt="قراميش" width="1254" height="1254" loading="lazy" /></div>
     </main>
   </>;
 }
