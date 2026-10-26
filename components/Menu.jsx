@@ -20,8 +20,39 @@ export default function Menu({ categories, items }) {
   const inputRef = useRef(null);
   const searchButtonRef = useRef(null);
   const resultsRef = useRef(null);
+  const searchNavigation = useRef(false);
   const [expandedHeight, setExpandedHeight] = useState(null);
   const compact = isMobile && (isSticky || searchOpen);
+  function rememberMenu() {
+    try { sessionStorage.setItem('menu-return', JSON.stringify({ category, query, y: window.scrollY })); } catch {}
+  }
+  useEffect(() => {
+    let saved;
+    try {
+      saved = JSON.parse(sessionStorage.getItem('menu-return') || 'null');
+      sessionStorage.removeItem('menu-return');
+    } catch {}
+    if (saved) {
+      if (categories.includes(saved.category)) setCategory(saved.category);
+      setQuery(saved.query || '');
+    }
+    searchNavigation.current = new URLSearchParams(window.location.search).has('search');
+    let frame = requestAnimationFrame(() => {
+      if (searchNavigation.current) {
+        // Commit the expanded controls before calculating their scroll offset.
+        flushSync(() => {
+          setIsMobile(window.matchMedia('(max-width: 540px)').matches);
+          setSearchOpen(true);
+        });
+        resultsRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+        frame = requestAnimationFrame(() => {
+          inputRef.current?.focus({ preventScroll: true });
+          frame = requestAnimationFrame(() => { searchNavigation.current = false; });
+        });
+      } else if (saved) window.scrollTo({ top: saved.y || 0, behavior: 'instant' });
+    });
+    return () => { cancelAnimationFrame(frame); searchNavigation.current = false; };
+  }, [categories]);
   const activeCategory = compact && category === 'الكل' && !query.trim() ? visibleCategory : category;
   useEffect(() => {
     const media = window.matchMedia('(max-width: 540px)');
@@ -64,7 +95,7 @@ export default function Menu({ categories, items }) {
     const observer = new IntersectionObserver(([entry]) => {
       const sticky = !entry.isIntersecting && entry.boundingClientRect.top < 0;
       setIsSticky(sticky);
-      if (!sticky) {
+      if (!sticky && !searchNavigation.current) {
         setSearchOpen(false);
         if (document.activeElement === inputRef.current) inputRef.current.blur();
       }
@@ -134,7 +165,7 @@ export default function Menu({ categories, items }) {
       <div className="section-label"><h2>اكتشف قائمتنا</h2><span>٢٠ قسم · نكهات لكل الأذواق</span></div>
       <nav ref={navRef} className="category-nav" aria-label="أقسام القائمة"><button className={`category-card all-category ${activeCategory === 'الكل' ? 'selected' : ''}`} data-category="الكل" aria-pressed={activeCategory === 'الكل'} onClick={() => selectCategory('الكل')}><span className="all-icon" aria-hidden="true">✦</span><span>كل القائمة</span></button>{categories.map(name => <button key={name} className={`category-card ${activeCategory === name ? 'selected' : ''}`} data-category={name} aria-pressed={activeCategory === name} onClick={() => selectCategory(name)}><CategoryIcon name={name} /><span>{name}</span></button>)}</nav></div></div>
       <section ref={resultsRef} className="results" aria-labelledby="results-heading"><div className="results-heading"><div><span className="eyebrow">طازج، شهي، وعلى ذوقك</span><h2 id="results-heading"><span>{query ? 'نتائج البحث' : category === 'الكل' ? 'من قائمة قراميش' : category}</span><svg className="heading-rays" viewBox="0 0 50 70" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" aria-hidden="true" focusable="false"><path d="m24 8 16 14M8 35h27M24 62l16-14" /></svg></h2></div><span className="result-count" role="status" aria-live="polite">{filtered.length} صنف</span></div>
-      {filtered.length ? <div className="dish-grid">{filtered.map(item => <DishCard key={item.id} item={item} />)}</div> : <div className="empty-state"><span aria-hidden="true">⌕</span><h3>ما لقينا طبق بهذا البحث</h3><p>جرّب اسم ثاني أو اكتشف باقي الأقسام</p><button onClick={reset}>عرض كل القائمة</button></div>}</section>
+      {filtered.length ? <div className="dish-grid">{filtered.map(item => <DishCard key={item.id} item={item} onOpen={rememberMenu} />)}</div> : <div className="empty-state"><span aria-hidden="true">⌕</span><h3>ما لقينا طبق بهذا البحث</h3><p>جرّب اسم ثاني أو اكتشف باقي الأقسام</p><button onClick={reset}>عرض كل القائمة</button></div>}</section>
     </main><footer><span className="footer-stars" aria-hidden="true">{[0, 1, 2, 3, 4].map(star => <svg key={star} viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2L5.8 21 7 14.2 2 9.3l6.9-1Z" /></svg>)}</span><span className="footer-flourish" aria-hidden="true">❧</span><img className="footer-logo" src="/logo-footer-transparent.png" alt="قراميش" width="1254" height="1254" loading="lazy" /><p>الطعم الطيب… يجمعنا دائماً</p><FooterContact /></footer>
   </>;
 }

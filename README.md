@@ -49,6 +49,12 @@ Reimport regenerates menu data; caching requires network access. The workbook's 
 
 Supabase, authentication and administration remain later phases.
 
+## Dish pages
+
+Menu cards link to `/dish/dish-1` and the corresponding URL for each dish. The cards retain their short descriptions; full descriptions appear on the dish page instead of an expandable card section. Each dish page has a single-row RTL header with the logo, search, centered category, and Arabic back button. A large food image sits above an overlapping white panel with yellow-bordered summary and full-description sections, including the name, price, category badge, size, and availability.
+
+Opening a card saves the menu category, search query, and scroll position for return navigation in the same tab. Direct dish links fall back to the main menu through the back button. The dish header search link returns to the menu and focuses search. All 145 dish URLs are generated during the production build; unknown dish IDs show the not-found page.
+
 ## Hero carousel
 
 The hero uses the six selected restaurant images in `public/hero/`. `data/hero-slides.json` is the single list of image IDs, URLs, and Arabic descriptions; a future admin feature can supply the same records without changing the carousel presentation.
