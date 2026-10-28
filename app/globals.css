@@ -222,3 +222,10 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .dish-photo-action svg{display:block;width:24px;height:24px}
 .related-dish-photo .dish-photo-plus{width:24px;height:24px;right:5px;bottom:5px}
 .related-dish-photo .dish-photo-plus svg{width:16px;height:16px}
+
+.menu-controls .category-nav{width:100%;max-width:900px;margin-inline:auto;gap:8px}
+@media(max-width:540px){
+  .is-compact .category-nav{max-width:none;padding-inline:0;gap:0}
+  .is-compact .category-card{margin-inline-end:-12px}
+}
+@media(max-width:540px){.is-compact .category-card.selected .category-icon,.is-compact .category-card.selected .all-icon{box-shadow:0 0 0 2px var(--white),0 0 0 3px var(--yellow)}}
