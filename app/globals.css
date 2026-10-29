@@ -50,7 +50,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .menu-controls-slot{display:block;height:var(--expanded-controls-height,auto)}
   .menu-controls{position:relative}
   .menu-controls.is-compact{position:fixed;top:env(safe-area-inset-top,0px);inset-inline:14px;padding:0;background:var(--surface)}
-  .is-compact .sticky-search-row{height:var(--compact-search-height);max-width:none;margin:0;padding-bottom:8px;gap:8px;animation:compact-menu-in .2s ease-out}
+  .is-compact .sticky-search-row{height:var(--compact-search-height);max-width:none;margin:0;padding-bottom:8px;gap:8px}
   .is-compact .scroll-logo{width:88px;height:44px;margin:0;opacity:1;transform:none;flex-shrink:0}
   .is-compact .compact-search-toggle{order:-1;display:grid;place-items:center;width:44px;height:44px;padding:10px;border:0;border-radius:50%;background:transparent;color:var(--red)}
   .compact-search-toggle svg{width:23px;height:23px}
@@ -61,7 +61,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .is-compact.search-open .search-wrap{display:flex;height:42px;padding:0 12px}
   .is-compact .search-wrap input{height:40px}
   .is-compact .compact-search-close{display:block;flex-shrink:0;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--teal);font-size:26px;line-height:1}
-  .is-compact .category-nav{height:var(--compact-nav-height);padding:3px 3px 5px;gap:0;scrollbar-width:none;overscroll-behavior-x:contain;animation:compact-menu-in .2s ease-out}
+  .is-compact .category-nav{height:var(--compact-nav-height);padding:3px 3px 5px;gap:0;scrollbar-width:none;overscroll-behavior-x:contain}
   .is-compact .category-nav::-webkit-scrollbar{display:none}
   .is-compact .category-card{width:88px;flex:0 0 88px;margin-inline-end:-8px;height:64px;border:0;border-radius:0;background:transparent;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;transform:none}
   .is-compact .category-card::before,.is-compact .category-card::after{display:none}
@@ -246,3 +246,4 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .dish-detail-end-logo .sticky-phone-toggle svg{width:41.8px;height:41.8px;color:var(--white);fill:currentColor;stroke-width:1}
 .dish-detail-end-logo .sticky-phone-panel{inset:auto auto calc(104px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%)}
 .dish-detail-end-logo .sticky-phone-panel p{color:var(--teal);text-align:right;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
+@media(max-width:540px){.is-compact .category-card .all-icon{font-family:Arial,sans-serif;line-height:1}}

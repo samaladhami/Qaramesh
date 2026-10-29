@@ -13,7 +13,7 @@ export default function Menu({ categories, items }) {
   const stickyMarker = useRef(null);
   const [isSticky, setIsSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchRequested, setSearchOpen] = useState(false);
   const [visibleCategory, setVisibleCategory] = useState('الكل');
   const controlsRef = useRef(null);
   const navRef = useRef(null);
@@ -22,10 +22,9 @@ export default function Menu({ categories, items }) {
   const resultsRef = useRef(null);
   const searchNavigation = useRef(false);
   const [expandedHeight, setExpandedHeight] = useState(null);
+  // Enter compact mode and show a populated search in the same render.
+  const searchOpen = searchRequested || (isMobile && isSticky && Boolean(query.trim()));
   const compact = isMobile && (isSticky || searchOpen);
-  useEffect(() => {
-    if (isMobile && isSticky && query.trim()) setSearchOpen(true);
-  }, [isMobile, isSticky, query]);
   function rememberMenu() {
     try { sessionStorage.setItem('menu-return', JSON.stringify({ category, query, y: window.scrollY })); } catch {}
   }
