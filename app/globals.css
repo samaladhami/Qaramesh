@@ -65,12 +65,12 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .is-compact .category-nav::-webkit-scrollbar{display:none}
   .is-compact .category-card{width:88px;flex:0 0 88px;margin-inline-end:-8px;height:64px;border:0;border-radius:0;background:transparent;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;transform:none}
   .is-compact .category-card::before,.is-compact .category-card::after{display:none}
-  .is-compact .category-card .category-icon,.is-compact .category-card .all-icon{display:grid;place-items:center;width:38px;height:38px;flex-shrink:0;border-radius:11px;background:color-mix(in srgb,var(--teal) 3%,transparent);color:var(--teal)}
-  .is-compact .category-icon svg{width:33px;height:33px}
-  .is-compact .category-card .all-icon{font-size:25px;color:var(--yellow)}
+  .is-compact .category-card .category-icon,.is-compact .category-card .all-icon{display:grid;place-items:center;width:41.8px;height:41.8px;flex-shrink:0;border-radius:11px;background:color-mix(in srgb,var(--teal) 3%,transparent);color:var(--teal)}
+  .is-compact .category-icon svg{width:36.3px;height:36.3px}
+  .is-compact .category-card .all-icon{font-size:27.5px;color:var(--yellow)}
   .is-compact .category-card.selected{color:var(--teal)}
   .is-compact .category-card.selected .category-icon,.is-compact .category-card.selected .all-icon{background:var(--teal);color:white}
-  .is-compact .category-card>span:last-child{padding:0;font-size:9px;line-height:16px;white-space:nowrap}
+  .is-compact .category-card>span:last-child{padding:0;font-size:10px;line-height:16px;white-space:nowrap}
   .dish-card{scroll-margin-top:calc(var(--compact-search-height) + var(--compact-nav-height) + 12px)}
   /* scrollIntoView adds the page scroll padding to this margin. */
   .results{scroll-margin-top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px) + var(--compact-search-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
@@ -226,10 +226,12 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .menu-controls .category-nav{width:100%;max-width:900px;margin-inline:auto;gap:8px}
 @media(max-width:540px){
   .is-compact .category-nav{max-width:none;padding-inline:0;gap:0}
-  .is-compact .category-card{margin-inline-end:-12px}
+  .is-compact .category-card{margin-inline-end:-18.66px}
 }
 @media(max-width:540px){.is-compact .category-card.selected .category-icon,.is-compact .category-card.selected .all-icon{box-shadow:0 0 0 2px var(--white),0 0 0 3px var(--yellow)}}
 /* Prevent iPhone focus zoom from panning the sticky search out of view. */
 @media(max-width:540px){.menu-controls .search-wrap input{font-size:16px}}
 .search-wrap input[type=search]::-webkit-search-cancel-button,.search-wrap input[type=search]::-webkit-search-decoration{display:none;-webkit-appearance:none}
 .search-wrap input[type=search]::-ms-clear{display:none}
+.is-sticky .scroll-logo img,.is-compact .scroll-logo img{transform:scale(1.1)}
+@media(max-width:540px){.is-compact .category-card:first-child{margin-inline-start:-22px}}
