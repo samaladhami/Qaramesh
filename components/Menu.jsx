@@ -6,6 +6,7 @@ import CategoryIcon from './CategoryIcon';
 import RestaurantHeader from './RestaurantHeader';
 import StickyPhone from './StickyPhone';
 import FooterContact from './FooterContact';
+import useCategoryScrollHint from './useCategoryScrollHint';
 const normalize = value => value.normalize('NFKD').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
 export default function Menu({ categories, items }) {
   const [category, setCategory] = useState('الكل');
@@ -17,6 +18,7 @@ export default function Menu({ categories, items }) {
   const [visibleCategory, setVisibleCategory] = useState('الكل');
   const controlsRef = useRef(null);
   const navRef = useRef(null);
+  useCategoryScrollHint(navRef, controlsRef);
   const inputRef = useRef(null);
   const searchButtonRef = useRef(null);
   const resultsRef = useRef(null);

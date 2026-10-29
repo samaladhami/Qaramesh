@@ -264,3 +264,4 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .menu-controls:not(.is-compact) .category-card{width:max-content;min-width:104px;flex:0 0 auto;padding-inline:1px}
 .menu-controls:not(.is-compact) .category-card>span:last-child{font-size:12px;padding-inline:1px}
 @media(max-width:540px){.menu-controls:not(.is-compact) .category-card{min-width:90px}.menu-controls:not(.is-compact) .category-card>span:last-child{font-size:11px}}
+.menu-controls.is-sticky .section-label,.menu-controls.is-compact .section-label{display:none}

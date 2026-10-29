@@ -87,6 +87,8 @@ On screens up to 540px wide, scrolling past the menu controls reveals a compact 
 
 Category taps show only that category; the all-categories button restores the full menu. Scrolling the full menu updates the active icon, which stays visible in the RTL navigation. Selected compact icons have a white gap and yellow outline around their teal background. Category spacing is tighter in compact mode, and the category row shares the controls' maximum width. The expanded controls keep their space to prevent content jumping when compact mode starts or ends. Category icons use inline SVGs in `components/CategoryIcon.jsx` and `components/category-icon-art.json`.
 
+The category row gives a small scroll hint once when the home categories first become visible and once when the sticky categories first appear. It moves up to 40px toward the next categories and returns over 800ms after scrolling settles; returning to the top does not replay it. Touch, pointer, wheel, keyboard, or focus interaction cancels the hint; interacting with the category row disables further hints for that visit. Reduced-motion users and non-overflowing rows skip the hint. The animation changes only horizontal scroll position, with no per-frame React updates or new dependencies.
+
 Validated with a production build and headless Edge checks at 390px and 320px widths: search focus/filter/close, category navigation and tracking, RTL visibility, stable content position, return to the top, reduced motion, and desktop filtering.
 
 ## Validation and local artifacts
