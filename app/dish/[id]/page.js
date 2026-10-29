@@ -3,6 +3,7 @@ import menu from '../../../data/menu.json';
 import FoodImage from '../../../components/FoodImage';
 import DishHeader from '../../../components/DishHeader';
 import Link from 'next/link';
+import StickyPhone from '../../../components/StickyPhone';
 
 export const dynamicParams = false;
 export function generateStaticParams() { return menu.items.map(({ id }) => ({ id })); }
@@ -49,7 +50,7 @@ export default async function DishPage({ params }) {
           </ul>
         </section>}
       </div>
-      <div className="dish-detail-end-logo"><img className="footer-logo" src="/logo-badge.webp" alt="قراميش" width="320" height="320" loading="lazy" /></div>
+      <div className="dish-detail-end-logo"><StickyPhone panelId="dish-footer-phone-numbers" anchorToButton /></div>
     </main>
   </div>;
 }

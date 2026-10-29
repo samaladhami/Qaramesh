@@ -114,7 +114,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .sticky-phone-toggle{display:grid;place-items:center;width:44px;height:44px;padding:8px;border:0;border-radius:50%;background:transparent;color:var(--accent-text)}
 .sticky-phone-toggle svg{width:28px;height:28px;color:#34C759}
 .sticky-phone-panel{position:fixed;inset:48px auto auto 14px;margin:0;padding:10px 14px;max-width:calc(100vw - 28px);border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--teal);box-shadow:0 8px 24px #4291981a}
-.sticky-phone-panel p{margin:0 0 4px;font-size:13px;font-weight:700;color:var(--accent-text)}
+.sticky-phone-panel p{margin:0 0 6px;padding-bottom:6px;font-size:13px;font-weight:700;color:var(--teal);text-align:right;border-bottom:1px solid var(--line)}
 .sticky-phone-panel a{display:flex;align-items:center;justify-content:center;min-height:44px;font-size:16px;font-weight:700;color:var(--teal);text-decoration:none}
 .sticky-phone-panel a:hover{color:var(--accent-text);text-decoration:underline}
 .restaurant-hours{display:inline-flex;align-items:center;gap:6px;font-weight:inherit;white-space:nowrap;color:inherit}
@@ -239,3 +239,10 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .menu-controls:not(.is-compact) .category-card{width:104px;flex-basis:104px}
 @media(max-width:540px){.menu-controls:not(.is-compact) .category-card{width:90px;flex-basis:90px}}
 .menu-controls:not(.is-compact) .all-icon{display:grid;place-items:center;font-family:Arial,sans-serif;line-height:1}
+.dish-detail-end-logo{display:flex;align-items:center;justify-content:center;gap:16px}
+.dish-detail-end-logo .footer-logo{margin:0}
+.dish-detail-end-logo .sticky-phone{margin:0}
+.dish-detail-end-logo .sticky-phone-toggle{width:64px;height:64px;background:#34C759;box-shadow:0 2px 8px #0002}
+.dish-detail-end-logo .sticky-phone-toggle svg{width:34px;height:34px;color:var(--white);fill:currentColor;stroke-width:1}
+.dish-detail-end-logo .sticky-phone-panel{inset:auto auto calc(104px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%)}
+.dish-detail-end-logo .sticky-phone-panel p{color:var(--teal);text-align:right;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
