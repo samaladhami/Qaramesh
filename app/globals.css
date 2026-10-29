@@ -49,7 +49,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 @media(max-width:540px){
   .menu-controls-slot{display:block;height:var(--expanded-controls-height,auto)}
   .menu-controls{position:relative}
-  .menu-controls.is-compact{position:fixed;top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px));inset-inline:14px;padding:0;background:var(--surface)}
+  .menu-controls.is-compact{position:fixed;top:env(safe-area-inset-top,0px);inset-inline:14px;padding:0;background:var(--surface)}
   .is-compact .sticky-search-row{height:var(--compact-search-height);max-width:none;margin:0;padding-bottom:8px;gap:8px;animation:compact-menu-in .2s ease-out}
   .is-compact .scroll-logo{width:88px;height:44px;margin:0;opacity:1;transform:none;flex-shrink:0}
   .is-compact .compact-search-toggle{order:-1;display:grid;place-items:center;width:44px;height:44px;padding:10px;border:0;border-radius:50%;background:transparent;color:var(--red)}
@@ -58,7 +58,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .is-compact .section-label{display:none}
   .is-compact.search-open .scroll-logo,.is-compact.search-open .compact-search-toggle{display:none}
   .is-compact.search-open .sticky-search-row{height:var(--compact-search-open-height);padding-block:12px}
-  .is-compact.search-open .search-wrap{display:flex;height:42px;padding:0 12px;animation:compact-menu-in .2s ease-out}
+  .is-compact.search-open .search-wrap{display:flex;height:42px;padding:0 12px}
   .is-compact .search-wrap input{height:40px}
   .is-compact .compact-search-close{display:block;flex-shrink:0;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--teal);font-size:26px;line-height:1}
   .is-compact .category-nav{height:var(--compact-nav-height);padding:3px 3px 5px;gap:0;scrollbar-width:none;overscroll-behavior-x:contain;animation:compact-menu-in .2s ease-out}
@@ -73,8 +73,8 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .is-compact .category-card>span:last-child{padding:0;font-size:10px;line-height:16px;white-space:nowrap}
   .dish-card{scroll-margin-top:calc(var(--compact-search-height) + var(--compact-nav-height) + 12px)}
   /* scrollIntoView adds the page scroll padding to this margin. */
-  .results{scroll-margin-top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px) + var(--compact-search-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
-  .menu-controls-slot:has(.search-open)+.results{scroll-margin-top:calc(var(--visual-viewport-top,0px) + env(safe-area-inset-top,0px) + var(--compact-search-open-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
+  .results{scroll-margin-top:calc(env(safe-area-inset-top,0px) + var(--compact-search-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
+  .menu-controls-slot:has(.search-open)+.results{scroll-margin-top:calc(env(safe-area-inset-top,0px) + var(--compact-search-open-height) + var(--compact-nav-height) - var(--page-scroll-padding))}
 }
 @keyframes compact-menu-in{from{opacity:.7}to{opacity:1}}
 
