@@ -242,7 +242,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .dish-detail-end-logo{display:flex;align-items:center;justify-content:center;gap:16px}
 .dish-detail-end-logo .footer-logo{margin:0}
 .dish-detail-end-logo .sticky-phone{margin:0}
-.dish-detail-end-logo .sticky-phone-toggle{width:64px;height:64px;background:#34C759;box-shadow:0 2px 8px #0002}
-.dish-detail-end-logo .sticky-phone-toggle svg{width:34px;height:34px;color:var(--white);fill:currentColor;stroke-width:1}
+.dish-detail-end-logo .sticky-phone-toggle{width:84px;height:84px;background:#34C759;box-shadow:0 2px 8px #0002}
+.dish-detail-end-logo .sticky-phone-toggle svg{width:41.8px;height:41.8px;color:var(--white);fill:currentColor;stroke-width:1}
 .dish-detail-end-logo .sticky-phone-panel{inset:auto auto calc(104px + env(safe-area-inset-bottom,0px)) 50%;transform:translateX(-50%)}
 .dish-detail-end-logo .sticky-phone-panel p{color:var(--teal);text-align:right;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
