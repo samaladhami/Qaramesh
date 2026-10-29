@@ -235,3 +235,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .search-wrap input[type=search]::-ms-clear{display:none}
 .is-sticky .scroll-logo img,.is-compact .scroll-logo img{transform:scale(1.1)}
 @media(max-width:540px){.is-compact .category-card:first-child{margin-inline-start:-22px}}
+
+.menu-controls:not(.is-compact) .category-card{width:104px;flex-basis:104px}
+@media(max-width:540px){.menu-controls:not(.is-compact) .category-card{width:90px;flex-basis:90px}}
+.menu-controls:not(.is-compact) .all-icon{display:grid;place-items:center;font-family:Arial,sans-serif;line-height:1}
