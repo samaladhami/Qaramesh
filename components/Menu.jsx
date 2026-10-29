@@ -23,6 +23,9 @@ export default function Menu({ categories, items }) {
   const searchNavigation = useRef(false);
   const [expandedHeight, setExpandedHeight] = useState(null);
   const compact = isMobile && (isSticky || searchOpen);
+  useEffect(() => {
+    if (isMobile && isSticky && query.trim()) setSearchOpen(true);
+  }, [isMobile, isSticky, query]);
   function rememberMenu() {
     try { sessionStorage.setItem('menu-return', JSON.stringify({ category, query, y: window.scrollY })); } catch {}
   }
