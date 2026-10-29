@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const raw = JSON.parse(fs.readFileSync('data/workbook-raw.json', 'utf8').replace(/^\uFEFF/, ''));
 const clean = value => String(value ?? '').trim().replace(/\s+/g, ' ');
+const displayNames = new Map([['بنسبي مشين', 'بيبسي']]);
 const source = raw.Sheet1.slice(1).filter(row => clean(row.A));
 const images = new Map();
 const duplicates = [];
@@ -13,7 +14,7 @@ for (const row of raw.Sheet4) {
 const unmatched = source.filter(row => !images.has(clean(row.A))).map(row => row.A);
 const extra = raw.Sheet4.filter(row => !source.some(item => clean(item.A) === clean(row.A))).map(row => row.A);
 const items = source.map((row, index) => ({
-  id: `dish-${index + 1}`, name: clean(row.A), category: clean(row.B),
+  id: `dish-${index + 1}`, name: displayNames.get(clean(row.A)) || clean(row.A), category: clean(row.B),
   price: Number(row.C) * 1000, shortDescription: clean(row.D), description: clean(row.E),
   size: clean(row.F), image: clean(images.get(clean(row.A))?.E || row.G),
   available: row.H !== '0', addOn: clean(row.I),
