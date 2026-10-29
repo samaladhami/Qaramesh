@@ -96,10 +96,32 @@ export default function Menu({ categories, items }) {
     if (!compact) setSearchOpen(false);
   }, [compact]);
   useEffect(() => {
+    let touchStart = null;
+    let upwardScrollUntil = 0;
+    function onTouchStart(event) {
+      const touch = event.touches[0];
+      touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    }
+    function onTouchMove(event) {
+      const touch = event.touches[0];
+      if (!touchStart || !touch) return;
+      const dy = touch.clientY - touchStart.y;
+      if (dy > 8 && dy > Math.abs(touch.clientX - touchStart.x)) {
+        upwardScrollUntil = performance.now() + 1200;
+        updateSticky();
+      }
+    }
+    function onWheel(event) {
+      if (event.deltaY < 0) upwardScrollUntil = performance.now() + 1200;
+    }
     function updateSticky() {
       const sticky = stickyMarker.current.getBoundingClientRect().top < 0;
       setIsSticky(sticky);
-      if (!sticky && !searchNavigation.current) {
+      const focused = document.activeElement === inputRef.current;
+      // iOS keyboard/viewport changes and shorter search results can move the
+      // marker without a user scroll. Keep editing active through those moves.
+      const returnedToTop = window.scrollY <= 1 && performance.now() < upwardScrollUntil;
+      if (!sticky && !searchNavigation.current && (!focused || returnedToTop)) {
         setSearchOpen(false);
         if (document.activeElement === inputRef.current) inputRef.current.blur();
       }
@@ -109,9 +131,15 @@ export default function Menu({ categories, items }) {
     const observer = new IntersectionObserver(updateSticky);
     observer.observe(stickyMarker.current);
     window.addEventListener('scroll', updateSticky, { passive: true });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('wheel', onWheel, { passive: true });
     return () => {
       observer.disconnect();
       window.removeEventListener('scroll', updateSticky);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('wheel', onWheel);
     };
   }, []);
   const filtered = useMemo(() => items.filter(item => (category === 'الكل' || item.category === category) && normalize(`${item.name} ${item.category} ${item.shortDescription} ${item.description}`).includes(normalize(query))), [items, category, query]);
@@ -141,7 +169,6 @@ export default function Menu({ categories, items }) {
   function updateSearch(value) {
     setQuery(value);
     if (value.trim()) setCategory('الكل');
-    if (compact) requestAnimationFrame(() => resultsRef.current.scrollIntoView({ block: 'start', behavior: 'instant' }));
   }
   function selectCategory(name) {
     setQuery('');
@@ -152,7 +179,10 @@ export default function Menu({ categories, items }) {
     if (!isMobile || compact || searchNavigation.current) return;
     searchNavigation.current = true;
     // Keep the focused input visible as scrolling switches to compact controls.
-    flushSync(() => setSearchOpen(true));
+    flushSync(() => {
+      setExpandedHeight(controlsRef.current.getBoundingClientRect().height);
+      setSearchOpen(true);
+    });
     requestAnimationFrame(() => {
       resultsRef.current.scrollIntoView({
         block: 'start',

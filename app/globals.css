@@ -229,3 +229,5 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
   .is-compact .category-card{margin-inline-end:-12px}
 }
 @media(max-width:540px){.is-compact .category-card.selected .category-icon,.is-compact .category-card.selected .all-icon{box-shadow:0 0 0 2px var(--white),0 0 0 3px var(--yellow)}}
+/* Prevent iPhone focus zoom from panning the sticky search out of view. */
+@media(max-width:540px){.menu-controls .search-wrap input{font-size:16px}}
