@@ -2,7 +2,7 @@
 
 Arabic RTL customer menu built with Next.js App Router, React, JavaScript and Tailwind CSS. No backend or ordering features.
 
-Phase 1 was completed on October 28, 2026. It includes the customer menu, category filtering, Arabic search, promotional carousel, individual dish pages, related dishes, phone links, and responsive mobile navigation. Content currently comes from local JSON files; a cart, checkout, and the proposed “اطلب الآن” action have not been implemented.
+Phase 1 was officially completed and accepted on October 29, 2026. It includes the customer menu, category filtering, Arabic search, promotional carousel, individual dish pages, related dishes, phone links, and responsive mobile navigation. Content currently comes from local JSON files; a cart, checkout, and the proposed “اطلب الآن” action have not been implemented.
 
 ## Run locally
 
@@ -83,7 +83,7 @@ Validated against a production build at 320px, 390px, and 1280px: every image, s
 
 ## Mobile menu navigation
 
-On screens up to 540px wide, scrolling past the menu controls reveals a compact 71px controls row with 11px top padding and a 72px category row, plus 3px bottom padding on the sticky header. The controls follow the tablet layout: teal wordmark with its red underline on the right, an always-visible search field in the middle, and the green phone control on the left. The logo focuses search. The search X clears the query and keeps the field focused; the logo and phone remain visible while searching. The expanded controls keep their space to prevent content jumping when compact mode starts or ends. The phone control also appears beside desktop/tablet search. Footer logos use the transparent circular badge; stars appear below the main footer logo, but not on the dish-page logo.
+On screens up to 540px wide, scrolling past the menu controls reveals a compact 71px controls row with 11px top padding and a 72px category row, plus 3px bottom padding on the sticky header. The controls follow the tablet layout: teal wordmark with its red underline on the right, an always-visible search field in the middle, and the green phone control on the left. The mobile sticky search placeholder reads only through the question mark; the home and tablet search retain the full placeholder. The logo focuses search. The search X clears the query and keeps the field focused; the logo and phone remain visible while searching. The expanded controls keep their space to prevent content jumping when compact mode starts or ends. The phone control also appears beside desktop/tablet search. Footer logos use the transparent circular badge; stars appear below the main footer logo, but not on the dish-page logo.
 
 Category taps show only that category; the all-categories button restores the full menu. Scrolling the full menu updates the active icon, which stays visible in the RTL navigation. Selected compact icons have a white gap and yellow outline around their teal background. Category spacing is tighter in compact mode, and the category row shares the controls' maximum width. The expanded controls keep their space to prevent content jumping when compact mode starts or ends. Category icons use inline SVGs in `components/CategoryIcon.jsx` and `components/category-icon-art.json`.
 
