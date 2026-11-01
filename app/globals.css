@@ -253,9 +253,9 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 @media(max-width:540px){.menu-controls:not(.is-compact) .all-icon img{width:46px;height:46px}.is-compact .all-icon img{width:32px;height:32px}}
 .menu-controls .category-card .all-icon{display:flex;align-items:center;justify-content:center;font-size:0;line-height:0;padding:0}
 .menu-controls .all-icon img{flex-shrink:0;align-self:center}
-.menu-controls:not(.is-compact) .category-card{padding-top:8px;padding-bottom:1px}
+.menu-controls:not(.is-compact) .category-card{padding-top:7px}
 .menu-controls:not(.is-compact) .category-card{width:max-content;min-width:104px;flex:0 0 auto;padding-inline:1px}
-.menu-controls:not(.is-compact) .category-card>span:last-child{font-size:12px;padding-inline:1px}
+.menu-controls:not(.is-compact) .category-card>span:last-child{font-size:12px;padding-inline:3px}
 @media(max-width:540px){.menu-controls:not(.is-compact) .category-card{min-width:90px}.menu-controls:not(.is-compact) .category-card>span:last-child{font-size:11px}}
 .menu-controls.is-sticky .section-label,.menu-controls.is-compact .section-label{display:none}
 
@@ -286,5 +286,3 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 @media(min-width:541px){.menu-controls.is-sticky .sticky-search-row{padding-bottom:3px}}
 
 .menu-controls .all-icon img{transform:scale(1.18)}
-
-.menu-controls.is-compact .category-card>span:last-child{padding-block:1px}
