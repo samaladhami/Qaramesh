@@ -259,7 +259,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 @media(max-width:540px){.menu-controls:not(.is-compact) .category-card{min-width:90px}.menu-controls:not(.is-compact) .category-card>span:last-child{font-size:11px}}
 .menu-controls.is-sticky .section-label,.menu-controls.is-compact .section-label{display:none}
 
-@media(max-width:540px){.menu-controls.is-compact{padding-bottom:3px}}
+@media(max-width:540px){.menu-controls.is-compact{padding-bottom:5px}}
 
 /* Keep the home call control beside search at every screen width. */
 .sticky-search-row>.sticky-phone{order:2;flex-shrink:0;margin-inline-start:8px}
@@ -283,7 +283,8 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .menu-controls:is(.is-sticky,.is-compact) .category-nav{margin-bottom:0}
 @media(max-width:540px){.menu-controls.is-compact .sticky-search-row{height:55px;padding-top:0;padding-bottom:11px}}
 
-@media(min-width:541px){.menu-controls.is-sticky .sticky-search-row{padding-bottom:3px}}
+@media(min-width:541px){.menu-controls.is-sticky .sticky-search-row{padding-bottom:5px}}
 
 .menu-controls .all-icon img{transform:scale(1.18)}
-.result-count{background:var(--yellow)}
+.result-count{background:#FDF2CA;border:0}
+.dish-detail-badge{color:var(--teal)}
