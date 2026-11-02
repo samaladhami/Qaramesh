@@ -2,9 +2,14 @@
 
 export default function StickyPhone({ panelId = 'sticky-phone-numbers', anchorToButton = false }) {
   function positionPanel(event) {
-    if (!anchorToButton) return;
     const button = event.currentTarget.getBoundingClientRect();
     const panel = document.getElementById(panelId);
+    if (!anchorToButton) {
+      panel.style.left = `${Math.max(14, Math.min(button.left, window.innerWidth - 214))}px`;
+      panel.style.top = `${button.bottom + 8}px`;
+      panel.style.bottom = 'auto';
+      return;
+    }
     panel.style.left = `${button.left + button.width / 2}px`;
     panel.style.top = button.top < 180 ? `${button.bottom + 8}px` : 'auto';
     panel.style.bottom = button.top < 180 ? 'auto' : `${window.innerHeight - button.top + 8}px`;
