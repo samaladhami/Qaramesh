@@ -2,7 +2,21 @@
   "name": "qaramesh-menu",
   "version": "0.1.0",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "verify:data": "node scripts/import-menu.mjs --check" },
-  "dependencies": { "next": "^16.0.0", "react": "^19.0.0", "react-dom": "^19.0.0" },
-  "devDependencies": { "tailwindcss": "^4.0.0", "@tailwindcss/postcss": "^4.0.0" }
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "verify:data": "node scripts/import-menu.mjs --check"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  }
 }

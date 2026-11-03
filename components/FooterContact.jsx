@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function FooterContact() {
   return <div className="footer-contact" aria-label="معلومات المطعم">
     <span className="footer-hours">
@@ -10,5 +12,6 @@ export default function FooterContact() {
       <span aria-hidden="true">·</span>
       <a href="tel:07712319666" dir="ltr">07712319666</a>
     </div>
+    <Link className="staff-footer-link" href="/admin/login">دخول الموظفين</Link>
   </div>;
 }

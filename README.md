@@ -121,7 +121,7 @@ Before writing application code, read the relevant guides in the installed `node
 
 Open `/admin` to review the first implementation of the approved comps. The mobile-first Arabic RTL interface includes the teal header, draft badge, bottom navigation, dish search and category filters, inline name/price editing, dish forms, availability switches, category icons and ordering, nonempty-category deletion warning, offer images and ordering, change review, and draft preview. Existing menu records and hero images seed the prototype.
 
-This is a public interface prototype, not a protected staff dashboard. It has no privileged server operations or backend connection. Drafts are saved only in this browser's local storage under `qaramesh-admin-prototype-v1`; they are not shared between staff or devices. Clear that key to reset the prototype. Failed local saves show an error. Image selection accepts PNG, JPG and WebP up to 500 KB per image; production compression, storage and SVG support remain future work.
+The dashboard now requires staff authentication as described below, but editing and publishing remain interface prototypes with no menu database connection. Drafts are saved only in this browser's local storage under `qaramesh-admin-prototype-v1:USER_ID`; they are not shared between staff or devices. Clear that key to reset the prototype. The old anonymous prototype key is retained but no longer loaded. Failed local saves show an error. Image selection accepts PNG, JPG and WebP up to 500 KB per image; production compression, storage and SVG support remain future work.
 
 The publish button explicitly simulates publishing within the current session. It clears the local change review without modifying public data; reloading compares the saved draft with the original menu again. The preview is a simplified draft rendering, not yet the production menu renderer. There is no publish history or rollback yet. The public menu, dish URLs and local JSON sources are unchanged.
 
@@ -129,4 +129,12 @@ Each pending-change row has an X button to undo that row while keeping the other
 
 Validated with a production build and headless Edge at 320, 390, 768 and 1280px: RTL layout without horizontal overflow, inline editing, draft reload persistence, category creation, blocked deletion, offers and preview. Additional flow checks covered full dish saves, new dishes, availability, category ordering and simulated publishing without public menu changes. Local browser scripts and screenshots are in `tmp/`, using the existing machine-specific Playwright setup.
 
-Next: review the prototype against the comps and refine the screens, then implement invitation-only staff access and server/database authorization before enabling real editing or publishing. Follow `PHASE-2.md` for the remaining backend, media and delivery milestones.
+## Staff access
+
+A small footer link, “دخول الموظفين”, opens `/admin/login`. Cookie-based Supabase password authentication, sign-out, server-verified staff access and private/no-store admin responses are implemented. Staff access requires a confirmed user ID in the server-only `SUPABASE_STAFF_USER_IDS` allowlist; there is no registration form. The proxy checks requests and the dashboard page independently verifies access. Future mutations must perform their own authorization and use database row-level security.
+
+Supabase has not been configured yet. Until the project URL, publishable key and staff allowlist are set, login is disabled and `/admin` redirects to login. Follow [STAFF-SETUP.md](STAFF-SETUP.md) and `.env.example` to create the project, disable public sign-ups, provision staff accounts and configure local/Vercel settings. The login page offers administrator-assisted password recovery for this milestone.
+
+The build and local browser checks cover the footer link, responsive login, unconfigured access denial, direct-route redirects and return to the public menu. Real sign-in, sign-out, session refresh and nonstaff-account denial still need verification with the configured Supabase project before staff handover.
+
+Next: configure Supabase and verify staff access, then implement shared draft data and server/database authorization before enabling real editing or publishing. Follow `PHASE-2.md` for the remaining backend, media and delivery milestones.

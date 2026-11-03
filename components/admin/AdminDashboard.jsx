@@ -74,7 +74,8 @@ function differences(base, draft) {
   return changes;
 }
 
-export default function AdminDashboard({ initialMenu, initialSlides }) {
+export default function AdminDashboard({ initialMenu, initialSlides, staffId, logoutAction }) {
+  const storageKey = `${KEY}:${staffId}`;
   const seed = { items: initialMenu.items, categories: initialMenu.categories.map((name, index) => ({ id: `category-${index}`, name, icon: name })), slides: initialSlides };
   const [draft, setDraft] = useState(seed);
   const [baseline, setBaseline] = useState(seed);
@@ -101,17 +102,17 @@ export default function AdminDashboard({ initialMenu, initialSlides }) {
 
   useEffect(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem(KEY) || 'null');
+      const stored = JSON.parse(localStorage.getItem(storageKey) || 'null');
       if (stored && Array.isArray(stored.items) && Array.isArray(stored.categories) && stored.categories.every(value => value && typeof value.name === 'string') && Array.isArray(stored.slides) && stored.items.every(value => value && typeof value.id === 'string' && typeof value.name === 'string' && typeof value.category === 'string' && Number.isFinite(value.price))) setDraft(stored);
     } catch { setStorageError('تعذر استعادة المسودة المحلية. يمكنك العمل في هذه الجلسة.'); }
     setReady(true);
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
     if (!ready) return;
-    try { localStorage.setItem(KEY, JSON.stringify(draft)); setStorageError(''); }
+    try { localStorage.setItem(storageKey, JSON.stringify(draft)); setStorageError(''); }
     catch { setStorageError('تعذر حفظ المسودة على هذا الجهاز. احتفظ بالصفحة مفتوحة؛ قد تكون مساحة التخزين ممتلئة.'); }
-  }, [draft, ready]);
+  }, [draft, ready, storageKey]);
 
   function update(next) { setDraft(next); setNotice('تم تحديث المسودة'); }
   function undoChange(change) {
@@ -189,6 +190,7 @@ export default function AdminDashboard({ initialMenu, initialSlides }) {
     <div className="adm-shell">
       <header className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><span className="adm-draft-badge"><Icon name="edit" width="14" height="14"/> مسودة</span></header>
       <div className="adm-prototype">نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.</div>
+      <form action={logoutAction} className="adm-logout"><button type="submit">تسجيل الخروج</button></form>
       <main className="adm-main">
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
         {storageError && <p role="alert" className="adm-error">{storageError}</p>}

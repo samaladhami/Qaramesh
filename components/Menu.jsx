@@ -108,7 +108,9 @@ export default function Menu({ categories, items }) {
       if (event.deltaY < 0) upwardScrollUntil = performance.now() + 1200;
     }
     function updateSticky() {
-      const sticky = stickyMarker.current.getBoundingClientRect().top < 0;
+      const marker = stickyMarker.current;
+      if (!marker) return;
+      const sticky = marker.getBoundingClientRect().top < 0;
       setIsSticky(sticky);
       const focused = document.activeElement === inputRef.current;
       // iOS keyboard/viewport changes and shorter search results can move the

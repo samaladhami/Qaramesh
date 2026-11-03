@@ -1,6 +1,6 @@
 # Phase 2: menu administration
 
-Status: full dashboard planning first. Supabase Free is the agreed starting backend, with the published QR menu served through Vercel caching. Backend implementation has not started.
+Status: the dashboard interface prototype and staff-login integration are implemented. Supabase Free is the agreed starting backend, with the published QR menu served through Vercel caching. The Supabase project is not configured yet; live authentication verification, menu database/storage, shared drafts and real publishing remain pending. See `STAFF-SETUP.md` for account and environment setup.
 
 ## Dashboard requirements agreed with the user
 
