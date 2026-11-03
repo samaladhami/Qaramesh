@@ -16,3 +16,5 @@
 
 /* Prevent mobile browsers from zooming when an editing field receives focus. */
 @media(max-width:999px),(pointer:coarse){.adm-root input,.adm-root select,.adm-root textarea{font-size:16px}}
+
+.adm-history-help{font-size:12px;line-height:1.8;color:#7a877e;padding:12px 0}.adm-change p.adm-current-revision{color:var(--teal);font-weight:700}

@@ -67,6 +67,12 @@ test('database protects drafts, prevents lost updates, publishes atomically, and
   const afterPublish=await state();assert.deepEqual(afterPublish.baseline,afterPublish.draft);
   await db.query('select public.menu_restore(1,$1)',[afterPublish.version]);
   assert.deepEqual((await state()).draft,seed);assert.equal((await published()).revision,2);
+  // Restore version 2 after version 1: the draft matches the live snapshot again.
+  const restoredFirst=await state();
+  await db.query('select public.menu_restore(2,$1)',[restoredFirst.version]);
+  assert.deepEqual((await state()).draft,live.content);
+  assert.deepEqual((await state()).draft,(await state()).baseline);
+  assert.equal((await published()).revision,2);
   assert.equal((await db.query('select public.menu_history() as data')).rows[0].data.length,2);
   await db.exec('reset role');await db.query('delete from private.menu_staff where user_id=$1',[second]);
   await login(second);await assert.rejects(()=>state(),/STAFF_REQUIRED/);

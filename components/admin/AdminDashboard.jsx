@@ -96,13 +96,14 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [busy, setBusy] = useState(false);
   const [remoteError, setRemoteError] = useState(null);
   const [publishedAt, setPublishedAt] = useState(null);
+  const [publishedId, setPublishedId] = useState(null);
   const [history, setHistory] = useState(null);
   const versionRef = useRef(null);
   const workingRef = useRef(false);
   const changes = differences(baseline, draft);
 
   function applyShared(state) {
-    setDraft(state.draft); setBaseline(state.baseline); versionRef.current=state.version; setPublishedAt(state.publishedAt); setReady(true);
+    setDraft(state.draft); setBaseline(state.baseline); versionRef.current=state.version; setPublishedAt(state.publishedAt); setPublishedId(state.publishedId); setReady(true);
   }
   async function refreshShared(discard = false) {
     if (discard && !window.confirm('تحميل أحدث مسودة سيستبدل تعديلات هذه الصفحة. هل تريد المتابعة؟')) return;
@@ -146,7 +147,10 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     workingRef.current=true; setBusy(true);
     try {
       const result=await restoreSharedMenu(revision,versionRef.current);
-      if(result.error) setRemoteError(result); else {applyShared(result.state);setNotice('تمت استعادة النسخة كمسودة. راجعها قبل النشر.');}
+      if(result.error) setRemoteError(result); else {
+        applyShared(result.state);
+        setNotice(differences(result.state.baseline,result.state.draft).length ? `تمت استعادة النسخة ${revision} كمسودة. راجع التغييرات ثم انشرها لتظهر للعملاء.` : `تمت استعادة النسخة ${revision}. المسودة تطابق القائمة المنشورة، ولا توجد تغييرات للنشر.`);
+      }
     } catch { setRemoteError({error:'تعذرت استعادة النسخة. حمّل أحدث مسودة للتحقق.'}); }
     finally {workingRef.current=false;setBusy(false);}
   }
@@ -330,7 +334,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div className="adm-change-text"><strong>{change.title}</strong><p>{change.detail}</p></div><button className="adm-icon-button adm-danger" aria-label={`التراجع عن تغيير ${change.title}`} title="التراجع عن التغيير" onClick={() => undoChange(change)}><Icon name="close"/></button></article>)}
           {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
           <div className="adm-actions"><button className="adm-button" disabled={!changes.length || busy} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>{shared ? 'نشر التغييرات' : 'تجربة النشر محلياً'}</button><button className="adm-button secondary" onClick={() => shared ? window.open('/admin/preview','_blank','noopener,noreferrer') : setPreview(true)}><Icon name="eye"/>معاينة</button></div>
-          {shared && <div className="adm-history"><button className="adm-button secondary full" onClick={loadHistory}>سجل النشر / استعادة نسخة</button>{history?.map(revision=><div className="adm-change" key={revision.id}><div className="adm-change-text"><strong>النسخة {revision.id}</strong><p>{new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(revision.created_at))}</p></div><button className="adm-button secondary" onClick={()=>restoreRevision(revision.id)}>استعادة كمسودة</button></div>)}</div>}
+          {shared && <div className="adm-history"><button className="adm-button secondary full" onClick={loadHistory}>سجل النشر / استعادة نسخة</button>{history && <p className="adm-history-help">كل نسخة تشمل القائمة كاملة وقت النشر. الاستعادة تغيّر المسودة فقط؛ انشرها لتظهر للعملاء.</p>}{history?.map(revision=><div className="adm-change" key={revision.id}><div className="adm-change-text"><strong>النسخة {revision.id}</strong>{revision.id === publishedId && <p className="adm-current-revision">النسخة المنشورة حالياً</p>}<p>{new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(revision.created_at))}</p></div><button className="adm-button secondary" disabled={revision.id === publishedId && !changes.length} onClick={()=>restoreRevision(revision.id)}>{revision.id === publishedId ? (changes.length ? 'استعادة المنشورة' : 'منشورة حالياً') : 'استعادة كمسودة'}</button></div>)}</div>}
         </>}
         </>}
         </fieldset>
