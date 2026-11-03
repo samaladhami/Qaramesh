@@ -90,7 +90,8 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [editor, setEditor] = useState(null);
   const [original, setOriginal] = useState(null);
   const [modal, setModal] = useState(null);
-  const [notice, setNotice] = useState('');
+  const [notice, setNoticeState] = useState(null);
+  function setNotice(message) { setNoticeState(message ? { message } : null); }
   const [inline, setInline] = useState(null);
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -101,6 +102,12 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const versionRef = useRef(null);
   const workingRef = useRef(false);
   const changes = differences(baseline, draft);
+
+  useEffect(() => {
+    if (!notice) return;
+    const timer=setTimeout(() => setNoticeState(null),5000);
+    return () => clearTimeout(timer);
+  },[notice]);
 
   function applyShared(state) {
     setDraft(state.draft); setBaseline(state.baseline); versionRef.current=state.version; setPublishedAt(state.publishedAt); setPublishedId(state.publishedId); setReady(true);
@@ -278,7 +285,6 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
         <fieldset className="adm-workspace" disabled={shared && (busy || Boolean(remoteError))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
         {storageError && <p role="alert" className="adm-error">{storageError}</p>}
-        {notice && <p role="status" className="adm-notice"><Icon name="check"/>{notice}</p>}
         {editor ? <form onSubmit={saveEditor} className="adm-editor">
           {editor.type === 'dish' ? <>
             <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload disabled={shared} label="تغيير الصورة" onChange={image => setEditor({ ...editor, image })}/></div>
@@ -341,6 +347,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       </main>
       <nav className="adm-nav" aria-label="التنقل في إدارة القائمة">{tabs.map(([id, label, icon]) => <button key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(id)}><Icon name={icon}/><span>{label}</span>{id === 'publish' && changes.length > 0 && <i>{changes.length}</i>}</button>)}</nav>
     </div>
+    {notice && <div className="adm-toast" role="status" aria-atomic="true"><Icon name="check"/><span>{notice.message}</span><button type="button" className="adm-icon-button" aria-label="إخفاء الإشعار" onClick={() => setNotice('')}><Icon name="close" width="18" height="18"/></button></div>}
     {modal && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
       <div className="adm-dialog-symbol"><Icon name={modal.type === 'publish' ? 'send' : 'trash'} width="34" height="34"/></div>
       <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? (shared ? 'هل تريد نشر جميع التغييرات المحفوظة؟ ستظهر النسخة الجديدة للعملاء في القائمة العامة.' : 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.') : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>

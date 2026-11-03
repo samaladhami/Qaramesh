@@ -18,3 +18,4 @@
 @media(max-width:999px),(pointer:coarse){.adm-root input,.adm-root select,.adm-root textarea{font-size:16px}}
 
 .adm-history-help{font-size:12px;line-height:1.8;color:#7a877e;padding:12px 0}.adm-change p.adm-current-revision{color:var(--teal);font-weight:700}
+.adm-toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);z-index:100;width:calc(100% - 32px);max-width:520px;display:flex;align-items:center;gap:10px;direction:rtl;padding:10px 14px;background:#edf4e6;color:#547747;border:1px solid #d8e5cf;border-radius:14px;box-shadow:0 4px 20px #244f4d26;font-size:14px;line-height:1.7;animation:adm-toast-in .18s ease-out}.adm-toast>svg{flex-shrink:0}.adm-toast>span{flex:1;min-width:0;overflow-wrap:anywhere}.adm-toast>.adm-icon-button{flex-shrink:0;color:inherit;min-width:36px;min-height:36px;padding:6px}@keyframes adm-toast-in{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}
