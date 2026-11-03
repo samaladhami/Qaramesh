@@ -13,3 +13,6 @@
 .adm-workspace{border:0;min-width:0;margin:0;padding:0}.adm-shared-status{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--teal);margin-bottom:12px}.adm-shared-status button{font-size:12px}.adm-upload:has(input:disabled){opacity:.6;pointer-events:none}
 
 .adm-history{margin-top:24px}.adm-error .adm-actions{flex-wrap:wrap}.adm-error .adm-actions .adm-button{min-width:130px;font-size:12px}.adm-shared-status .adm-icon-button{padding-inline:10px}
+
+/* Prevent mobile browsers from zooming when an editing field receives focus. */
+@media(max-width:999px),(pointer:coarse){.adm-root input,.adm-root select,.adm-root textarea{font-size:16px}}

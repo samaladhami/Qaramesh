@@ -3,3 +3,4 @@
 .staff-login-card>img{display:block;margin:0 auto 14px}
 .staff-login-card{position:relative}.staff-login-close{position:absolute;inset:12px auto auto 12px;margin:0;z-index:1;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;color:var(--teal);text-decoration:none}.staff-login-close:hover{background:#4291980d}
 .staff-login-form input:focus{outline:3px solid var(--yellow);outline-offset:4px}
+@media(max-width:999px),(pointer:coarse){.staff-login-form input{font-size:16px}}
