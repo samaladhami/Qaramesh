@@ -38,6 +38,15 @@ test('database protects drafts, prevents lost updates, publishes atomically, and
   await db.exec(migration);
   // The migration is repeatable and must not reset published content.
   await db.exec(migration);
+  await db.exec(`create schema storage;
+    create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+    create table storage.objects(name text primary key,bucket_id text references storage.buckets(id));
+    alter table storage.objects enable row level security;
+    grant usage on schema storage to anon,authenticated;
+    grant select on storage.objects to anon,authenticated;
+    grant insert,update,delete on storage.objects to authenticated;`);
+  const mediaMigration=fs.readFileSync(new URL('../supabase/migrations/002_menu_media.sql',import.meta.url),'utf8');
+  await db.exec(mediaMigration); await db.exec(mediaMigration);
   await db.query('insert into private.menu_staff values($1),($2)',[first,second]);
   await db.query('insert into private.menu_revisions(content) values($1)',[JSON.stringify(seed)]);
   await db.query('insert into private.menu_state(draft,published_id) values($1,1)',[JSON.stringify(seed)]);
@@ -50,6 +59,7 @@ test('database protects drafts, prevents lost updates, publishes atomically, and
   await assert.rejects(()=>db.query('select public.menu_history()'));
   await assert.rejects(()=>db.query('select * from private.menu_state'));
   await login(outsider);await assert.rejects(()=>state(),/STAFF_REQUIRED/);
+  await assert.rejects(()=>db.query('insert into storage.objects(name,bucket_id) values($1,$2)',['cccccccc-cccc-4ccc-8ccc-cccccccccccc.webp','menu-media']));
   await login(first);
   const original=await state();
   const draft=structuredClone(original.draft);draft.items[0].price+=1000;
@@ -73,7 +83,42 @@ test('database protects drafts, prevents lost updates, publishes atomically, and
   assert.deepEqual((await state()).draft,live.content);
   assert.deepEqual((await state()).draft,(await state()).baseline);
   assert.equal((await published()).revision,2);
-  assert.equal((await db.query('select public.menu_history() as data')).rows[0].data.length,2);
+  const filename='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa.webp';
+  await db.query('insert into storage.objects(name,bucket_id) values($1,$2)',[filename,'menu-media']);
+  // Uploads stay private until a complete menu revision references them.
+  await db.exec("reset role; set role anon; select set_config('request.jwt.claim.sub','',false);");
+  assert.equal((await db.query('select * from storage.objects')).rows.length,0);
+  await assert.rejects(()=>db.query('insert into storage.objects(name,bucket_id) values($1,$2)',[filename,'menu-media']));
+  await login(first);
+  assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+  assert.equal((await db.query('delete from storage.objects returning *')).rows.length,0);
+  assert.equal((await db.query("update storage.objects set name='overwritten.webp' returning *")).rows.length,0);
+  const mediaState=await state(); const withImage=structuredClone(mediaState.draft);
+  withImage.items[0].image=`/media/${filename}`;
+  await db.query('select public.menu_save($1::jsonb,$2)',[JSON.stringify(withImage),mediaState.version]);
+  await db.exec("reset role; set role anon; select set_config('request.jwt.claim.sub','',false);");
+  assert.equal((await db.query('select * from storage.objects')).rows.length,0);
+  await login(first);
+  const ready=await state();
+  const missing=structuredClone(ready.draft);missing.items[0].image='/media/bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb.webp';
+  await assert.rejects(()=>db.query('select public.menu_save($1::jsonb,$2)',[JSON.stringify(missing),ready.version]),/INVALID_IMAGE_REFERENCE/);
+  await db.query('select public.menu_publish($1)',[ready.version]);
+  await db.exec("reset role; set role anon; select set_config('request.jwt.claim.sub','',false);");
+  assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+  await login(first);
+  assert.equal((await db.query('select public.menu_history() as data')).rows[0].data.length,3);
+  const imageRevision=await state();
+  await db.query('select public.menu_restore(1,$1)',[imageRevision.version]);
+  await db.query('select public.menu_publish($1)',[(await state()).version]);
+  await db.exec("reset role; set role anon; select set_config('request.jwt.claim.sub','',false);");
+  assert.equal((await db.query('select * from storage.objects')).rows.length,0);
+  await db.exec('reset role');assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+  await login(first);
+  await db.query('select public.menu_restore(3,$1)',[(await state()).version]);
+  await db.query('select public.menu_publish($1)',[(await state()).version]);
+  await db.exec("reset role; set role anon; select set_config('request.jwt.claim.sub','',false);");
+  assert.equal((await db.query('select * from storage.objects')).rows.length,1);
+  await login(first);
   await db.exec('reset role');await db.query('delete from private.menu_staff where user_id=$1',[second]);
   await login(second);await assert.rejects(()=>state(),/STAFF_REQUIRED/);
  } finally {await db.close();}

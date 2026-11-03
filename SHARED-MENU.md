@@ -32,7 +32,7 @@ Public fetches have a shared Next.js cache with a 60-second refresh interval. Su
 
 If a cold request cannot fetch or validate published data, the app serves the original menu bundled with the deployment. This preserves a usable menu but may show older prices/availability; it is not a durable backup of the latest revision. Before broader launch, establish an operational export/backup and test recovery from Supabase outages and cold caches. Setting `MENU_BACKEND_ENABLED=false` also reverts public reads to the bundled menu; review content before using that operational fallback.
 
-Image storage/compression is the next milestone. Shared mode accepts only existing `/menu/` and `/hero/` image paths and disables new uploads. Base64 images and arbitrary remote URLs cannot be saved. Existing photos, library category icons, slide ordering, descriptions and deletions work. Local photos stay in the Git deployment; deleting a record does not delete its image asset. Draft-image privacy and cleanup must be designed with storage integration.
+Image uploads/compression are implemented through migration 002. Shared mode accepts existing `/menu/` and `/hero/` paths plus registered immutable `/media/UUID.webp` assets. Base64 images and arbitrary remote URLs cannot be saved. See [IMAGE-STORAGE.md](IMAGE-STORAGE.md) for private draft access, public caching, upload limits and retention. Local photos stay in Git; uploaded photos stay in the private Storage bucket, with policy-based public reads after publishing. Deleting a record does not delete its image asset.
 
 ## Checks
 

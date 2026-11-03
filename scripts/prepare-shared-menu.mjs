@@ -8,7 +8,7 @@ if(!ids.length || ids.some(id=>!/^[a-f0-9-]{36}$/i.test(id))) throw new Error('V
 const seed={items:menu.items,categories:menu.categories.map((name,i)=>({id:`category-${i}`,name,icon:name})),slides};
 if(seed.items.length!==145 || seed.categories.length!==20 || seed.slides.length!==6) throw new Error('Review initial data counts before import');
 const literal=value=>"'"+value.replaceAll("'","''")+"'";
-const migration=fs.readFileSync('supabase/migrations/001_shared_menu.sql','utf8');
+const migration=fs.readdirSync('supabase/migrations').filter(name=>name.endsWith('.sql')).sort().map(name=>fs.readFileSync(`supabase/migrations/${name}`,'utf8')).join('\n');
 const setup=`\nbegin;\ninsert into private.menu_staff(user_id) values ${ids.map(id=>`('${id}'::uuid)`).join(',')} on conflict do nothing;\ndo $seed$\ndeclare initial jsonb := ${literal(JSON.stringify(seed))}::jsonb; revision_id bigint;\nbegin\n perform private.validate_menu(initial);\n if not exists(select 1 from private.menu_state) then\n  insert into private.menu_revisions(content) values(initial) returning id into revision_id;\n  insert into private.menu_state(draft,published_id) values(initial,revision_id);\n end if;\nend $seed$;\ncommit;\n`;
 fs.mkdirSync('tmp',{recursive:true});
 fs.writeFileSync('tmp/setup-shared-menu.sql',migration+setup);

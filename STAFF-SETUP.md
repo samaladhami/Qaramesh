@@ -33,6 +33,6 @@ Add the same three values in the Vercel project's environment settings for Produ
 - Expired sessions refresh; an unavailable authentication service does not grant access. Check this with the configured project before staff handover.
 - The public menu still works without signing in.
 
-Shared drafts and real publishing are available after the database migration and `MENU_BACKEND_ENABLED=true` rollout setting. Follow [SHARED-MENU.md](SHARED-MENU.md). Both the server's UID allowlist and the database staff membership must be maintained when granting or revoking access. Until enabled, the dashboard uses the local prototype. Uploaded image storage is a separate upcoming milestone.
+Shared drafts and real publishing are available after the database migration and `MENU_BACKEND_ENABLED=true` rollout setting. Follow [SHARED-MENU.md](SHARED-MENU.md). Both the server's UID allowlist and the database staff membership must be maintained when granting or revoking access. Until enabled, the dashboard uses the local prototype. Image uploads use the same staff accounts and require migration 002; see [IMAGE-STORAGE.md](IMAGE-STORAGE.md).
 
 Implementation references: [Supabase cookie-based Next.js authentication](https://supabase.com/docs/guides/auth/server-side/creating-a-client?framework=nextjs), [password authentication](https://supabase.com/docs/guides/auth/passwords).

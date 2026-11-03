@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import CategoryIcon from '../CategoryIcon';
 import { readSharedMenu, saveSharedMenu, publishSharedMenu, sharedMenuHistory, restoreSharedMenu } from '../../app/admin/menu-actions';
+import { uploadMenuImage } from '../../app/admin/media-actions';
+import { prepareImage } from './prepare-image';
 
 const KEY = 'qaramesh-admin-prototype-v1';
 const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
@@ -48,21 +50,29 @@ function Dialog({ title, children, onClose }) {
   </dialog>;
 }
 
-function Upload({ label, onChange, disabled = false }) {
+function Upload({ label, onChange, shared = false, kind = 'dish', onBusy, disabled = false }) {
   const [error, setError] = useState('');
+  const [uploading, setUploading] = useState(false);
   async function read(event) {
-    const file = event.target.files[0];
+    const input=event.target;
+    const file = input.files[0];
     if (!file) return;
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 500000) {
-      setError('اختر صورة PNG أو JPG أو WebP بحجم أقل من 500 KB.'); event.target.value = ''; return;
-    }
+    setError(''); setUploading(true); onBusy?.(true);
     try {
-      const src = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
-      await new Promise((resolve, reject) => { const image = new window.Image(); image.onload = resolve; image.onerror = reject; image.src = src; });
-      onChange(src); setError('');
-    } catch { setError('تعذر قراءة الصورة. جرّب صورة أخرى.'); }
+      const prepared=await prepareImage(file,kind);
+      if(shared) {
+        const formData=new FormData(); formData.set('image',prepared); formData.set('kind',kind);
+        const result=await uploadMenuImage(formData);
+        if(result.error) throw new Error(result.error);
+        await onChange(result.src);
+      } else {
+        const src=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(prepared);});
+        await onChange(src);
+      }
+    } catch(error) { setError(error instanceof Error && error.message ? error.message : 'تعذر رفع الصورة. جرّب صورة أخرى.'); }
+    finally {input.value='';setUploading(false);onBusy?.(false);}
   }
-  return <div className="adm-upload"><label><Icon name="image"/>{label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read} disabled={disabled}/></label>{disabled && <p className="adm-muted">رفع صور جديدة غير متاح حالياً.</p>}{error && <p role="alert" className="adm-error">{error}</p>}</div>;
+  return <div className="adm-upload"><label><Icon name="image"/>{uploading ? 'جارٍ معالجة ورفع الصورة…' : label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read} disabled={uploading || disabled} aria-label={label}/></label>{disabled && <p className="adm-muted">رفع الصور غير متاح حالياً.</p>}{uploading && <span role="status" className="sr-only">جارٍ رفع الصورة</span>}{error && <p role="alert" className="adm-error">{error}</p>}</div>;
 }
 
 function differences(base, draft) {
@@ -86,7 +96,7 @@ function differences(base, draft) {
   return changes;
 }
 
-export default function AdminDashboard({ initialMenu, initialSlides, staffId, logoutAction, shared = false }) {
+export default function AdminDashboard({ initialMenu, initialSlides, staffId, logoutAction, shared = false, mediaReady = false }) {
   const storageKey = `${KEY}:${staffId}`;
   const seed = { items: initialMenu.items, categories: initialMenu.categories.map((name, index) => ({ id: `category-${index}`, name, icon: name })), slides: initialSlides };
   const [draft, setDraft] = useState(seed);
@@ -111,6 +121,9 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [editAttention, setEditAttention] = useState(false);
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const uploadRef=useRef(false);
+  function uploadBusy(value) {uploadRef.current=value;setUploading(value);}
   const [remoteError, setRemoteError] = useState(null);
   const [publishedAt, setPublishedAt] = useState(null);
   const [publishedId, setPublishedId] = useState(null);
@@ -193,12 +206,12 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   }
 
   useEffect(() => {
-    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline || busy || remoteError;
+    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline || busy || remoteError || uploading;
     if (!dirty) return;
     const warn = event => { if(inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) setEditAttention(true); event.preventDefault(); event.returnValue = ''; };
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
-  }, [editor, original, inline, busy, remoteError]);
+  }, [editor, original, inline, busy, remoteError, uploading]);
 
   useEffect(() => {
     if (shared) { refreshShared(); return; }
@@ -216,17 +229,17 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   }, [draft, ready, storageKey, shared]);
 
   useEffect(() => {
-    if (!shared || !ready || busy || remoteError || editor || inline || modal) return;
+    if (!shared || !ready || busy || uploading || remoteError || editor || inline || modal) return;
     let cancelled=false;
     const timer=setInterval(async () => {
-      if (document.hidden || workingRef.current) return;
+      if (document.hidden || workingRef.current || uploadRef.current) return;
       try {
         const result=await readSharedMenu();
         if (!cancelled && !workingRef.current && result.state && result.state.version > versionRef.current) { applyShared(result.state); setNotice('تم تحديث المسودة من الفريق'); }
       } catch { /* A failed background read must not discard the displayed draft. */ }
     },20000);
     return () => { cancelled=true; clearInterval(timer); };
-  },[shared,ready,busy,remoteError,editor,inline,modal]);
+  },[shared,ready,busy,uploading,remoteError,editor,inline,modal]);
 
   function update(next) { if (shared && (workingRef.current || remoteError)) return; setDraft(next); setNotice(shared ? 'جارٍ حفظ المسودة…' : 'تم تحديث المسودة'); if(shared) persistShared(next); }
   function undoChange(change) {
@@ -265,6 +278,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     setNotice(`تم التراجع عن تغيير «${change.title}»`);
   }
   function allowNavigation() {
+    if(uploadRef.current) {setNotice('انتظر اكتمال رفع الصورة قبل الانتقال.');return false;}
     if (inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) {
       setEditAttention(true);
       setNotice('احفظ التعديل المحدد بالأحمر أو ألغِه قبل الانتقال.');
@@ -321,16 +335,16 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
       <div className="adm-toolbar">
         <form action={logoutAction} className="adm-logout" onSubmit={event=>{if(!allowNavigation()) event.preventDefault();}}><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
-        {shared && <button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" aria-busy={busy} disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button>}
+        {shared && <button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" aria-busy={busy} disabled={busy || uploading || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button>}
       </div>
       <main className="adm-main">
         {remoteError && <div role="alert" className="adm-error"><p>{remoteError.error}</p><div className="adm-actions">{ready && !remoteError.conflict && <button className="adm-button" disabled={busy} onClick={() => persistShared(draft)}>إعادة الحفظ</button>}<button className="adm-button secondary" disabled={busy} onClick={() => refreshShared(ready)}>تحميل أحدث مسودة</button>{ready && <button className="adm-button secondary" onClick={exportRecovery}>حفظ نسخة من تعديلاتي</button>}</div></div>}
-        <fieldset className="adm-workspace" disabled={shared && (busy || Boolean(remoteError))}>
+        <fieldset className="adm-workspace" disabled={uploading || (shared && (busy || Boolean(remoteError)))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
         {storageError && <p role="alert" className="adm-error">{storageError}</p>}
         {editor ? <form onSubmit={saveEditor} className={`adm-editor${editAttention ? ' adm-active-edit needs-attention' : ''}`} data-active-edit>
           {editor.type === 'dish' ? <>
-            <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload disabled={shared} label="تغيير الصورة" onChange={image => setEditor({ ...editor, image })}/></div>
+            <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload disabled={shared && !mediaReady} shared={shared} kind="dish" onBusy={uploadBusy} label="تغيير الصورة" onChange={image => setEditor(current=>current ? { ...current, image } : current)}/></div>
             <label>اسم الطبق <b>*</b><input required maxLength={120} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
             <label>السعر <b>*</b><div className="adm-price-input"><input aria-label="السعر" dir="ltr" type="number" required min="0" max="999999999" step="1" value={editor.price} onChange={e => setEditor({ ...editor, price: e.target.value })}/><span>IQD</span></div></label>
             <label>القسم <b>*</b><select required value={editor.category} onChange={e => setEditor({ ...editor, category: e.target.value })}>{draft.categories.map(cat => <option key={cat.id}>{cat.name}</option>)}</select></label>
@@ -343,8 +357,8 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
             <label>اسم القسم <b>*</b><input required maxLength={100} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
             <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{initialMenu.categories.map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
             {editor.image && <img className="adm-custom-icon" src={editor.image} alt="معاينة أيقونة القسم"/>}
-            <Upload disabled={shared} label="رفع أيقونة مخصصة" onChange={image => setEditor({ ...editor, image })}/>
-            <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 500 KB.</p>
+            <Upload disabled={shared && !mediaReady} shared={shared} kind="category" onBusy={uploadBusy} label="رفع أيقونة مخصصة" onChange={image => setEditor(current=>current ? { ...current, image } : current)}/>
+            <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 10 MB. تُضغط الصورة تلقائياً.</p>
           </>}
           <div className="adm-actions"><button type="submit" className="adm-button"><Icon name="save"/>حفظ المسودة</button><button type="button" className="adm-button secondary" onClick={closeEditor}>إلغاء</button></div>
         </form> : preview ? <section className="adm-preview">
@@ -373,8 +387,8 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
         </> : tab === 'offers' ? <>
           <div className="adm-section-heading"><div><span className="adm-eyebrow">واجهة مطعمك</span><h2>صور تفتح الشهية.</h2></div><span className="adm-count">{draft.slides.length}<small>صورة</small></span></div>
           <p className="adm-muted">رتّب صور العروض وعدّل وصفها قبل النشر.</p>
-          {draft.slides.map((slide, index) => <article className="adm-offer" key={slide.id}><img src={slide.src} alt={slide.alt}/><div className="adm-offer-controls">{reorderButtons('slides', index, draft.slides.length)}<label>وصف الصورة<input value={slide.alt} maxLength={240} onChange={e => update({ ...draft, slides: draft.slides.map(value => value.id === slide.id ? { ...value, alt: e.target.value } : value) })}/></label><button className="adm-icon-button adm-danger" aria-label={`حذف الصورة ${index + 1}`} onClick={() => setModal({ type: 'deleteSlide', value: slide })}><Icon name="trash"/></button></div></article>)}
-          <Upload disabled={shared} label="إضافة صورة" onChange={src => update({ ...draft, slides: [...draft.slides, { id: crypto.randomUUID(), src, alt: 'عرض جديد من قراميش' }] })}/>
+          {draft.slides.map((slide, index) => <article className="adm-offer" key={slide.id}><img src={slide.src} alt={slide.alt}/><div className="adm-offer-controls">{reorderButtons('slides', index, draft.slides.length)}<label>وصف الصورة<input value={slide.alt} maxLength={240} onChange={e => update({ ...draft, slides: draft.slides.map(value => value.id === slide.id ? { ...value, alt: e.target.value } : value) })}/></label><button className="adm-icon-button adm-danger" aria-label={`حذف الصورة ${index + 1}`} onClick={() => setModal({ type: 'deleteSlide', value: slide })}><Icon name="trash"/></button></div><Upload disabled={shared && !mediaReady} shared={shared} kind="offer" onBusy={uploadBusy} label="تغيير الصورة" onChange={src=>update({...draft,slides:draft.slides.map(value=>value.id===slide.id?{...value,src}:value)})}/></article>)}
+          <Upload disabled={shared && !mediaReady} shared={shared} kind="offer" onBusy={uploadBusy} label="إضافة صورة" onChange={src => update({ ...draft, slides: [...draft.slides, { id: crypto.randomUUID(), src, alt: 'عرض جديد من قراميش' }] })}/>
           {!draft.slides.length && <p className="adm-empty">أضف صورة العرض الأولى.</p>}
         </> : <>
           <div className="adm-section-heading"><div><span className="adm-eyebrow">جاهزة للمراجعة</span><h2>لمسة أخيرة، قبل النشر.</h2></div><Icon name="send" width="34" height="34"/></div>

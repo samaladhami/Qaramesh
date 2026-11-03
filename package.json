@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "verify:data": "node scripts/import-menu.mjs --check",
-    "verify:backend": "node --test tests/shared-menu.test.mjs",
+    "verify:backend": "node --test tests/shared-menu.test.mjs tests/menu-images.test.mjs",
     "prepare:backend": "node scripts/prepare-shared-menu.mjs"
   },
   "dependencies": {
@@ -15,7 +15,8 @@
     "@supabase/supabase-js": "^2.118.0",
     "next": "^16.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.15",

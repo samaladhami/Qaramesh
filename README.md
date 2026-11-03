@@ -141,6 +141,16 @@ The build and local browser checks cover the footer link, responsive login, unco
 
 The shared-menu integration is implemented behind the server setting `MENU_BACKEND_ENABLED=true`. Supabase contains the initial 145 dishes, 20 categories and 6 hero slides. Staff save a shared versioned draft, review protected preview pages using the actual public components, undo individual review rows, and publish a complete immutable revision. Publication history supports restoring an older revision into a draft before publishing. Public home/dish pages read the cached published snapshot; anonymous access to staff RPC operations is denied. Existing local browser drafts are not automatically imported.
 
-Run `npm.cmd run verify:backend` for database security/concurrency/publishing tests, and `npm.cmd run prepare:backend` to generate setup SQL. See [SHARED-MENU.md](SHARED-MENU.md) for rollout, staff acceptance checks, recovery and the snapshot architecture. New image uploads remain disabled in shared mode until storage integration. Cold-request outages fall back to the menu bundled with the deployment, which may be older than the latest publication.
+Run `npm.cmd run verify:backend` for database security/concurrency/publishing and image-processing tests, and `npm.cmd run prepare:backend` to generate setup SQL. See [SHARED-MENU.md](SHARED-MENU.md) for rollout, staff acceptance checks, recovery and the snapshot architecture. Cold-request outages fall back to the menu bundled with the deployment, which may be older than the latest publication.
 
-Next: enable the rollout setting in Vercel, verify with both staff accounts, then connect image storage and complete operational backup/outage checks.
+Both staff accounts have passed the live shared-draft/save/undo check. Publication history and restore behavior have been clarified; final live publication/restore acceptance remains part of handover.
+
+## Image uploads and storage
+
+Dish photos, custom category icons and offer images now support uploads through a private Supabase Storage bucket. The browser prepares the selected file; the server validates, resizes and compresses it to WebP, strips metadata, and saves a unique immutable object. Draft images remain staff-only until published. Failed uploads preserve the previous image, and old files are retained for revision restoration.
+
+Apply `supabase/migrations/002_menu_media.sql` in Supabase SQL Editor, then deploy this milestone. The rollout copy is `tmp/setup-menu-media.sql`. No new credentials or environment settings are needed. See [IMAGE-STORAGE.md](IMAGE-STORAGE.md) for upload limits, setup, caching/privacy, retention and the live acceptance checklist.
+
+The production build, input-processing tests, and PostgreSQL storage-policy tests are the tracked checks. Migration 002 is applied in Supabase; the user confirmed photo upload, draft preview and publication on the local app. Phone/live-site photo checks remain pending deployment, followed by custom-icon, offer-image and real-device failure/restore checks. Automatic unused-upload cleanup is deferred; all assets are retained to protect drafts and rollback revisions.
+
+Next: complete the image-upload acceptance checklist, then add operational backups, durable latest-revision outage recovery, reference-aware image cleanup, and usage monitoring.

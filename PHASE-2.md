@@ -1,6 +1,6 @@
 # Phase 2: menu administration
 
-Status: staff login is configured. Shared draft editing, protected preview, atomic publishing and restore-as-draft are implemented behind `MENU_BACKEND_ENABLED=true`; the initial menu has been imported into Supabase. See `SHARED-MENU.md` for the snapshot model, rollout, validation and limitations. Live staff acceptance checks remain before handover. Image storage/compression, durable latest-revision outage recovery, and operational monitoring remain future work.
+Status: staff login and shared drafts are configured, and the two-account draft/save/undo check passed. Protected preview, atomic publishing and restore-as-draft are implemented behind `MENU_BACKEND_ENABLED=true`; the initial menu is imported. Image uploads/compression and private Storage policies are implemented in migration 002; see `IMAGE-STORAGE.md` for rollout and live acceptance. Durable latest-revision outage recovery, reference-aware asset cleanup and operational monitoring remain future work. Live publishing/restore and image acceptance checks remain before handover.
 
 ## Dashboard requirements agreed with the user
 

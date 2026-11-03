@@ -97,8 +97,8 @@ export default function HeroCarousel({ slides }) {
       {slides.map((slide, index) => (visited.includes(index) || index === nextIndex) && <div key={slide.id}
         className={`${styles.slide} ${active === index ? styles.active : ''}`}
         role="group" aria-roledescription="شريحة" aria-label={`${index + 1} من ${count}`} aria-hidden={active !== index}>
-        <Image src={slide.src} alt="" fill sizes="(max-width: 540px) 100vw, 50vw" className={styles.backdrop} aria-hidden="true" />
-        <Image src={slide.src} alt={slide.alt} fill sizes="(max-width: 1199px) 100vw, (pointer: coarse) 100vw, 520px"
+        <Image src={slide.src} alt="" fill unoptimized={slide.src.startsWith('/media/')} sizes="(max-width: 540px) 100vw, 50vw" className={styles.backdrop} aria-hidden="true" />
+        <Image src={slide.src} alt={slide.alt} fill unoptimized={slide.src.startsWith('/media/')} sizes="(max-width: 1199px) 100vw, (pointer: coarse) 100vw, 520px"
           className={styles.foreground} loading="eager" draggable={false}
           onLoad={() => { loaded.current.add(index); if (active === index) setReady(true); }} />
       </div>)}
