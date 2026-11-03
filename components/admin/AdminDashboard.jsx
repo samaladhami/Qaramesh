@@ -22,6 +22,7 @@ function Icon({ name, ...props }) {
     trash: <><path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7"/></>,
     save: <><path d="M4 3h13l4 4v14H3V3ZM7 3v6h10V3M7 21v-8h10v8"/></>,
     check: <path d="m5 12 4 4L19 6"/>,
+    refresh: <><path d="M3 11a9 9 0 0 1 15.36-6.36L21 7M21 3v4h-4"/><path d="M21 13a9 9 0 0 1-15.36 6.36L3 17M3 21v-4h4"/></>,
     up: <path d="m6 14 6-6 6 6"/>,
     down: <path d="m6 10 6 6 6-6"/>,
     eye: <><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
@@ -267,7 +268,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
       <form action={logoutAction} className="adm-logout"><button type="submit">تسجيل الخروج</button></form>
       <main className="adm-main">
-        {shared && <div className="adm-shared-status" role="status">{busy ? 'جارٍ الاتصال…' : ready ? 'المسودة المشتركة' : 'جارٍ تحميل المسودة…'}<button className="adm-icon-button" disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}>تحديث</button></div>}
+        {shared && <div className="adm-shared-status" role="status">{busy ? 'جارٍ الاتصال…' : ready ? 'المسودة المشتركة' : 'جارٍ تحميل المسودة…'}<button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button></div>}
         {remoteError && <div role="alert" className="adm-error"><p>{remoteError.error}</p><div className="adm-actions">{ready && !remoteError.conflict && <button className="adm-button" disabled={busy} onClick={() => persistShared(draft)}>إعادة الحفظ</button>}<button className="adm-button secondary" disabled={busy} onClick={() => refreshShared(ready)}>تحميل أحدث مسودة</button>{ready && <button className="adm-button secondary" onClick={exportRecovery}>حفظ نسخة من تعديلاتي</button>}</div></div>}
         <fieldset className="adm-workspace" disabled={shared && (busy || Boolean(remoteError))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>

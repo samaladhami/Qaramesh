@@ -37,3 +37,5 @@ Image storage/compression is the next milestone. Shared mode accepts only existi
 ## Checks
 
 `npm.cmd run verify:backend` runs portable PostgreSQL tests through PGlite, covering anonymous/nonstaff denial, import integrity, private drafts, both staff accounts, stale saves/publishes, invalid categories/images, atomic publishing, retained revisions, restore-as-draft and membership revocation. It also checks application input validation. Run `npm.cmd run build` and `npm.cmd run verify:data` for application/data checks. These tests use local test identities; live login, cross-device saving, publication and session behavior still need acceptance checks against Supabase/Vercel with staff accounts.
+
+Acceptance update (November 3, 2026): the user confirmed that the live two-account workflow passed: shared-mode banner, saved draft price visible to the second staff account after refresh, unchanged public price before publishing, and per-change undo reflected across accounts. Live publication/restore and image-storage acceptance remain separate checks.
