@@ -100,3 +100,19 @@ Files under `tmp/` are local check scripts and screenshots, not a committed or p
 ## Phase 2 plan
 
 Phase 2 starts with planning the full admin dashboard, followed by secure staff access, menu editing, categories, image uploads, hero management and preview/publish controls. The agreed starting architecture uses Supabase Free for authentication, database and storage, with the published QR menu cached through Vercel to reduce backend traffic. Free operation depends on measured usage and provider limits. See [PHASE-2.md](PHASE-2.md) for implementation steps, migration safeguards and launch checks. Backend implementation has not started. Ordering and checkout remain a separate scope.
+
+## Design handoff before Phase 2 implementation
+
+As of November 2, 2026, the user has approved the dashboard comps as the starting design direction. Minor visual and interaction changes can be made together during implementation. The comps have not yet been implemented; the public menu remains the completed Phase 1 site.
+
+The comp images are not currently stored in this repository. Refer to the approved conversation visuals when implementing; this written handoff does not replace those references. No additional decisions or credentials are needed for this documentation milestone. Supabase setup and the initial staff account will be needed when connecting the backend, as described in [PHASE-2.md](PHASE-2.md).
+
+Next steps:
+
+1. Review the approved comps alongside the mobile-first Arabic RTL dashboard requirements in `PHASE-2.md`. Preserve the project brand palette and the agreed staff permissions and draft/publish behavior.
+2. Build the dashboard interface in manageable milestones, beginning with the shared layout and primary screens. Use clearly identified local sample data until backend integration is ready. Refine small details with the user as work progresses.
+3. Check mobile and desktop layouts, RTL behavior, keyboard access, and loading, empty, error and unsaved-edit states as the relevant screens are built.
+4. Connect staff authentication, draft editing, media management and publishing according to the Phase 2 plan. Keep the existing public menu available throughout the transition.
+5. Run the appropriate checks for each completed milestone, commit only relevant files, and push to `origin/main` for Vercel deployment.
+
+Before writing application code, read the relevant guides in the installed `node_modules/next/dist/docs/` as required by `AGENTS.md`. Local `tmp/` checks, screenshots and unused logo experiments remain outside milestone commits.
