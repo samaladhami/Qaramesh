@@ -2,7 +2,18 @@
 
 Status: full dashboard planning first. Supabase Free is the agreed starting backend, with the published QR menu served through Vercel caching. Backend implementation has not started.
 
-## Agreed delivery architecture
+## Dashboard requirements agreed with the user
+
+- Design primarily for phones. The dashboard is used by the owner and a few other authorized staff members.
+- Every authorized staff member can add, edit, delete and publish. There is no owner-only publishing or deletion role in this scope. Staff account provisioning remains invitation-only.
+- Staff can add, edit and delete dishes and categories, and move dishes between categories.
+- A category can be deleted only when it contains no dishes. Enforce this in server/database operations as well as the interface, including concurrent dish moves or additions. If deletion is blocked, display: “يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.”
+- Category icons can be selected from the existing icon library, future additions to that library, or a custom uploaded icon. Validate custom icon uploads and provide a preview.
+- All changes, including availability, additions, deletions and category moves, remain drafts until Publish. Deleting or moving draft content must not alter the currently published revision.
+- Proposed mobile editing approach, pending interface review: inline editing for name and price, availability toggles, and a full dish editor for photos and longer details. Inline saves update drafts and show saving, saved and error states.
+- Category and banner ordering is in scope. The exact phone interaction (move controls or drag handles) remains to be selected during interface review.
+
+## Delivery architecture details
 
 - Supabase supplies staff authentication, PostgreSQL data and uploaded image storage. Customers browse without accounts.
 - Vercel continues hosting the Next.js site. Public requests use a cached published menu snapshot rather than querying Supabase for every visitor. Drafts are available only to authorized staff.
