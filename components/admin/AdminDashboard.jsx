@@ -24,6 +24,7 @@ function Icon({ name, ...props }) {
     check: <path d="m5 12 4 4L19 6"/>,
     refresh: <><path d="M3 11a9 9 0 0 1 15.36-6.36L21 7M21 3v4h-4"/><path d="M21 13a9 9 0 0 1-15.36 6.36L3 17M3 21v-4h4"/></>,
     logout: <><path d="M9 4H4v16h5M14 8l4 4-4 4M8 12h10"/></>,
+    info: <><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></>,
     up: <path d="m6 14 6-6 6 6"/>,
     down: <path d="m6 10 6 6 6-6"/>,
     eye: <><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
@@ -36,7 +37,7 @@ function TimedNotice({ notice, onDismiss }) {
     const timer=setTimeout(() => onDismiss(notice.id),5000);
     return () => clearTimeout(timer);
   },[notice.id,onDismiss]);
-  return <div className="adm-toast" role="status" aria-atomic="true"><Icon name="check"/><span>{notice.message}</span><button type="button" className="adm-icon-button" aria-label="إخفاء الإشعار" onClick={() => onDismiss(notice.id)}><Icon name="close" width="18" height="18"/></button></div>;
+  return <div className={`adm-toast ${notice.kind === 'success' ? 'is-success' : 'is-warning'}`} role="status" aria-atomic="true"><Icon name={notice.kind === 'success' ? 'check' : 'info'}/><span>{notice.message}</span><button type="button" className="adm-icon-button" aria-label="إخفاء الإشعار" onClick={() => onDismiss(notice.id)}><Icon name="close" width="18" height="18"/></button></div>;
 }
 
 function Dialog({ title, children, onClose }) {
@@ -100,13 +101,14 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [modal, setModal] = useState(null);
   const [notices, setNotices] = useState([]);
   const noticeSequence=useRef(0);
-  function setNotice(message) {
+  function setNotice(message, kind = 'warning') {
     if (!message) return;
     const id=++noticeSequence.current;
-    setNotices(current=>[...current,{id,message}]);
+    setNotices(current=>[...current,{id,message,kind}]);
   }
   const dismissNotice=useCallback(id=>setNotices(current=>current.filter(notice=>notice.id!==id)),[]);
   const [inline, setInline] = useState(null);
+  const [editAttention, setEditAttention] = useState(false);
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
   const [remoteError, setRemoteError] = useState(null);
@@ -152,7 +154,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     try {
       const result=await saveSharedMenu(next,versionRef.current);
       if (result.error) setRemoteError(result);
-      else { applyShared(result.state); setNotice('تم حفظ المسودة المشتركة'); }
+      else { applyShared(result.state); setNotice('تم حفظ المسودة المشتركة','success'); }
     } catch { setRemoteError({error:'تعذر حفظ المسودة. تعديلاتك باقية هنا؛ حاول مرة أخرى.'}); }
     finally { workingRef.current=false; setBusy(false); }
   }
@@ -162,7 +164,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     try {
       const result=await publishSharedMenu(versionRef.current);
       if (result.error) setRemoteError(result);
-      else { applyShared(result.state); setHistory(null); setNotice(result.warning || 'تم النشر بنجاح. القائمة العامة محدّثة.'); }
+      else { applyShared(result.state); setHistory(null); setNotice(result.warning || 'تم النشر بنجاح. القائمة العامة محدّثة.',result.warning ? 'warning' : 'success'); }
     } catch { setRemoteError({error:'تعذر تأكيد النشر. حمّل أحدث مسودة للتحقق من حالة النشر قبل إعادة المحاولة.'}); }
     finally { workingRef.current=false; setBusy(false); }
   }
@@ -180,7 +182,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       const result=await restoreSharedMenu(revision,versionRef.current);
       if(result.error) setRemoteError(result); else {
         applyShared(result.state);
-        setNotice(differences(result.state.baseline,result.state.draft).length ? `تمت استعادة النسخة ${revision} كمسودة. راجع التغييرات ثم انشرها لتظهر للعملاء.` : `تمت استعادة النسخة ${revision}. المسودة تطابق القائمة المنشورة، ولا توجد تغييرات للنشر.`);
+        setNotice(differences(result.state.baseline,result.state.draft).length ? `تمت استعادة النسخة ${revision} كمسودة. راجع التغييرات ثم انشرها لتظهر للعملاء.` : `تمت استعادة النسخة ${revision}. المسودة تطابق القائمة المنشورة، ولا توجد تغييرات للنشر.`,'success');
       }
     } catch { setRemoteError({error:'تعذرت استعادة النسخة. حمّل أحدث مسودة للتحقق.'}); }
     finally {workingRef.current=false;setBusy(false);}
@@ -193,7 +195,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   useEffect(() => {
     const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline || busy || remoteError;
     if (!dirty) return;
-    const warn = event => { event.preventDefault(); event.returnValue = ''; };
+    const warn = event => { if(inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) setEditAttention(true); event.preventDefault(); event.returnValue = ''; };
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
   }, [editor, original, inline, busy, remoteError]);
@@ -262,9 +264,23 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     }
     setNotice(`تم التراجع عن تغيير «${change.title}»`);
   }
-  function openEditor(type, value) { const next = { type, ...value }; setOriginal(next); setEditor(next); setNotice(''); }
-  function closeEditor() { if (JSON.stringify(editor) !== JSON.stringify(original) && !window.confirm('توجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')) return; setEditor(null); }
-  function navigate(next) { if ((inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) && !window.confirm('توجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')) return; setEditor(null); setInline(null); setPreview(false); setTab(next); setNotice(''); window.scrollTo(0, 0); }
+  function allowNavigation() {
+    if (inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) {
+      setEditAttention(true);
+      setNotice('احفظ التعديل المحدد بالأحمر أو ألغِه قبل الانتقال.');
+      requestAnimationFrame(()=>document.querySelector('[data-active-edit]')?.scrollIntoView({block:'center',behavior:'smooth'}));
+      return false;
+    }
+    return true;
+  }
+  function openEditor(type, value) { if(!allowNavigation()) return; const next = { type, ...value }; setInline(null); setEditAttention(false); setOriginal(next); setEditor(next); }
+  function closeEditor() { setEditor(null); setEditAttention(false); }
+  function beginInline(item) { if(!allowNavigation()) return; setEditAttention(false); setInline({id:item.id,name:item.name,price:item.price}); }
+  function cancelInline() { setInline(null); setEditAttention(false); }
+  function navigate(next) { if(!allowNavigation()) return; setEditor(null); setInline(null); setEditAttention(false); setPreview(false); setTab(next); window.scrollTo(0, 0); }
+  function filterCategory(value) { if(value !== category && !allowNavigation()) return; setCategory(value); }
+  function filterQuery(value) { if(value !== query && !allowNavigation()) return; setQuery(value); }
+  function headerBack() { if(!allowNavigation()) return; if(editor) closeEditor(); else if(preview) setPreview(false); else window.location.assign('/'); }
   function move(key, index, delta) { const values = [...draft[key]]; [values[index], values[index + delta]] = [values[index + delta], values[index]]; update({ ...draft, [key]: values }); }
   function removeCategory(value) {
     if (draft.items.some(item => item.category === value.name)) setModal({ type: 'blocked', value });
@@ -287,11 +303,12 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       if (category === old?.name) setCategory(value.name);
     }
     setEditor(null);
+    setEditAttention(false);
   }
   function saveInline(event) {
     event.preventDefault();
     if (!inline.name.trim() || !Number.isSafeInteger(Number(inline.price)) || Number(inline.price) < 0) return;
-    update({ ...draft, items: draft.items.map(item => item.id === inline.id ? { ...item, name: inline.name.trim(), price: Number(inline.price) } : item) }); setInline(null);
+    update({ ...draft, items: draft.items.map(item => item.id === inline.id ? { ...item, name: inline.name.trim(), price: Number(inline.price) } : item) }); setInline(null); setEditAttention(false);
   }
   const title = preview ? 'معاينة المسودة' : editor ? (editor.type === 'dish' ? 'تعديل الطبق' : 'تعديل القسم') : ({ dishes: 'إدارة القائمة', categories: 'الأقسام', offers: 'العروض', publish: 'مراجعة التغييرات' }[tab]);
   const filtered = draft.items.filter(item => (!category || item.category === category) && item.name.includes(query.trim()));
@@ -300,10 +317,10 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   return <div className="adm-root">
     <aside className="adm-desktop-brand"><span>QARAMESH</span><p>مساحة إدارة قائمتك</p><small>من أول طبق، إلى آخر تفصيلة.</small></aside>
     <div className="adm-shell">
-      <header ref={headerRef} className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><img className="adm-header-logo" src="/logo-badge.webp" alt="قراميش" width="48" height="48"/></header>
+      <header ref={headerRef} className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={headerBack}><Icon name="back"/></button><h1>{title}</h1><img className="adm-header-logo" src="/logo-badge.webp" alt="قراميش" width="48" height="48"/></header>
       <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
       <div className="adm-toolbar">
-        <form action={logoutAction} className="adm-logout"><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
+        <form action={logoutAction} className="adm-logout" onSubmit={event=>{if(!allowNavigation()) event.preventDefault();}}><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
         {shared && <button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" aria-busy={busy} disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button>}
       </div>
       <main className="adm-main">
@@ -311,7 +328,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
         <fieldset className="adm-workspace" disabled={shared && (busy || Boolean(remoteError))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
         {storageError && <p role="alert" className="adm-error">{storageError}</p>}
-        {editor ? <form onSubmit={saveEditor} className="adm-editor">
+        {editor ? <form onSubmit={saveEditor} className={`adm-editor${editAttention ? ' adm-active-edit needs-attention' : ''}`} data-active-edit>
           {editor.type === 'dish' ? <>
             <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload disabled={shared} label="تغيير الصورة" onChange={image => setEditor({ ...editor, image })}/></div>
             <label>اسم الطبق <b>*</b><input required maxLength={120} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
@@ -336,16 +353,16 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           {draft.categories.map(cat => { const items = draft.items.filter(item => item.category === cat.name); return items.length > 0 && <section key={cat.id}><h3>{cat.name}</h3>{items.map(item => <article className={`adm-preview-item ${!item.available ? 'unavailable' : ''}`} key={item.id}>{item.image && <img src={item.image} alt=""/>}<div><h4>{item.name}</h4><p>{item.shortDescription}</p>{!item.available && <small>غير متوفر</small>}</div><strong>{money(item.price)} <small>IQD</small></strong></article>)}</section>; })}
         </section> : tab === 'dishes' ? <>
           <div className="adm-section-heading"><div><span className="adm-eyebrow">قائمة قراميش</span><h2>كل طبق، بأحلى صورة.</h2></div><span className="adm-count">{draft.items.length}<small>طبق</small></span></div>
-          <div className="adm-filters" aria-label="تصفية الأقسام"><button className={!category ? 'selected' : ''} onClick={() => setCategory('')}>الكل</button>{draft.categories.map(cat => <button key={cat.id} className={category === cat.name ? 'selected' : ''} onClick={() => setCategory(cat.name)}>{cat.name}</button>)}</div>
-          <div className="adm-search"><input aria-label="ابحث عن طبق" placeholder="ابحث عن طبق…" value={query} onChange={e => setQuery(e.target.value)}/><Icon name="search"/></div>
+          <div className="adm-filters" aria-label="تصفية الأقسام"><button className={!category ? 'selected' : ''} onClick={() => filterCategory('')}>الكل</button>{draft.categories.map(cat => <button key={cat.id} className={category === cat.name ? 'selected' : ''} onClick={() => filterCategory(cat.name)}>{cat.name}</button>)}</div>
+          <div className="adm-search"><input aria-label="ابحث عن طبق" placeholder="ابحث عن طبق…" value={query} onChange={e => filterQuery(e.target.value)}/><Icon name="search"/></div>
           <button className="adm-button full" disabled={!draft.categories.length} onClick={() => openEditor('dish', { id: crypto.randomUUID(), name: '', price: '', category: category || draft.categories[0]?.name, size: '', description: '', shortDescription: '', addOn: '', image: '', available: true })}><Icon name="plus"/>إضافة طبق</button>
           {!draft.categories.length && <p>أضف قسماً أولاً من شاشة الأقسام.</p>}
-          <div className="adm-list">{filtered.map(item => <article className="adm-dish-row" key={item.id}>
+          <div className="adm-list">{filtered.map(item => <article className={`adm-dish-row${inline?.id === item.id ? ` adm-active-edit${editAttention ? ' needs-attention' : ''}` : ''}`} data-active-edit={inline?.id === item.id ? '' : undefined} key={item.id}>
             <button className="adm-dish-open" aria-label={`تعديل ${item.name}`} onClick={() => openEditor('dish', item)}>{item.image ? <img src={item.image} alt=""/> : <Icon name="dish"/>}</button>
-            {inline?.id === item.id ? <form className="adm-inline" onSubmit={saveInline}><input aria-label="اسم الطبق" required value={inline.name} onChange={e => setInline({ ...inline, name: e.target.value })}/><input aria-label="سعر الطبق" type="number" min="0" max="999999999" step="1" required value={inline.price} onChange={e => setInline({ ...inline, price: e.target.value })}/><div><button className="adm-icon-button" aria-label="حفظ التعديل" type="submit"><Icon name="check"/></button><button className="adm-icon-button" aria-label="إلغاء التعديل" type="button" onClick={() => setInline(null)}><Icon name="close"/></button></div></form> : <button className="adm-dish-text" onClick={() => setInline({ id: item.id, name: item.name, price: item.price })} aria-label={`تعديل اسم وسعر ${item.name}`}><strong>{item.name}</strong><span>{money(item.price)} <small>IQD</small></span></button>}
-            <button role="switch" aria-checked={item.available} aria-label={`توفر ${item.name}`} className={`adm-switch ${item.available ? 'on' : ''}`} onClick={() => update({ ...draft, items: draft.items.map(value => value.id === item.id ? { ...value, available: !value.available } : value) })}><span/></button>
+            {inline?.id === item.id ? <form className="adm-inline" onSubmit={saveInline}><input aria-label="اسم الطبق" required value={inline.name} onChange={e => setInline({ ...inline, name: e.target.value })}/><input aria-label="سعر الطبق" type="number" min="0" max="999999999" step="1" required value={inline.price} onChange={e => setInline({ ...inline, price: e.target.value })}/><div><button className="adm-icon-button" aria-label="حفظ التعديل" type="submit"><Icon name="check"/></button><button className="adm-icon-button" aria-label="إلغاء التعديل" type="button" onClick={cancelInline}><Icon name="close"/></button></div></form> : <button className="adm-dish-text" onClick={() => beginInline(item)} aria-label={`تعديل اسم وسعر ${item.name}`}><strong>{item.name}</strong><span>{money(item.price)} <small>IQD</small></span></button>}
+            <button role="switch" aria-checked={item.available} aria-label={`توفر ${item.name}`} className={`adm-switch ${item.available ? 'on' : ''}`} onClick={() => { if(allowNavigation()) update({ ...draft, items: draft.items.map(value => value.id === item.id ? { ...value, available: !value.available } : value) }); }}><span/></button>
             <button className="adm-icon-button" aria-label={`تحرير تفاصيل ${item.name}`} onClick={() => openEditor('dish', item)}><Icon name="edit" width="18"/></button>
-            <button className="adm-icon-button adm-danger" aria-label={`حذف ${item.name}`} onClick={() => setModal({ type: 'deleteDish', value: item })}><Icon name="trash" width="18"/></button>
+            <button className="adm-icon-button adm-danger" aria-label={`حذف ${item.name}`} onClick={() => { if(allowNavigation()) setModal({ type: 'deleteDish', value: item }); }}><Icon name="trash" width="18"/></button>
           </article>)}</div>
           {!filtered.length && <div className="adm-empty"><Icon name="search" width="38" height="38"/><h3>لا توجد أطباق</h3><p>جرّب اسماً آخر أو اختر قسماً مختلفاً.</p></div>}
         </> : tab === 'categories' ? <>
