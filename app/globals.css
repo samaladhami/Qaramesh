@@ -289,4 +289,4 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .result-count{background:#FDF2CA;border:0}
 .dish-detail-badge{color:var(--teal)}
 
-.staff-footer-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:10px;color:var(--teal);font-size:11px;text-decoration:underline;text-underline-offset:4px;opacity:.8}.staff-footer-link:hover{opacity:1}
+.staff-footer-link{display:inline-flex;align-items:center;justify-content:center;margin:0;color:var(--teal);font-size:inherit;line-height:inherit;text-decoration:underline;text-underline-offset:4px;opacity:.8}.staff-footer-link:hover{opacity:1}
