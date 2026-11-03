@@ -97,6 +97,6 @@ Run `npm.cmd run build` and `npm.cmd run verify:data` for the tracked project ch
 
 Files under `tmp/` are local check scripts and screenshots, not a committed or portable test suite. Some scripts depend on this computer's Playwright cache and Edge installation. Unused experimental logo variants are also excluded from milestone commits.
 
-## Proposed Phase 2
+## Phase 2 plan
 
-The recommended next milestone is secure menu administration: staff login, dish and price editing, availability toggles, category ordering, image uploads with compression, hero management, and preview/publish controls. Supabase is a proposed foundation for authentication, database, and storage, subject to planning. Ordering should be scoped separately after deciding between phone, WhatsApp, or a full cart/checkout workflow. No Phase 2 implementation has started.
+Phase 2 starts with planning the full admin dashboard, followed by secure staff access, menu editing, categories, image uploads, hero management and preview/publish controls. The agreed starting architecture uses Supabase Free for authentication, database and storage, with the published QR menu cached through Vercel to reduce backend traffic. Free operation depends on measured usage and provider limits. See [PHASE-2.md](PHASE-2.md) for implementation steps, migration safeguards and launch checks. Backend implementation has not started. Ordering and checkout remain a separate scope.
