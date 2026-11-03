@@ -1,6 +1,6 @@
 # Phase 2: menu administration
 
-Status: the dashboard interface prototype and staff-login integration are implemented. Supabase Free is the agreed starting backend, with the published QR menu served through Vercel caching. The Supabase project is not configured yet; live authentication verification, menu database/storage, shared drafts and real publishing remain pending. See `STAFF-SETUP.md` for account and environment setup.
+Status: staff login is configured. Shared draft editing, protected preview, atomic publishing and restore-as-draft are implemented behind `MENU_BACKEND_ENABLED=true`; the initial menu has been imported into Supabase. See `SHARED-MENU.md` for the snapshot model, rollout, validation and limitations. Live staff acceptance checks remain before handover. Image storage/compression, durable latest-revision outage recovery, and operational monitoring remain future work.
 
 ## Dashboard requirements agreed with the user
 

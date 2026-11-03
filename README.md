@@ -99,7 +99,7 @@ Files under `tmp/` are local check scripts and screenshots, not a committed or p
 
 ## Phase 2 plan
 
-Phase 2 starts with planning the full admin dashboard, followed by secure staff access, menu editing, categories, image uploads, hero management and preview/publish controls. The agreed starting architecture uses Supabase Free for authentication, database and storage, with the published QR menu cached through Vercel to reduce backend traffic. Free operation depends on measured usage and provider limits. See [PHASE-2.md](PHASE-2.md) for implementation steps, migration safeguards and launch checks. Backend implementation has not started. Ordering and checkout remain a separate scope.
+Phase 2 starts with planning the full admin dashboard, followed by secure staff access, menu editing, categories, image uploads, hero management and preview/publish controls. The agreed starting architecture uses Supabase Free for authentication, database and storage, with the published QR menu cached through Vercel to reduce backend traffic. Free operation depends on measured usage and provider limits. See [PHASE-2.md](PHASE-2.md) for implementation steps, migration safeguards and launch checks. Staff authentication and shared draft/publishing integration are implemented. See [SHARED-MENU.md](SHARED-MENU.md) for rollout and current limits. Ordering and checkout remain a separate scope.
 
 ## Design handoff before Phase 2 implementation
 
@@ -133,8 +133,14 @@ Validated with a production build and headless Edge at 320, 390, 768 and 1280px:
 
 A small footer link, “دخول الموظفين”, opens `/admin/login`. Cookie-based Supabase password authentication, sign-out, server-verified staff access and private/no-store admin responses are implemented. Staff access requires a confirmed user ID in the server-only `SUPABASE_STAFF_USER_IDS` allowlist; there is no registration form. The proxy checks requests and the dashboard page independently verifies access. Future mutations must perform their own authorization and use database row-level security.
 
-Supabase has not been configured yet. Until the project URL, publishable key and staff allowlist are set, login is disabled and `/admin` redirects to login. Follow [STAFF-SETUP.md](STAFF-SETUP.md) and `.env.example` to create the project, disable public sign-ups, provision staff accounts and configure local/Vercel settings. The login page offers administrator-assisted password recovery for this milestone.
+Supabase authentication is configured with two staff accounts, and public sign-ups are disabled. Login is disabled in environments without the project URL, publishable key and staff allowlist. Follow [STAFF-SETUP.md](STAFF-SETUP.md) for local/Vercel settings. Password recovery remains administrator-assisted.
 
 The build and local browser checks cover the footer link, responsive login, unconfigured access denial, direct-route redirects and return to the public menu. Real sign-in, sign-out, session refresh and nonstaff-account denial still need verification with the configured Supabase project before staff handover.
 
-Next: configure Supabase and verify staff access, then implement shared draft data and server/database authorization before enabling real editing or publishing. Follow `PHASE-2.md` for the remaining backend, media and delivery milestones.
+## Shared drafts, preview and publishing
+
+The shared-menu integration is implemented behind the server setting `MENU_BACKEND_ENABLED=true`. Supabase contains the initial 145 dishes, 20 categories and 6 hero slides. Staff save a shared versioned draft, review protected preview pages using the actual public components, undo individual review rows, and publish a complete immutable revision. Publication history supports restoring an older revision into a draft before publishing. Public home/dish pages read the cached published snapshot; anonymous access to staff RPC operations is denied. Existing local browser drafts are not automatically imported.
+
+Run `npm.cmd run verify:backend` for database security/concurrency/publishing tests, and `npm.cmd run prepare:backend` to generate setup SQL. See [SHARED-MENU.md](SHARED-MENU.md) for rollout, staff acceptance checks, recovery and the snapshot architecture. New image uploads remain disabled in shared mode until storage integration. Cold-request outages fall back to the menu bundled with the deployment, which may be older than the latest publication.
+
+Next: enable the rollout setting in Vercel, verify with both staff accounts, then connect image storage and complete operational backup/outage checks.

@@ -290,3 +290,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .dish-detail-badge{color:var(--teal)}
 
 .staff-footer-link{display:inline-flex;align-items:center;justify-content:center;margin:0;color:var(--teal);font-size:inherit;line-height:inherit;text-decoration:underline;text-underline-offset:4px;opacity:.8}.staff-footer-link:hover{opacity:1}
+
+.draft-preview-banner{background:var(--yellow);color:var(--teal);text-align:center;padding:12px;font-size:13px}.draft-preview-banner a{margin-inline-start:16px;color:inherit}
+
+.restaurant-header:not(:has(section)) + .menu-shell{margin-top:0}

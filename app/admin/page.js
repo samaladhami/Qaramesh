@@ -5,6 +5,7 @@ import './admin.css';
 import { redirect } from 'next/navigation';
 import { getStaffUser } from '../../lib/supabase/server';
 import { logout } from './login/actions';
+import { backendEnabled } from '../../lib/published-menu';
 
 export const metadata = { title: 'قراميش | إدارة القائمة', robots: { index: false, follow: false } };
 
@@ -13,5 +14,5 @@ export const dynamic = 'force-dynamic';
 export default async function AdminPage() {
   const user = await getStaffUser();
   if (!user) redirect('/admin/login');
-  return <AdminDashboard key={user.id} initialMenu={menu} initialSlides={slides} staffId={user.id} logoutAction={logout}/>;
+  return <AdminDashboard key={user.id} initialMenu={menu} initialSlides={slides} staffId={user.id} logoutAction={logout} shared={backendEnabled()}/>;
 }

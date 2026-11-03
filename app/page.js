@@ -1,3 +1,7 @@
 import Menu from '../components/Menu';
-import menu from '../data/menu.json';
-export default function Page() { return <Menu categories={menu.categories} items={menu.items} />; }
+import { getPublishedMenu } from '../lib/published-menu';
+export const revalidate = 60;
+export default async function Page() {
+  const { content } = await getPublishedMenu();
+  return <Menu categories={content.categories.map(c=>c.name)} categoryRecords={content.categories} items={content.items} slides={content.slides}/>;
+}

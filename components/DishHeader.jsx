@@ -3,14 +3,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 
-export default function DishHeader() {
+export default function DishHeader({ menuHref = '/' }) {
   const router = useRouter();
   const goBack = useCallback(() => {
+    if (menuHref !== '/') { router.push(menuHref); return; }
     try {
       if (sessionStorage.getItem('menu-return')) { router.back(); return; }
     } catch {}
     router.push('/');
-  }, [router]);
+  }, [router, menuHref]);
   useEffect(() => {
     let gesture = null;
     function start(event) {
@@ -47,6 +48,6 @@ export default function DishHeader() {
   }, [goBack]);
   return <nav className="dish-photo-actions" aria-label="التنقل في الطبق">
     <button className="dish-photo-action" type="button" onClick={goBack} aria-label="إغلاق والعودة إلى القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg></button>
-    <Link className="dish-photo-action" href="/?search=1" scroll={false} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></svg></Link>
+    <Link className="dish-photo-action" href={`${menuHref}?search=1`} scroll={false} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></svg></Link>
   </nav>;
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import CategoryIcon from '../CategoryIcon';
+import { readSharedMenu, saveSharedMenu, publishSharedMenu, sharedMenuHistory, restoreSharedMenu } from '../../app/admin/menu-actions';
 
 const KEY = 'qaramesh-admin-prototype-v1';
 const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
@@ -36,7 +37,7 @@ function Dialog({ title, children, onClose }) {
   </dialog>;
 }
 
-function Upload({ label, onChange }) {
+function Upload({ label, onChange, disabled = false }) {
   const [error, setError] = useState('');
   async function read(event) {
     const file = event.target.files[0];
@@ -50,7 +51,7 @@ function Upload({ label, onChange }) {
       onChange(src); setError('');
     } catch { setError('تعذر قراءة الصورة. جرّب صورة أخرى.'); }
   }
-  return <div className="adm-upload"><label><Icon name="image"/>{label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read}/></label>{error && <p role="alert" className="adm-error">{error}</p>}</div>;
+  return <div className="adm-upload"><label><Icon name="image"/>{label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read} disabled={disabled}/></label>{disabled && <p className="adm-muted">رفع صور جديدة غير متاح حالياً.</p>}{error && <p role="alert" className="adm-error">{error}</p>}</div>;
 }
 
 function differences(base, draft) {
@@ -74,7 +75,7 @@ function differences(base, draft) {
   return changes;
 }
 
-export default function AdminDashboard({ initialMenu, initialSlides, staffId, logoutAction }) {
+export default function AdminDashboard({ initialMenu, initialSlides, staffId, logoutAction, shared = false }) {
   const storageKey = `${KEY}:${staffId}`;
   const seed = { items: initialMenu.items, categories: initialMenu.categories.map((name, index) => ({ id: `category-${index}`, name, icon: name })), slides: initialSlides };
   const [draft, setDraft] = useState(seed);
@@ -90,31 +91,105 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [notice, setNotice] = useState('');
   const [inline, setInline] = useState(null);
   const [preview, setPreview] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [remoteError, setRemoteError] = useState(null);
+  const [publishedAt, setPublishedAt] = useState(null);
+  const [history, setHistory] = useState(null);
+  const versionRef = useRef(null);
+  const workingRef = useRef(false);
   const changes = differences(baseline, draft);
 
+  function applyShared(state) {
+    setDraft(state.draft); setBaseline(state.baseline); versionRef.current=state.version; setPublishedAt(state.publishedAt); setReady(true);
+  }
+  async function refreshShared(discard = false) {
+    if (discard && !window.confirm('تحميل أحدث مسودة سيستبدل تعديلات هذه الصفحة. هل تريد المتابعة؟')) return;
+    if (workingRef.current) return;
+    workingRef.current=true; setBusy(true);
+    try {
+      const result=await readSharedMenu();
+      if (result.error) setRemoteError(result);
+      else { applyShared(result.state); setRemoteError(null); }
+    } catch { setRemoteError({error:'تعذر تحميل المسودة المشتركة. حاول مرة أخرى.'}); }
+    finally { workingRef.current=false; setBusy(false); }
+  }
+  async function persistShared(next) {
+    if (workingRef.current) return;
+    workingRef.current=true; setBusy(true); setRemoteError(null);
+    try {
+      const result=await saveSharedMenu(next,versionRef.current);
+      if (result.error) setRemoteError(result);
+      else { applyShared(result.state); setNotice('تم حفظ المسودة المشتركة'); }
+    } catch { setRemoteError({error:'تعذر حفظ المسودة. تعديلاتك باقية هنا؛ حاول مرة أخرى.'}); }
+    finally { workingRef.current=false; setBusy(false); }
+  }
+  async function publish() {
+    if (workingRef.current || remoteError || !ready) return;
+    workingRef.current=true; setBusy(true);
+    try {
+      const result=await publishSharedMenu(versionRef.current);
+      if (result.error) setRemoteError(result);
+      else { applyShared(result.state); setHistory(null); setNotice(result.warning || 'تم النشر بنجاح. القائمة العامة محدّثة.'); }
+    } catch { setRemoteError({error:'تعذر تأكيد النشر. حمّل أحدث مسودة للتحقق من حالة النشر قبل إعادة المحاولة.'}); }
+    finally { workingRef.current=false; setBusy(false); }
+  }
+  async function loadHistory() {
+    try {
+      const result=await sharedMenuHistory();
+      if(result.error) setNotice(result.error); else setHistory(result.revisions);
+    } catch { setNotice('تعذر تحميل سجل النشر. حاول مرة أخرى.'); }
+  }
+  async function restoreRevision(revision) {
+    if(workingRef.current || !window.confirm('استعادة هذه النسخة ستستبدل المسودة المشتركة الحالية. ستحتاج نشرها لتظهر للعملاء. هل تريد المتابعة؟')) return;
+    workingRef.current=true; setBusy(true);
+    try {
+      const result=await restoreSharedMenu(revision,versionRef.current);
+      if(result.error) setRemoteError(result); else {applyShared(result.state);setNotice('تمت استعادة النسخة كمسودة. راجعها قبل النشر.');}
+    } catch { setRemoteError({error:'تعذرت استعادة النسخة. حمّل أحدث مسودة للتحقق.'}); }
+    finally {workingRef.current=false;setBusy(false);}
+  }
+  function exportRecovery() {
+    const url=URL.createObjectURL(new Blob([JSON.stringify(draft,null,2)],{type:'application/json'}));
+    const link=document.createElement('a');link.href=url;link.download='qaramesh-draft-recovery.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+
   useEffect(() => {
-    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline;
+    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline || busy || remoteError;
     if (!dirty) return;
     const warn = event => { event.preventDefault(); event.returnValue = ''; };
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
-  }, [editor, original, inline]);
+  }, [editor, original, inline, busy, remoteError]);
 
   useEffect(() => {
+    if (shared) { refreshShared(); return; }
     try {
       const stored = JSON.parse(localStorage.getItem(storageKey) || 'null');
       if (stored && Array.isArray(stored.items) && Array.isArray(stored.categories) && stored.categories.every(value => value && typeof value.name === 'string') && Array.isArray(stored.slides) && stored.items.every(value => value && typeof value.id === 'string' && typeof value.name === 'string' && typeof value.category === 'string' && Number.isFinite(value.price))) setDraft(stored);
     } catch { setStorageError('تعذر استعادة المسودة المحلية. يمكنك العمل في هذه الجلسة.'); }
     setReady(true);
-  }, [storageKey]);
+  }, [storageKey, shared]);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || shared) return;
     try { localStorage.setItem(storageKey, JSON.stringify(draft)); setStorageError(''); }
     catch { setStorageError('تعذر حفظ المسودة على هذا الجهاز. احتفظ بالصفحة مفتوحة؛ قد تكون مساحة التخزين ممتلئة.'); }
-  }, [draft, ready, storageKey]);
+  }, [draft, ready, storageKey, shared]);
 
-  function update(next) { setDraft(next); setNotice('تم تحديث المسودة'); }
+  useEffect(() => {
+    if (!shared || !ready || busy || remoteError || editor || inline || modal) return;
+    let cancelled=false;
+    const timer=setInterval(async () => {
+      if (document.hidden || workingRef.current) return;
+      try {
+        const result=await readSharedMenu();
+        if (!cancelled && !workingRef.current && result.state && result.state.version > versionRef.current) { applyShared(result.state); setNotice('تم تحديث المسودة من الفريق'); }
+      } catch { /* A failed background read must not discard the displayed draft. */ }
+    },20000);
+    return () => { cancelled=true; clearInterval(timer); };
+  },[shared,ready,busy,remoteError,editor,inline,modal]);
+
+  function update(next) { if (shared && (workingRef.current || remoteError)) return; setDraft(next); setNotice(shared ? 'جارٍ حفظ المسودة…' : 'تم تحديث المسودة'); if(shared) persistShared(next); }
   function undoChange(change) {
     if (change.id === 'slides') {
       update({ ...draft, slides: baseline.slides });
@@ -189,15 +264,18 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     <aside className="adm-desktop-brand"><span>QARAMESH</span><p>مساحة إدارة قائمتك</p><small>من أول طبق، إلى آخر تفصيلة.</small></aside>
     <div className="adm-shell">
       <header className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><span className="adm-draft-badge"><Icon name="edit" width="14" height="14"/> مسودة</span></header>
-      <div className="adm-prototype">نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.</div>
+      <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
       <form action={logoutAction} className="adm-logout"><button type="submit">تسجيل الخروج</button></form>
       <main className="adm-main">
+        {shared && <div className="adm-shared-status" role="status">{busy ? 'جارٍ الاتصال…' : ready ? 'المسودة المشتركة' : 'جارٍ تحميل المسودة…'}<button className="adm-icon-button" disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}>تحديث</button></div>}
+        {remoteError && <div role="alert" className="adm-error"><p>{remoteError.error}</p><div className="adm-actions">{ready && !remoteError.conflict && <button className="adm-button" disabled={busy} onClick={() => persistShared(draft)}>إعادة الحفظ</button>}<button className="adm-button secondary" disabled={busy} onClick={() => refreshShared(ready)}>تحميل أحدث مسودة</button>{ready && <button className="adm-button secondary" onClick={exportRecovery}>حفظ نسخة من تعديلاتي</button>}</div></div>}
+        <fieldset className="adm-workspace" disabled={shared && (busy || Boolean(remoteError))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
         {storageError && <p role="alert" className="adm-error">{storageError}</p>}
         {notice && <p role="status" className="adm-notice"><Icon name="check"/>{notice}</p>}
         {editor ? <form onSubmit={saveEditor} className="adm-editor">
           {editor.type === 'dish' ? <>
-            <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload label="تغيير الصورة" onChange={image => setEditor({ ...editor, image })}/></div>
+            <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload disabled={shared} label="تغيير الصورة" onChange={image => setEditor({ ...editor, image })}/></div>
             <label>اسم الطبق <b>*</b><input required maxLength={120} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
             <label>السعر <b>*</b><div className="adm-price-input"><input aria-label="السعر" dir="ltr" type="number" required min="0" max="999999999" step="1" value={editor.price} onChange={e => setEditor({ ...editor, price: e.target.value })}/><span>IQD</span></div></label>
             <label>القسم <b>*</b><select required value={editor.category} onChange={e => setEditor({ ...editor, category: e.target.value })}>{draft.categories.map(cat => <option key={cat.id}>{cat.name}</option>)}</select></label>
@@ -210,7 +288,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
             <label>اسم القسم <b>*</b><input required maxLength={100} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
             <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{initialMenu.categories.map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
             {editor.image && <img className="adm-custom-icon" src={editor.image} alt="معاينة أيقونة القسم"/>}
-            <Upload label="رفع أيقونة مخصصة" onChange={image => setEditor({ ...editor, image })}/>
+            <Upload disabled={shared} label="رفع أيقونة مخصصة" onChange={image => setEditor({ ...editor, image })}/>
             <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 500 KB.</p>
           </>}
           <div className="adm-actions"><button type="submit" className="adm-button"><Icon name="save"/>حفظ المسودة</button><button type="button" className="adm-button secondary" onClick={closeEditor}>إلغاء</button></div>
@@ -240,31 +318,34 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           <div className="adm-section-heading"><div><span className="adm-eyebrow">واجهة مطعمك</span><h2>صور تفتح الشهية.</h2></div><span className="adm-count">{draft.slides.length}<small>صورة</small></span></div>
           <p className="adm-muted">رتّب صور العروض وعدّل وصفها قبل النشر.</p>
           {draft.slides.map((slide, index) => <article className="adm-offer" key={slide.id}><img src={slide.src} alt={slide.alt}/><div className="adm-offer-controls">{reorderButtons('slides', index, draft.slides.length)}<label>وصف الصورة<input value={slide.alt} maxLength={240} onChange={e => update({ ...draft, slides: draft.slides.map(value => value.id === slide.id ? { ...value, alt: e.target.value } : value) })}/></label><button className="adm-icon-button adm-danger" aria-label={`حذف الصورة ${index + 1}`} onClick={() => setModal({ type: 'deleteSlide', value: slide })}><Icon name="trash"/></button></div></article>)}
-          <Upload label="إضافة صورة" onChange={src => update({ ...draft, slides: [...draft.slides, { id: crypto.randomUUID(), src, alt: 'عرض جديد من قراميش' }] })}/>
+          <Upload disabled={shared} label="إضافة صورة" onChange={src => update({ ...draft, slides: [...draft.slides, { id: crypto.randomUUID(), src, alt: 'عرض جديد من قراميش' }] })}/>
           {!draft.slides.length && <p className="adm-empty">أضف صورة العرض الأولى.</p>}
         </> : <>
           <div className="adm-section-heading"><div><span className="adm-eyebrow">جاهزة للمراجعة</span><h2>لمسة أخيرة، قبل النشر.</h2></div><Icon name="send" width="34" height="34"/></div>
-          <p className="adm-info">كل التغييرات هنا مسودة محلية. النشر الفعلي يحتاج ربط حسابات الموظفين وقاعدة البيانات.</p>
+          <p className="adm-info">{shared ? 'كل التغييرات هنا محفوظة كمسودة مشتركة. راجعها ثم انشرها لتظهر في القائمة العامة.' : 'كل التغييرات هنا مسودة محلية. النشر الفعلي يحتاج ربط حسابات الموظفين وقاعدة البيانات.'}</p>
+          {shared && publishedAt && <p className="adm-muted">آخر نشر: {new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(publishedAt))}</p>}
           <h3>التغييرات المعلقة ({changes.length})</h3>
           {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div className="adm-change-text"><strong>{change.title}</strong><p>{change.detail}</p></div><button className="adm-icon-button adm-danger" aria-label={`التراجع عن تغيير ${change.title}`} title="التراجع عن التغيير" onClick={() => undoChange(change)}><Icon name="close"/></button></article>)}
           {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
-          <div className="adm-actions"><button className="adm-button" disabled={!changes.length} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>تجربة النشر محلياً</button><button className="adm-button secondary" onClick={() => setPreview(true)}><Icon name="eye"/>معاينة</button></div>
+          <div className="adm-actions"><button className="adm-button" disabled={!changes.length || busy} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>{shared ? 'نشر التغييرات' : 'تجربة النشر محلياً'}</button><button className="adm-button secondary" onClick={() => shared ? window.open('/admin/preview','_blank','noopener,noreferrer') : setPreview(true)}><Icon name="eye"/>معاينة</button></div>
+          {shared && <div className="adm-history"><button className="adm-button secondary full" onClick={loadHistory}>سجل النشر / استعادة نسخة</button>{history?.map(revision=><div className="adm-change" key={revision.id}><div className="adm-change-text"><strong>النسخة {revision.id}</strong><p>{new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(revision.created_at))}</p></div><button className="adm-button secondary" onClick={()=>restoreRevision(revision.id)}>استعادة كمسودة</button></div>)}</div>}
         </>}
         </>}
+        </fieldset>
       </main>
       <nav className="adm-nav" aria-label="التنقل في إدارة القائمة">{tabs.map(([id, label, icon]) => <button key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(id)}><Icon name={icon}/><span>{label}</span>{id === 'publish' && changes.length > 0 && <i>{changes.length}</i>}</button>)}</nav>
     </div>
-    {modal && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? 'تجربة النشر محلياً' : 'تأكيد الحذف'} onClose={() => setModal(null)}>
+    {modal && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
       <div className="adm-dialog-symbol"><Icon name={modal.type === 'publish' ? 'send' : 'trash'} width="34" height="34"/></div>
-      <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.' : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>
+      <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? (shared ? 'هل تريد نشر جميع التغييرات المحفوظة؟ ستظهر النسخة الجديدة للعملاء في القائمة العامة.' : 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.') : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>
       <div className="adm-actions"><button className="adm-button" onClick={() => {
         if (modal.type === 'blocked') { setCategory(modal.value.name); navigate('dishes'); }
-        else if (modal.type === 'publish') { setBaseline(draft); setNotice('نجحت محاكاة النشر محلياً. لم تتغير القائمة العامة.'); }
+        else if (modal.type === 'publish') { if(shared) publish(); else { setBaseline(draft); setNotice('نجحت محاكاة النشر محلياً. لم تتغير القائمة العامة.'); } }
         else if (modal.type === 'deleteDish') update({ ...draft, items: draft.items.filter(item => item.id !== modal.value.id) });
         else if (modal.type === 'deleteSlide') update({ ...draft, slides: draft.slides.filter(slide => slide.id !== modal.value.id) });
         else { update({ ...draft, categories: draft.categories.filter(cat => cat.id !== modal.value.id) }); if (category === modal.value.name) setCategory(''); }
         setModal(null);
-      }}>{modal.type === 'blocked' ? 'عرض الأطباق' : modal.type === 'publish' ? 'تأكيد التجربة' : 'حذف من المسودة'}</button><button className="adm-button secondary" onClick={() => setModal(null)}>إلغاء</button></div>
+      }}>{modal.type === 'blocked' ? 'عرض الأطباق' : modal.type === 'publish' ? (shared ? 'تأكيد النشر' : 'تأكيد التجربة') : 'حذف من المسودة'}</button><button className="adm-button secondary" onClick={() => setModal(null)}>إلغاء</button></div>
     </Dialog>}
   </div>;
 }

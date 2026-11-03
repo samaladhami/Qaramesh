@@ -1,7 +1,7 @@
 import HeroCarousel from './HeroCarousel';
-import slides from '../data/hero-slides.json';
+import initialSlides from '../data/hero-slides.json';
 
-export default function RestaurantHeader() {
+export default function RestaurantHeader({ slides = initialSlides }) {
   return (
     <header className="restaurant-header relative isolate overflow-hidden">
       <HeroCarousel slides={slides} />
