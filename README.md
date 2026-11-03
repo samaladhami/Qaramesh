@@ -125,6 +125,8 @@ This is a public interface prototype, not a protected staff dashboard. It has no
 
 The publish button explicitly simulates publishing within the current session. It clears the local change review without modifying public data; reloading compares the saved draft with the original menu again. The preview is a simplified draft rendering, not yet the production menu renderer. There is no publish history or rollback yet. The public menu, dish URLs and local JSON sources are unchanged.
 
+Each pending-change row has an X button to undo that row while keeping the other pending changes. Deleted dishes return to their original position; new dishes are removed and edited dishes revert to the current baseline. Category and offer changes are currently reviewed and undone as groups. Undoing categories is blocked if it would remove a new category still containing dishes. Dish filters appear above search.
+
 Validated with a production build and headless Edge at 320, 390, 768 and 1280px: RTL layout without horizontal overflow, inline editing, draft reload persistence, category creation, blocked deletion, offers and preview. Additional flow checks covered full dish saves, new dishes, availability, category ordering and simulated publishing without public menu changes. Local browser scripts and screenshots are in `tmp/`, using the existing machine-specific Playwright setup.
 
 Next: review the prototype against the comps and refine the screens, then implement invitation-only staff access and server/database authorization before enabling real editing or publishing. Follow `PHASE-2.md` for the remaining backend, media and delivery milestones.

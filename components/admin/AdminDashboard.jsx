@@ -114,6 +114,41 @@ export default function AdminDashboard({ initialMenu, initialSlides }) {
   }, [draft, ready]);
 
   function update(next) { setDraft(next); setNotice('تم تحديث المسودة'); }
+  function undoChange(change) {
+    if (change.id === 'slides') {
+      update({ ...draft, slides: baseline.slides });
+    } else if (change.id === 'categories') {
+      const restoredItems = draft.items.map(item => {
+        const current = draft.categories.find(cat => cat.name === item.category);
+        const previous = baseline.categories.find(cat => cat.id === current?.id);
+        return previous ? { ...item, category: previous.name } : item;
+      });
+      const addedInUse = draft.categories.filter(cat => !baseline.categories.some(old => old.id === cat.id) && restoredItems.some(item => item.category === cat.name));
+      if (addedInUse.length) {
+        setNotice('انقل الأطباق من الأقسام الجديدة أو تراجع عن إضافتها أولاً، ثم تراجع عن تغييرات الأقسام.');
+        return;
+      }
+      update({ ...draft, categories: baseline.categories, items: restoredItems });
+      setCategory('');
+    } else {
+      const previous = baseline.items.find(item => item.id === change.id);
+      let items = draft.items.filter(item => item.id !== change.id);
+      let categories = draft.categories;
+      if (previous) {
+        const previousCategory = baseline.categories.find(cat => cat.name === previous.category);
+        const currentCategory = draft.categories.find(cat => cat.id === previousCategory?.id);
+        const restored = { ...previous, category: currentCategory?.name || previous.category };
+        if (!categories.some(cat => cat.name === restored.category) && previousCategory) categories = [...categories, previousCategory];
+        const currentIndex = draft.items.findIndex(item => item.id === change.id);
+        const baselineIndex = baseline.items.findIndex(item => item.id === change.id);
+        const following = baseline.items.slice(baselineIndex + 1).find(item => items.some(value => value.id === item.id));
+        const insertAt = currentIndex >= 0 ? currentIndex : following ? items.findIndex(item => item.id === following.id) : items.length;
+        items.splice(insertAt, 0, restored);
+      }
+      update({ ...draft, categories, items });
+    }
+    setNotice(`تم التراجع عن تغيير «${change.title}»`);
+  }
   function openEditor(type, value) { const next = { type, ...value }; setOriginal(next); setEditor(next); setNotice(''); }
   function closeEditor() { if (JSON.stringify(editor) !== JSON.stringify(original) && !window.confirm('توجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')) return; setEditor(null); }
   function navigate(next) { if ((inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) && !window.confirm('توجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')) return; setEditor(null); setInline(null); setPreview(false); setTab(next); setNotice(''); window.scrollTo(0, 0); }
@@ -183,8 +218,8 @@ export default function AdminDashboard({ initialMenu, initialSlides }) {
           {draft.categories.map(cat => { const items = draft.items.filter(item => item.category === cat.name); return items.length > 0 && <section key={cat.id}><h3>{cat.name}</h3>{items.map(item => <article className={`adm-preview-item ${!item.available ? 'unavailable' : ''}`} key={item.id}>{item.image && <img src={item.image} alt=""/>}<div><h4>{item.name}</h4><p>{item.shortDescription}</p>{!item.available && <small>غير متوفر</small>}</div><strong>{money(item.price)} <small>IQD</small></strong></article>)}</section>; })}
         </section> : tab === 'dishes' ? <>
           <div className="adm-section-heading"><div><span className="adm-eyebrow">قائمة قراميش</span><h2>كل طبق، بأحلى صورة.</h2></div><span className="adm-count">{draft.items.length}<small>طبق</small></span></div>
-          <div className="adm-search"><input aria-label="ابحث عن طبق" placeholder="ابحث عن طبق…" value={query} onChange={e => setQuery(e.target.value)}/><Icon name="search"/></div>
           <div className="adm-filters" aria-label="تصفية الأقسام"><button className={!category ? 'selected' : ''} onClick={() => setCategory('')}>الكل</button>{draft.categories.map(cat => <button key={cat.id} className={category === cat.name ? 'selected' : ''} onClick={() => setCategory(cat.name)}>{cat.name}</button>)}</div>
+          <div className="adm-search"><input aria-label="ابحث عن طبق" placeholder="ابحث عن طبق…" value={query} onChange={e => setQuery(e.target.value)}/><Icon name="search"/></div>
           <button className="adm-button full" disabled={!draft.categories.length} onClick={() => openEditor('dish', { id: crypto.randomUUID(), name: '', price: '', category: category || draft.categories[0]?.name, size: '', description: '', shortDescription: '', addOn: '', image: '', available: true })}><Icon name="plus"/>إضافة طبق</button>
           {!draft.categories.length && <p>أضف قسماً أولاً من شاشة الأقسام.</p>}
           <div className="adm-list">{filtered.map(item => <article className="adm-dish-row" key={item.id}>
@@ -209,7 +244,7 @@ export default function AdminDashboard({ initialMenu, initialSlides }) {
           <div className="adm-section-heading"><div><span className="adm-eyebrow">جاهزة للمراجعة</span><h2>لمسة أخيرة، قبل النشر.</h2></div><Icon name="send" width="34" height="34"/></div>
           <p className="adm-info">كل التغييرات هنا مسودة محلية. النشر الفعلي يحتاج ربط حسابات الموظفين وقاعدة البيانات.</p>
           <h3>التغييرات المعلقة ({changes.length})</h3>
-          {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div><strong>{change.title}</strong><p>{change.detail}</p></div></article>)}
+          {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div className="adm-change-text"><strong>{change.title}</strong><p>{change.detail}</p></div><button className="adm-icon-button adm-danger" aria-label={`التراجع عن تغيير ${change.title}`} title="التراجع عن التغيير" onClick={() => undoChange(change)}><Icon name="close"/></button></article>)}
           {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
           <div className="adm-actions"><button className="adm-button" disabled={!changes.length} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>تجربة النشر محلياً</button><button className="adm-button secondary" onClick={() => setPreview(true)}><Icon name="eye"/>معاينة</button></div>
         </>}
