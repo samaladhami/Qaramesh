@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import CategoryIcon from '../CategoryIcon';
 import { readSharedMenu, saveSharedMenu, publishSharedMenu, sharedMenuHistory, restoreSharedMenu } from '../../app/admin/menu-actions';
 
@@ -29,6 +29,14 @@ function Icon({ name, ...props }) {
     eye: <><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
   };
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths[name] || paths.dish}</svg>;
+}
+
+function TimedNotice({ notice, onDismiss }) {
+  useEffect(() => {
+    const timer=setTimeout(() => onDismiss(notice.id),5000);
+    return () => clearTimeout(timer);
+  },[notice.id,onDismiss]);
+  return <div className="adm-toast" role="status" aria-atomic="true"><Icon name="check"/><span>{notice.message}</span><button type="button" className="adm-icon-button" aria-label="إخفاء الإشعار" onClick={() => onDismiss(notice.id)}><Icon name="close" width="18" height="18"/></button></div>;
 }
 
 function Dialog({ title, children, onClose }) {
@@ -90,8 +98,14 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [editor, setEditor] = useState(null);
   const [original, setOriginal] = useState(null);
   const [modal, setModal] = useState(null);
-  const [notice, setNoticeState] = useState(null);
-  function setNotice(message) { setNoticeState(message ? { message } : null); }
+  const [notices, setNotices] = useState([]);
+  const noticeSequence=useRef(0);
+  function setNotice(message) {
+    if (!message) return;
+    const id=++noticeSequence.current;
+    setNotices(current=>[...current,{id,message}]);
+  }
+  const dismissNotice=useCallback(id=>setNotices(current=>current.filter(notice=>notice.id!==id)),[]);
   const [inline, setInline] = useState(null);
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -101,13 +115,22 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   const [history, setHistory] = useState(null);
   const versionRef = useRef(null);
   const workingRef = useRef(false);
+  const headerRef = useRef(null);
+  const toastRef = useRef(null);
   const changes = differences(baseline, draft);
 
   useEffect(() => {
-    if (!notice) return;
-    const timer=setTimeout(() => setNoticeState(null),5000);
-    return () => clearTimeout(timer);
-  },[notice]);
+    if (!notices.length) return;
+    const position = () => {
+      if (headerRef.current && toastRef.current) toastRef.current.style.top = `${Math.max(0,headerRef.current.getBoundingClientRect().bottom) + 8}px`;
+    };
+    position();
+    const observer = new ResizeObserver(position);
+    if (headerRef.current) observer.observe(headerRef.current);
+    window.addEventListener('scroll',position,{passive:true});
+    window.addEventListener('resize',position);
+    return () => { observer.disconnect(); window.removeEventListener('scroll',position); window.removeEventListener('resize',position); };
+  },[notices.length]);
 
   function applyShared(state) {
     setDraft(state.draft); setBaseline(state.baseline); versionRef.current=state.version; setPublishedAt(state.publishedAt); setPublishedId(state.publishedId); setReady(true);
@@ -144,6 +167,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     finally { workingRef.current=false; setBusy(false); }
   }
   async function loadHistory() {
+    if (history) { setHistory(null); return; }
     try {
       const result=await sharedMenuHistory();
       if(result.error) setNotice(result.error); else setHistory(result.revisions);
@@ -276,11 +300,13 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   return <div className="adm-root">
     <aside className="adm-desktop-brand"><span>QARAMESH</span><p>مساحة إدارة قائمتك</p><small>من أول طبق، إلى آخر تفصيلة.</small></aside>
     <div className="adm-shell">
-      <header className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><span className="adm-draft-badge"><Icon name="edit" width="14" height="14"/> مسودة</span></header>
+      <header ref={headerRef} className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><img className="adm-header-logo" src="/logo-badge.webp" alt="قراميش" width="48" height="48"/></header>
       <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
-      <form action={logoutAction} className="adm-logout"><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
+      <div className="adm-toolbar">
+        <form action={logoutAction} className="adm-logout"><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
+        {shared && <button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" aria-busy={busy} disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button>}
+      </div>
       <main className="adm-main">
-        {shared && <div className="adm-shared-status" role="status">{busy ? 'جارٍ الاتصال…' : ready ? 'المسودة المشتركة' : 'جارٍ تحميل المسودة…'}<button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button></div>}
         {remoteError && <div role="alert" className="adm-error"><p>{remoteError.error}</p><div className="adm-actions">{ready && !remoteError.conflict && <button className="adm-button" disabled={busy} onClick={() => persistShared(draft)}>إعادة الحفظ</button>}<button className="adm-button secondary" disabled={busy} onClick={() => refreshShared(ready)}>تحميل أحدث مسودة</button>{ready && <button className="adm-button secondary" onClick={exportRecovery}>حفظ نسخة من تعديلاتي</button>}</div></div>}
         <fieldset className="adm-workspace" disabled={shared && (busy || Boolean(remoteError))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
@@ -340,14 +366,20 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div className="adm-change-text"><strong>{change.title}</strong><p>{change.detail}</p></div><button className="adm-icon-button adm-danger" aria-label={`التراجع عن تغيير ${change.title}`} title="التراجع عن التغيير" onClick={() => undoChange(change)}><Icon name="close"/></button></article>)}
           {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
           <div className="adm-actions"><button className="adm-button" disabled={!changes.length || busy} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>{shared ? 'نشر التغييرات' : 'تجربة النشر محلياً'}</button><button className="adm-button secondary" onClick={() => shared ? window.open('/admin/preview','_blank','noopener,noreferrer') : setPreview(true)}><Icon name="eye"/>معاينة</button></div>
-          {shared && <div className="adm-history"><button className="adm-button secondary full" onClick={loadHistory}>سجل النشر / استعادة نسخة</button>{history && <p className="adm-history-help">كل نسخة تشمل القائمة كاملة وقت النشر. الاستعادة تغيّر المسودة فقط؛ انشرها لتظهر للعملاء.</p>}{history?.map(revision=><div className="adm-change" key={revision.id}><div className="adm-change-text"><strong>النسخة {revision.id}</strong>{revision.id === publishedId && <p className="adm-current-revision">النسخة المنشورة حالياً</p>}<p>{new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(revision.created_at))}</p></div><button className="adm-button secondary" disabled={revision.id === publishedId && !changes.length} onClick={()=>restoreRevision(revision.id)}>{revision.id === publishedId ? (changes.length ? 'استعادة المنشورة' : 'منشورة حالياً') : 'استعادة كمسودة'}</button></div>)}</div>}
+          {shared && <div className="adm-history">
+            <button className="adm-button secondary full" onClick={loadHistory} aria-expanded={Boolean(history)} aria-controls="admin-publish-history">سجل النشر / استعادة نسخة<Icon name={history ? 'up' : 'down'}/></button>
+            {history && <div id="admin-publish-history">
+              <p className="adm-history-help">كل نسخة تشمل القائمة كاملة وقت النشر. الاستعادة تغيّر المسودة فقط؛ انشرها لتظهر للعملاء.</p>
+              {history.map(revision=><div className="adm-change" key={revision.id}><div className="adm-change-text"><strong>النسخة {revision.id}</strong>{revision.id === publishedId && <p className="adm-current-revision">النسخة المنشورة حالياً</p>}<p>{new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(revision.created_at))}</p></div><button className="adm-button secondary" disabled={revision.id === publishedId && !changes.length} onClick={()=>restoreRevision(revision.id)}>{revision.id === publishedId ? (changes.length ? 'استعادة المنشورة' : 'منشورة حالياً') : 'استعادة كمسودة'}</button></div>)}
+            </div>}
+          </div>}
         </>}
         </>}
         </fieldset>
       </main>
       <nav className="adm-nav" aria-label="التنقل في إدارة القائمة">{tabs.map(([id, label, icon]) => <button key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(id)}><Icon name={icon}/><span>{label}</span>{id === 'publish' && changes.length > 0 && <i>{changes.length}</i>}</button>)}</nav>
     </div>
-    {notice && <div className="adm-toast" role="status" aria-atomic="true"><Icon name="check"/><span>{notice.message}</span><button type="button" className="adm-icon-button" aria-label="إخفاء الإشعار" onClick={() => setNotice('')}><Icon name="close" width="18" height="18"/></button></div>}
+    {notices.length > 0 && <div ref={toastRef} className="adm-toast-stack" aria-label="الإشعارات">{notices.map(notice=><TimedNotice key={notice.id} notice={notice} onDismiss={dismissNotice}/>)}</div>}
     {modal && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
       <div className="adm-dialog-symbol"><Icon name={modal.type === 'publish' ? 'send' : 'trash'} width="34" height="34"/></div>
       <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? (shared ? 'هل تريد نشر جميع التغييرات المحفوظة؟ ستظهر النسخة الجديدة للعملاء في القائمة العامة.' : 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.') : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>
