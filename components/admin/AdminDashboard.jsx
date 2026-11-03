@@ -23,6 +23,7 @@ function Icon({ name, ...props }) {
     save: <><path d="M4 3h13l4 4v14H3V3ZM7 3v6h10V3M7 21v-8h10v8"/></>,
     check: <path d="m5 12 4 4L19 6"/>,
     refresh: <><path d="M3 11a9 9 0 0 1 15.36-6.36L21 7M21 3v4h-4"/><path d="M21 13a9 9 0 0 1-15.36 6.36L3 17M3 21v-4h4"/></>,
+    logout: <><path d="M9 4H4v16h5M14 8l4 4-4 4M8 12h10"/></>,
     up: <path d="m6 14 6-6 6 6"/>,
     down: <path d="m6 10 6 6 6-6"/>,
     eye: <><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
@@ -266,7 +267,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     <div className="adm-shell">
       <header className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><span className="adm-draft-badge"><Icon name="edit" width="14" height="14"/> مسودة</span></header>
       <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
-      <form action={logoutAction} className="adm-logout"><button type="submit">تسجيل الخروج</button></form>
+      <form action={logoutAction} className="adm-logout"><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
       <main className="adm-main">
         {shared && <div className="adm-shared-status" role="status">{busy ? 'جارٍ الاتصال…' : ready ? 'المسودة المشتركة' : 'جارٍ تحميل المسودة…'}<button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" disabled={busy || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button></div>}
         {remoteError && <div role="alert" className="adm-error"><p>{remoteError.error}</p><div className="adm-actions">{ready && !remoteError.conflict && <button className="adm-button" disabled={busy} onClick={() => persistShared(draft)}>إعادة الحفظ</button>}<button className="adm-button secondary" disabled={busy} onClick={() => refreshShared(ready)}>تحميل أحدث مسودة</button>{ready && <button className="adm-button secondary" onClick={exportRecovery}>حفظ نسخة من تعديلاتي</button>}</div></div>}
