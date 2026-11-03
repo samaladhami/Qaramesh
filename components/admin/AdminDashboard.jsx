@@ -1,0 +1,233 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import CategoryIcon from '../CategoryIcon';
+
+const KEY = 'qaramesh-admin-prototype-v1';
+const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
+const money = value => new Intl.NumberFormat('en-US').format(value);
+
+function Icon({ name, ...props }) {
+  const paths = {
+    dish: <><path d="M3 17h18M5 17a7 7 0 0 1 14 0M12 8V5M9 21h6" /></>,
+    layers: <><path d="m12 3 10 5-10 5L2 8Zm-9 9 9 5 9-5M3 16l9 5 9-5" /></>,
+    image: <><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m3 17 6-6 4 4 3-3 5 5"/><circle cx="16" cy="8" r="1"/></>,
+    send: <path d="m3 10 18-7-7 18-4-7Zm7 4L21 3"/>,
+    edit: <><path d="m4 16 12-12 4 4L8 20l-5 1ZM14 6l4 4"/></>,
+    plus: <path d="M12 4v16M4 12h16"/>,
+    close: <path d="m6 6 12 12M6 18 18 6"/>,
+    search: <><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></>,
+    back: <path d="m9 4 8 8-8 8"/>,
+    trash: <><path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7"/></>,
+    save: <><path d="M4 3h13l4 4v14H3V3ZM7 3v6h10V3M7 21v-8h10v8"/></>,
+    check: <path d="m5 12 4 4L19 6"/>,
+    up: <path d="m6 14 6-6 6 6"/>,
+    down: <path d="m6 10 6 6 6-6"/>,
+    eye: <><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
+  };
+  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths[name] || paths.dish}</svg>;
+}
+
+function Dialog({ title, children, onClose }) {
+  const ref = useRef(null);
+  useEffect(() => { ref.current.showModal(); }, []);
+  return <dialog ref={ref} className="adm-dialog" onCancel={event => { event.preventDefault(); onClose(); }}>
+    <div className="adm-dialog-heading"><h2>{title}</h2><button type="button" className="adm-icon-button" aria-label="إغلاق" onClick={onClose}><Icon name="close"/></button></div>{children}
+  </dialog>;
+}
+
+function Upload({ label, onChange }) {
+  const [error, setError] = useState('');
+  async function read(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 500000) {
+      setError('اختر صورة PNG أو JPG أو WebP بحجم أقل من 500 KB.'); event.target.value = ''; return;
+    }
+    try {
+      const src = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); });
+      await new Promise((resolve, reject) => { const image = new window.Image(); image.onload = resolve; image.onerror = reject; image.src = src; });
+      onChange(src); setError('');
+    } catch { setError('تعذر قراءة الصورة. جرّب صورة أخرى.'); }
+  }
+  return <div className="adm-upload"><label><Icon name="image"/>{label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read}/></label>{error && <p role="alert" className="adm-error">{error}</p>}</div>;
+}
+
+function differences(base, draft) {
+  const changes = [];
+  for (const item of draft.items) {
+    const old = base.items.find(value => value.id === item.id);
+    if (!old) changes.push({ id: item.id, title: item.name, detail: 'طبق جديد', type: 'new' });
+    else {
+      const fields = [];
+      if (old.name !== item.name) fields.push('الاسم');
+      if (old.price !== item.price) fields.push(`السعر: ${money(old.price)} ← ${money(item.price)} IQD`);
+      if (old.category !== item.category) fields.push(`القسم: ${old.category} ← ${item.category}`);
+      if (old.available !== item.available) fields.push(item.available ? 'متوفر الآن' : 'غير متوفر');
+      if (['description', 'shortDescription', 'size', 'addOn', 'image'].some(key => old[key] !== item[key])) fields.push('تفاصيل الطبق');
+      if (fields.length) changes.push({ id: item.id, title: item.name, detail: fields.join('، '), type: 'edit' });
+    }
+  }
+  for (const item of base.items) if (!draft.items.some(value => value.id === item.id)) changes.push({ id: item.id, title: item.name, detail: 'حذف طبق', type: 'delete' });
+  if (JSON.stringify(base.categories) !== JSON.stringify(draft.categories)) changes.push({ id: 'categories', title: 'الأقسام', detail: 'تعديل الأقسام أو الأيقونات أو ترتيب العرض', type: 'edit' });
+  if (JSON.stringify(base.slides) !== JSON.stringify(draft.slides)) changes.push({ id: 'slides', title: 'العروض', detail: 'تعديل صور العروض أو ترتيبها', type: 'edit' });
+  return changes;
+}
+
+export default function AdminDashboard({ initialMenu, initialSlides }) {
+  const seed = { items: initialMenu.items, categories: initialMenu.categories.map((name, index) => ({ id: `category-${index}`, name, icon: name })), slides: initialSlides };
+  const [draft, setDraft] = useState(seed);
+  const [baseline, setBaseline] = useState(seed);
+  const [ready, setReady] = useState(false);
+  const [storageError, setStorageError] = useState('');
+  const [tab, setTab] = useState('dishes');
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('');
+  const [editor, setEditor] = useState(null);
+  const [original, setOriginal] = useState(null);
+  const [modal, setModal] = useState(null);
+  const [notice, setNotice] = useState('');
+  const [inline, setInline] = useState(null);
+  const [preview, setPreview] = useState(false);
+  const changes = differences(baseline, draft);
+
+  useEffect(() => {
+    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline;
+    if (!dirty) return;
+    const warn = event => { event.preventDefault(); event.returnValue = ''; };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [editor, original, inline]);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (stored && Array.isArray(stored.items) && Array.isArray(stored.categories) && stored.categories.every(value => value && typeof value.name === 'string') && Array.isArray(stored.slides) && stored.items.every(value => value && typeof value.id === 'string' && typeof value.name === 'string' && typeof value.category === 'string' && Number.isFinite(value.price))) setDraft(stored);
+    } catch { setStorageError('تعذر استعادة المسودة المحلية. يمكنك العمل في هذه الجلسة.'); }
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    try { localStorage.setItem(KEY, JSON.stringify(draft)); setStorageError(''); }
+    catch { setStorageError('تعذر حفظ المسودة على هذا الجهاز. احتفظ بالصفحة مفتوحة؛ قد تكون مساحة التخزين ممتلئة.'); }
+  }, [draft, ready]);
+
+  function update(next) { setDraft(next); setNotice('تم تحديث المسودة'); }
+  function openEditor(type, value) { const next = { type, ...value }; setOriginal(next); setEditor(next); setNotice(''); }
+  function closeEditor() { if (JSON.stringify(editor) !== JSON.stringify(original) && !window.confirm('توجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')) return; setEditor(null); }
+  function navigate(next) { if ((inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) && !window.confirm('توجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')) return; setEditor(null); setInline(null); setPreview(false); setTab(next); setNotice(''); window.scrollTo(0, 0); }
+  function move(key, index, delta) { const values = [...draft[key]]; [values[index], values[index + delta]] = [values[index + delta], values[index]]; update({ ...draft, [key]: values }); }
+  function removeCategory(value) {
+    if (draft.items.some(item => item.category === value.name)) setModal({ type: 'blocked', value });
+    else setModal({ type: 'deleteCategory', value });
+  }
+  function saveEditor(event) {
+    event.preventDefault();
+    const { type, ...value } = editor;
+    value.name = value.name?.trim();
+    if (type === 'dish') {
+      if (!value.name || !draft.categories.some(cat => cat.name === value.category) || !Number.isSafeInteger(Number(value.price)) || Number(value.price) < 0) return;
+      value.price = Number(value.price);
+      const exists = draft.items.some(item => item.id === value.id);
+      update({ ...draft, items: exists ? draft.items.map(item => item.id === value.id ? value : item) : [...draft.items, value] });
+    } else {
+      if (!value.name) return;
+      if (draft.categories.some(cat => cat.id !== value.id && cat.name === value.name)) { setNotice('يوجد قسم بهذا الاسم بالفعل'); return; }
+      const old = draft.categories.find(cat => cat.id === value.id);
+      update({ ...draft, categories: old ? draft.categories.map(cat => cat.id === value.id ? value : cat) : [...draft.categories, value], items: old ? draft.items.map(item => item.category === old.name ? { ...item, category: value.name } : item) : draft.items });
+      if (category === old?.name) setCategory(value.name);
+    }
+    setEditor(null);
+  }
+  function saveInline(event) {
+    event.preventDefault();
+    if (!inline.name.trim() || !Number.isSafeInteger(Number(inline.price)) || Number(inline.price) < 0) return;
+    update({ ...draft, items: draft.items.map(item => item.id === inline.id ? { ...item, name: inline.name.trim(), price: Number(inline.price) } : item) }); setInline(null);
+  }
+  const title = preview ? 'معاينة المسودة' : editor ? (editor.type === 'dish' ? 'تعديل الطبق' : 'تعديل القسم') : ({ dishes: 'إدارة القائمة', categories: 'الأقسام', offers: 'العروض', publish: 'مراجعة التغييرات' }[tab]);
+  const filtered = draft.items.filter(item => (!category || item.category === category) && item.name.includes(query.trim()));
+  function reorderButtons(key, index, length) { return <div className="adm-reorder"><button className="adm-icon-button" aria-label="نقل لأعلى" disabled={!index} onClick={() => move(key, index, -1)}><Icon name="up"/></button><button className="adm-icon-button" aria-label="نقل لأسفل" disabled={index === length - 1} onClick={() => move(key, index, 1)}><Icon name="down"/></button></div>; }
+
+  return <div className="adm-root">
+    <aside className="adm-desktop-brand"><span>QARAMESH</span><p>مساحة إدارة قائمتك</p><small>من أول طبق، إلى آخر تفصيلة.</small></aside>
+    <div className="adm-shell">
+      <header className="adm-header"><button className="adm-icon-button" aria-label={editor || preview ? 'رجوع' : 'القائمة العامة'} onClick={() => editor ? closeEditor() : preview ? setPreview(false) : window.location.assign('/')}><Icon name="back"/></button><h1>{title}</h1><span className="adm-draft-badge"><Icon name="edit" width="14" height="14"/> مسودة</span></header>
+      <div className="adm-prototype">نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.</div>
+      <main className="adm-main">
+        {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
+        {storageError && <p role="alert" className="adm-error">{storageError}</p>}
+        {notice && <p role="status" className="adm-notice"><Icon name="check"/>{notice}</p>}
+        {editor ? <form onSubmit={saveEditor} className="adm-editor">
+          {editor.type === 'dish' ? <>
+            <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload label="تغيير الصورة" onChange={image => setEditor({ ...editor, image })}/></div>
+            <label>اسم الطبق <b>*</b><input required maxLength={120} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
+            <label>السعر <b>*</b><div className="adm-price-input"><input aria-label="السعر" dir="ltr" type="number" required min="0" max="999999999" step="1" value={editor.price} onChange={e => setEditor({ ...editor, price: e.target.value })}/><span>IQD</span></div></label>
+            <label>القسم <b>*</b><select required value={editor.category} onChange={e => setEditor({ ...editor, category: e.target.value })}>{draft.categories.map(cat => <option key={cat.id}>{cat.name}</option>)}</select></label>
+            <label>الحجم<input maxLength={100} value={editor.size} onChange={e => setEditor({ ...editor, size: e.target.value })}/></label>
+            <label>الوصف المختصر<input maxLength={240} value={editor.shortDescription} onChange={e => setEditor({ ...editor, shortDescription: e.target.value })}/></label>
+            <label>الوصف<textarea rows="3" maxLength={3000} value={editor.description} onChange={e => setEditor({ ...editor, description: e.target.value })}/></label>
+            <label>الإضافات<input maxLength={300} value={editor.addOn} onChange={e => setEditor({ ...editor, addOn: e.target.value })}/></label>
+            <label className="adm-availability">متوفر<input type="checkbox" role="switch" checked={editor.available} onChange={e => setEditor({ ...editor, available: e.target.checked })}/></label>
+          </> : <>
+            <label>اسم القسم <b>*</b><input required maxLength={100} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
+            <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{initialMenu.categories.map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
+            {editor.image && <img className="adm-custom-icon" src={editor.image} alt="معاينة أيقونة القسم"/>}
+            <Upload label="رفع أيقونة مخصصة" onChange={image => setEditor({ ...editor, image })}/>
+            <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 500 KB.</p>
+          </>}
+          <div className="adm-actions"><button type="submit" className="adm-button"><Icon name="save"/>حفظ المسودة</button><button type="button" className="adm-button secondary" onClick={closeEditor}>إلغاء</button></div>
+        </form> : preview ? <section className="adm-preview">
+          <div className="adm-section-heading"><h2>قائمتك كما ستظهر</h2><span className="adm-pill">معاينة محلية</span></div>
+          {draft.slides[0] && <img className="adm-preview-hero" src={draft.slides[0].src} alt={draft.slides[0].alt}/>}
+          {draft.categories.map(cat => { const items = draft.items.filter(item => item.category === cat.name); return items.length > 0 && <section key={cat.id}><h3>{cat.name}</h3>{items.map(item => <article className={`adm-preview-item ${!item.available ? 'unavailable' : ''}`} key={item.id}>{item.image && <img src={item.image} alt=""/>}<div><h4>{item.name}</h4><p>{item.shortDescription}</p>{!item.available && <small>غير متوفر</small>}</div><strong>{money(item.price)} <small>IQD</small></strong></article>)}</section>; })}
+        </section> : tab === 'dishes' ? <>
+          <div className="adm-section-heading"><div><span className="adm-eyebrow">قائمة قراميش</span><h2>كل طبق، بأحلى صورة.</h2></div><span className="adm-count">{draft.items.length}<small>طبق</small></span></div>
+          <div className="adm-search"><input aria-label="ابحث عن طبق" placeholder="ابحث عن طبق…" value={query} onChange={e => setQuery(e.target.value)}/><Icon name="search"/></div>
+          <div className="adm-filters" aria-label="تصفية الأقسام"><button className={!category ? 'selected' : ''} onClick={() => setCategory('')}>الكل</button>{draft.categories.map(cat => <button key={cat.id} className={category === cat.name ? 'selected' : ''} onClick={() => setCategory(cat.name)}>{cat.name}</button>)}</div>
+          <button className="adm-button full" disabled={!draft.categories.length} onClick={() => openEditor('dish', { id: crypto.randomUUID(), name: '', price: '', category: category || draft.categories[0]?.name, size: '', description: '', shortDescription: '', addOn: '', image: '', available: true })}><Icon name="plus"/>إضافة طبق</button>
+          {!draft.categories.length && <p>أضف قسماً أولاً من شاشة الأقسام.</p>}
+          <div className="adm-list">{filtered.map(item => <article className="adm-dish-row" key={item.id}>
+            <button className="adm-dish-open" aria-label={`تعديل ${item.name}`} onClick={() => openEditor('dish', item)}>{item.image ? <img src={item.image} alt=""/> : <Icon name="dish"/>}</button>
+            {inline?.id === item.id ? <form className="adm-inline" onSubmit={saveInline}><input aria-label="اسم الطبق" required value={inline.name} onChange={e => setInline({ ...inline, name: e.target.value })}/><input aria-label="سعر الطبق" type="number" min="0" max="999999999" step="1" required value={inline.price} onChange={e => setInline({ ...inline, price: e.target.value })}/><div><button className="adm-icon-button" aria-label="حفظ التعديل" type="submit"><Icon name="check"/></button><button className="adm-icon-button" aria-label="إلغاء التعديل" type="button" onClick={() => setInline(null)}><Icon name="close"/></button></div></form> : <button className="adm-dish-text" onClick={() => setInline({ id: item.id, name: item.name, price: item.price })} aria-label={`تعديل اسم وسعر ${item.name}`}><strong>{item.name}</strong><span>{money(item.price)} <small>IQD</small></span></button>}
+            <button role="switch" aria-checked={item.available} aria-label={`توفر ${item.name}`} className={`adm-switch ${item.available ? 'on' : ''}`} onClick={() => update({ ...draft, items: draft.items.map(value => value.id === item.id ? { ...value, available: !value.available } : value) })}><span/></button>
+            <button className="adm-icon-button adm-danger" aria-label={`حذف ${item.name}`} onClick={() => setModal({ type: 'deleteDish', value: item })}><Icon name="trash" width="18"/></button>
+          </article>)}</div>
+          {!filtered.length && <div className="adm-empty"><Icon name="search" width="38" height="38"/><h3>لا توجد أطباق</h3><p>جرّب اسماً آخر أو اختر قسماً مختلفاً.</p></div>}
+        </> : tab === 'categories' ? <>
+          <div className="adm-section-heading"><div><span className="adm-eyebrow">تنظيم القائمة</span><h2>لكل نكهة، مكان.</h2></div><span className="adm-count">{draft.categories.length}<small>قسم</small></span></div>
+          <button className="adm-button full" onClick={() => openEditor('category', { id: crypto.randomUUID(), name: '', icon: initialMenu.categories[0], image: '' })}><Icon name="plus"/>إضافة قسم</button>
+          <div className="adm-list">{draft.categories.map((cat, index) => <article className="adm-category-row" key={cat.id}>{reorderButtons('categories', index, draft.categories.length)}<div className="adm-category-info"><strong>{cat.name}</strong><span>{draft.items.filter(item => item.category === cat.name).length} طبق</span></div><div className="adm-category-art">{cat.image ? <img src={cat.image} alt=""/> : <CategoryIcon name={cat.icon}/>}</div><button className="adm-icon-button" aria-label={`تعديل ${cat.name}`} onClick={() => openEditor('category', cat)}><Icon name="edit"/></button><button className="adm-icon-button adm-danger" aria-label={`حذف ${cat.name}`} onClick={() => removeCategory(cat)}><Icon name="trash" width="18"/></button></article>)}</div>
+          {!draft.categories.length && <p className="adm-empty">أضف القسم الأول لتنظيم أطباقك.</p>}
+        </> : tab === 'offers' ? <>
+          <div className="adm-section-heading"><div><span className="adm-eyebrow">واجهة مطعمك</span><h2>صور تفتح الشهية.</h2></div><span className="adm-count">{draft.slides.length}<small>صورة</small></span></div>
+          <p className="adm-muted">رتّب صور العروض وعدّل وصفها قبل النشر.</p>
+          {draft.slides.map((slide, index) => <article className="adm-offer" key={slide.id}><img src={slide.src} alt={slide.alt}/><div className="adm-offer-controls">{reorderButtons('slides', index, draft.slides.length)}<label>وصف الصورة<input value={slide.alt} maxLength={240} onChange={e => update({ ...draft, slides: draft.slides.map(value => value.id === slide.id ? { ...value, alt: e.target.value } : value) })}/></label><button className="adm-icon-button adm-danger" aria-label={`حذف الصورة ${index + 1}`} onClick={() => setModal({ type: 'deleteSlide', value: slide })}><Icon name="trash"/></button></div></article>)}
+          <Upload label="إضافة صورة" onChange={src => update({ ...draft, slides: [...draft.slides, { id: crypto.randomUUID(), src, alt: 'عرض جديد من قراميش' }] })}/>
+          {!draft.slides.length && <p className="adm-empty">أضف صورة العرض الأولى.</p>}
+        </> : <>
+          <div className="adm-section-heading"><div><span className="adm-eyebrow">جاهزة للمراجعة</span><h2>لمسة أخيرة، قبل النشر.</h2></div><Icon name="send" width="34" height="34"/></div>
+          <p className="adm-info">كل التغييرات هنا مسودة محلية. النشر الفعلي يحتاج ربط حسابات الموظفين وقاعدة البيانات.</p>
+          <h3>التغييرات المعلقة ({changes.length})</h3>
+          {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div><strong>{change.title}</strong><p>{change.detail}</p></div></article>)}
+          {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
+          <div className="adm-actions"><button className="adm-button" disabled={!changes.length} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>تجربة النشر محلياً</button><button className="adm-button secondary" onClick={() => setPreview(true)}><Icon name="eye"/>معاينة</button></div>
+        </>}
+        </>}
+      </main>
+      <nav className="adm-nav" aria-label="التنقل في إدارة القائمة">{tabs.map(([id, label, icon]) => <button key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(id)}><Icon name={icon}/><span>{label}</span>{id === 'publish' && changes.length > 0 && <i>{changes.length}</i>}</button>)}</nav>
+    </div>
+    {modal && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? 'تجربة النشر محلياً' : 'تأكيد الحذف'} onClose={() => setModal(null)}>
+      <div className="adm-dialog-symbol"><Icon name={modal.type === 'publish' ? 'send' : 'trash'} width="34" height="34"/></div>
+      <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.' : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>
+      <div className="adm-actions"><button className="adm-button" onClick={() => {
+        if (modal.type === 'blocked') { setCategory(modal.value.name); navigate('dishes'); }
+        else if (modal.type === 'publish') { setBaseline(draft); setNotice('نجحت محاكاة النشر محلياً. لم تتغير القائمة العامة.'); }
+        else if (modal.type === 'deleteDish') update({ ...draft, items: draft.items.filter(item => item.id !== modal.value.id) });
+        else if (modal.type === 'deleteSlide') update({ ...draft, slides: draft.slides.filter(slide => slide.id !== modal.value.id) });
+        else { update({ ...draft, categories: draft.categories.filter(cat => cat.id !== modal.value.id) }); if (category === modal.value.name) setCategory(''); }
+        setModal(null);
+      }}>{modal.type === 'blocked' ? 'عرض الأطباق' : modal.type === 'publish' ? 'تأكيد التجربة' : 'حذف من المسودة'}</button><button className="adm-button secondary" onClick={() => setModal(null)}>إلغاء</button></div>
+    </Dialog>}
+  </div>;
+}

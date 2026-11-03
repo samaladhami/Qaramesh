@@ -105,7 +105,7 @@ Phase 2 starts with planning the full admin dashboard, followed by secure staff 
 
 As of November 2, 2026, the user has approved the dashboard comps as the starting design direction. Minor visual and interaction changes can be made together during implementation. The comps have not yet been implemented; the public menu remains the completed Phase 1 site.
 
-The comp images are not currently stored in this repository. Refer to the approved conversation visuals when implementing; this written handoff does not replace those references. No additional decisions or credentials are needed for this documentation milestone. Supabase setup and the initial staff account will be needed when connecting the backend, as described in [PHASE-2.md](PHASE-2.md).
+The user supplied the approved eight-screen comp reference in the conversation on November 3, 2026. Refer to that image when refining the dashboard; this written handoff does not replace the reference. Supabase setup and the initial staff account will be needed when connecting the backend, as described in [PHASE-2.md](PHASE-2.md).
 
 Next steps:
 
@@ -116,3 +116,15 @@ Next steps:
 5. Run the appropriate checks for each completed milestone, commit only relevant files, and push to `origin/main` for Vercel deployment.
 
 Before writing application code, read the relevant guides in the installed `node_modules/next/dist/docs/` as required by `AGENTS.md`. Local `tmp/` checks, screenshots and unused logo experiments remain outside milestone commits.
+
+## Dashboard interface prototype — November 3, 2026
+
+Open `/admin` to review the first implementation of the approved comps. The mobile-first Arabic RTL interface includes the teal header, draft badge, bottom navigation, dish search and category filters, inline name/price editing, dish forms, availability switches, category icons and ordering, nonempty-category deletion warning, offer images and ordering, change review, and draft preview. Existing menu records and hero images seed the prototype.
+
+This is a public interface prototype, not a protected staff dashboard. It has no privileged server operations or backend connection. Drafts are saved only in this browser's local storage under `qaramesh-admin-prototype-v1`; they are not shared between staff or devices. Clear that key to reset the prototype. Failed local saves show an error. Image selection accepts PNG, JPG and WebP up to 500 KB per image; production compression, storage and SVG support remain future work.
+
+The publish button explicitly simulates publishing within the current session. It clears the local change review without modifying public data; reloading compares the saved draft with the original menu again. The preview is a simplified draft rendering, not yet the production menu renderer. There is no publish history or rollback yet. The public menu, dish URLs and local JSON sources are unchanged.
+
+Validated with a production build and headless Edge at 320, 390, 768 and 1280px: RTL layout without horizontal overflow, inline editing, draft reload persistence, category creation, blocked deletion, offers and preview. Additional flow checks covered full dish saves, new dishes, availability, category ordering and simulated publishing without public menu changes. Local browser scripts and screenshots are in `tmp/`, using the existing machine-specific Playwright setup.
+
+Next: review the prototype against the comps and refine the screens, then implement invitation-only staff access and server/database authorization before enabling real editing or publishing. Follow `PHASE-2.md` for the remaining backend, media and delivery milestones.
