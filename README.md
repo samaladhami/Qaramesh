@@ -172,3 +172,10 @@ Remaining: scheduled-backup setup and recovery verification, reference-aware ima
 November 4, 2026: the user confirmed offer-image replacement works and reported successful testing with no observed defects in the flows tested. The latest upload and offer-ordering milestone passed all 15 backend/image/ordering tests and the production build. Offer images support first/last moves with Arabic confirmation; each up/down arrow pair is stacked vertically and aligned with the change-image button.
 
 The remaining backlog is operational: activate the deferred hourly backups and verify recovery, add safe reference-aware cleanup for unused uploads, monitor Supabase/Vercel storage and traffic usage, and finish staff handover. Custom category-icon uploads remain an optional deferred feature tracked above.
+
+## Next phases
+
+- **Phase 3: Ordering through WhatsApp.** Customers build a cart, review the total and details, then send the order to the restaurant through WhatsApp. Staff receive and confirm it there. See [PHASE-3.md](PHASE-3.md).
+- **Phase 4: Credit-card payments and receiving orders.** Add secure online payment plus a staff incoming-orders dashboard and order-status workflow. See [PHASE-4.md](PHASE-4.md).
+
+Both phases are planned; ordering and card payments are not enabled yet.
