@@ -2,9 +2,9 @@ name: Back up published menu
 
 on:
   workflow_dispatch:
-  # TODO: Enable hourly scheduling after completing the checklist in BACKUPS.md.
-  # schedule:
-  #   - cron: '23 * * * *'
+  schedule:
+    # Weekly on Sunday at 03:23 UTC; repository variables are required.
+    - cron: '23 3 * * 0'
 
 permissions:
   contents: write

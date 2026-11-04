@@ -1,6 +1,6 @@
 # Phase 2: menu administration
 
-Status: staff login and shared drafts are configured, and the two-account draft/save/undo check passed. Protected preview, atomic publishing and restore-as-draft are implemented behind `MENU_BACKEND_ENABLED=true`; the initial menu is imported. Image uploads/compression and private Storage policies are implemented in migration 002; see `IMAGE-STORAGE.md` for rollout and live acceptance. Published-menu/photo backups and deployed outage fallback are implemented; see `BACKUPS.md` for required hourly-workflow configuration and the recovery-point limits. Reference-aware asset cleanup and operational monitoring remain future work. Live publishing/restore, scheduled-backup/recovery and image acceptance checks remain before handover.
+Status: staff login and shared drafts are configured, and the two-account draft/save/undo check passed. Protected preview, atomic publishing and restore-as-draft are implemented behind `MENU_BACKEND_ENABLED=true`; the initial menu is imported. Image uploads/compression and private Storage policies are implemented in migration 002; see `IMAGE-STORAGE.md` for rollout and live acceptance. Published-menu/photo backups and deployed outage fallback are implemented; see `BACKUPS.md` for required weekly-workflow configuration and the recovery-point limits. Reference-aware asset cleanup and operational monitoring remain future work. Live publishing/restore, scheduled-backup/recovery and image acceptance checks remain before handover.
 
 ## Dashboard requirements agreed with the user
 

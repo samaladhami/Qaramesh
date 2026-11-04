@@ -8,12 +8,14 @@ Commit both the manifest and its images, then push and confirm the Vercel deploy
 
 ## Scheduled captures
 
-**TODO: Activate hourly backups. Scheduling is currently disabled; the workflow can only be started manually.**
+Weekly scheduling is enabled in the workflow: **Sunday at 03:23 UTC**. Manual runs remain available. Successful execution still requires the repository variables below; configuration and the first successful run must be verified.
+
+Weekly captures mean changes made since the last successful backup, potentially close to seven days of updates, may be missing from recovery. Run a manual capture after major menu or photo changes when needed.
 
 - [ ] Add the two repository variables listed below.
 - [ ] Run **Back up published menu** manually from GitHub Actions and confirm it succeeds.
 - [ ] Confirm the backup commit deploys successfully on Vercel.
-- [ ] Uncomment `schedule` and its cron entry in `.github/workflows/menu-backup.yml`, then commit and push. The prepared schedule runs hourly at minute 23.
+- [x] Configure a weekly Sunday schedule (`23 3 * * 0`, UTC).
 
 In GitHub → repository Settings → Secrets and variables → Actions → **Variables**, add these repository variables using the same values as Vercel:
 
@@ -25,6 +27,8 @@ These are public connection settings. Do not supply a service-role key. The work
 After setting the variables, manually run the workflow once, check its green result and backup commit, and confirm Vercel deploys that commit. Check failed-run notifications regularly. GitHub schedules can be delayed, and inactive public repositories can have schedules disabled: this is periodic recovery, not an immediate backup after every Publish. The recovery point is the last **successfully captured, committed and deployed** revision. Run a manual backup after an important publication when waiting for the schedule is unacceptable.
 
 The first capture on November 3, 2026 contains published revision 6, 145 dishes and no uploaded `/media/` images. Later captures automatically include uploaded photos when the published revision references them.
+
+Latest capture (November 4, 2026): published revision 17, 145 dishes and 1 uploaded image.
 
 ## Serving during a Supabase outage
 
@@ -59,6 +63,6 @@ To recover an older backed-up revision, use a separate checkout of its backup co
 
 `npm.cmd run verify:backup` checks publication races, incomplete downloads, invalid payloads, image deduplication/hashes and the integrity of the checked-in backup. Run it with the production build before deploying changes to recovery.
 
-This is a published-content backup, not a full Supabase database backup or a backup of every publication. Drafts and revisions published between hourly captures can be absent. Repository size grows as photos change; cleanup and usage monitoring remain separate work. Scheduled GitHub execution, deployment acceptance and a staff recovery drill still need operational verification after configuration.
+This is a published-content backup, not a full Supabase database backup or a backup of every publication. Drafts and revisions published between weekly captures can be absent. Repository size grows as photos change; cleanup and usage monitoring remain separate work. Scheduled GitHub execution, deployment acceptance and a staff recovery drill still need operational verification after configuration.
 
 GitHub references: [scheduled workflow behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule) and [workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions).
