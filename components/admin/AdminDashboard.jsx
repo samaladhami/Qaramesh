@@ -358,7 +358,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
             <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{initialMenu.categories.map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
             {editor.image && <img className="adm-custom-icon" src={editor.image} alt="معاينة أيقونة القسم"/>}
             <Upload disabled={shared && !mediaReady} shared={shared} kind="category" onBusy={uploadBusy} label="رفع أيقونة مخصصة" onChange={image => setEditor(current=>current ? { ...current, image } : current)}/>
-            <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 10 MB. تُضغط الصورة تلقائياً.</p>
+            <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 25 MB. تُضغط الصورة تلقائياً.</p>
           </>}
           <div className="adm-actions"><button type="submit" className="adm-button"><Icon name="save"/>حفظ المسودة</button><button type="button" className="adm-button secondary" onClick={closeEditor}>إلغاء</button></div>
         </form> : preview ? <section className="adm-preview">

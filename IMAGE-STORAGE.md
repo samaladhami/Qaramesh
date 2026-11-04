@@ -12,8 +12,8 @@ For a new installation, `npm.cmd run prepare:backend` now includes all migration
 
 ## Behavior
 
-- Select PNG, JPG or WebP up to 10 MB and 40 megapixels. SVG, GIF, animation and other formats are not supported in this milestone.
-- The browser prepares a smaller WebP before sending it, keeping the upload below 2 MB. The server checks byte signatures, decodes the image again, enforces pixel/size limits, corrects orientation, strips metadata and writes WebP.
+- Select PNG, JPG or WebP up to 25 MB and 40 megapixels. SVG, GIF, animation and other formats are not supported in this milestone.
+- The browser resizes and compresses before sending, keeping the upload below 2 MB. If WebP encoding is unavailable, it sends JPEG for photos or PNG for category icons to retain transparency. It progressively reduces quality/dimensions when needed and reports format, file-size, decoding and compression errors separately. The server checks byte signatures, decodes the image again, enforces pixel/size limits, corrects orientation, strips metadata and writes WebP. The stored-file limit remains 500 KB.
 - Dish photos fit within 1600px, icons within 256px, and offer images within 1920px, preserving aspect ratio without enlarging small originals. Compression tries quality 82, 72 and 62, targeting 200 KB for dishes, 60 KB for icons and 350 KB for offers. Those are quality-dependent targets; 500 KB is the hard stored-file cap. Icon transparency is retained.
 - Each upload gets a unique UUID filename. Files cannot be overwritten or deleted by staff. Failed upload or processing leaves the previous image reference in place. A form's photo is not saved to the shared draft until **حفظ المسودة**; offers save their changed image immediately into the draft. Neither changes the public menu until Publish.
 - Uploading temporarily disables editing/navigation to prevent a late upload result from replacing newer form state. Upload errors stay visible with the original image so the staff member can choose the file again.
