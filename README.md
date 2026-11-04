@@ -162,7 +162,8 @@ The production build, input-processing tests, and PostgreSQL storage-policy test
 A weekly GitHub Actions workflow is scheduled for Sunday at 03:23 UTC. The user confirmed the repository-variable setup and a successful manual run on November 4, 2026. See [BACKUPS.md](BACKUPS.md) for setup, recovery instructions and limits. Run `npm.cmd run verify:backup` for integrity and failure-path checks.
 
 - [x] **Configure weekly backups.** Repository variables are added and the manual GitHub Actions run passed. The weekly schedule is enabled; changes since the last deployed backup are not covered.
-- [ ] **TODO: Verify recovery.** Check that a changed backup commit deploys on Vercel and complete a restore drill in an isolated environment before considering recovery fully verified.
+- [x] **Run an isolated recovery drill.** The actual restore command recovered revision 17 (145 dishes and 1 photo) using local PostgreSQL and a local HTTP fixture, with failure and privacy checks. Run `npm.cmd run verify:recovery`; see [RECOVERY-DRILL.md](RECOVERY-DRILL.md) for the results and hosted-service limits.
+- [ ] **TODO: Confirm backup deployment.** Check that a changed backup commit deploys on Vercel. A hosted staging restore and live outage failover have not been exercised by the local drill.
 
 Remaining: scheduled-backup setup and recovery verification, reference-aware image cleanup, usage monitoring, and staff handover. The latest user-reported functional acceptance is recorded below.
 
@@ -172,7 +173,7 @@ Remaining: scheduled-backup setup and recovery verification, reference-aware ima
 
 November 4, 2026: the user confirmed offer-image replacement works and reported successful testing with no observed defects in the flows tested. The latest upload and offer-ordering milestone passed all 15 backend/image/ordering tests and the production build. Offer images support first/last moves with Arabic confirmation; each up/down arrow pair is stacked vertically and aligned with the change-image button.
 
-The remaining backlog is operational: verify backup recovery, add safe reference-aware cleanup for unused uploads, monitor Supabase/Vercel storage and traffic usage, and finish staff handover. Custom category-icon uploads remain an optional deferred feature tracked above.
+The remaining backlog is operational: confirm deployment of changed backups, add safe reference-aware cleanup for unused uploads, monitor Supabase/Vercel storage and traffic usage, and finish staff handover. The isolated local recovery drill passed; hosted staging/outage exercises can extend that verification. Custom category-icon uploads remain an optional deferred feature tracked above.
 
 ## Next phases
 

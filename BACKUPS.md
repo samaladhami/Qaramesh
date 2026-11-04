@@ -63,6 +63,8 @@ To recover an older backed-up revision, use a separate checkout of its backup co
 
 `npm.cmd run verify:backup` checks publication races, incomplete downloads, invalid payloads, image deduplication/hashes and the integrity of the checked-in backup. Run it with the production build before deploying changes to recovery.
 
-This is a published-content backup, not a full Supabase database backup or a backup of every publication. Drafts and revisions published between weekly captures can be absent. Repository size grows as photos change; cleanup and usage monitoring remain separate work. Scheduled GitHub execution, deployment acceptance and a staff recovery drill still need operational verification after configuration.
+`npm.cmd run verify:recovery` runs the real restore command against an isolated local PostgreSQL database and HTTP fixture. The November 4, 2026 drill passed for revision 17 (145 dishes and 1 uploaded photo), including draft privacy, upload failure, existing-draft protection, repeat restores, image corruption detection and explicit local publication. See [RECOVERY-DRILL.md](RECOVERY-DRILL.md) for results and limits.
+
+This is a published-content backup, not a full Supabase database backup or a backup of every publication. Drafts and revisions published between weekly captures can be absent. Repository size grows as photos change; cleanup and usage monitoring remain separate work. Manual GitHub execution and the isolated local recovery drill passed. Deployment acceptance, the first scheduled run and an optional hosted staging restore remain distinct operational checks.
 
 GitHub references: [scheduled workflow behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule) and [workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions).

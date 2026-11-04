@@ -11,6 +11,7 @@
     "prepare:backend": "node scripts/prepare-shared-menu.mjs",
     "backup:menu": "node scripts/backup-menu.mjs",
     "verify:backup": "node --test tests/menu-backup.test.mjs",
+    "verify:recovery": "node --test tests/menu-recovery.test.mjs",
     "restore:menu": "node scripts/restore-menu-backup.mjs --restore-draft"
   },
   "dependencies": {
