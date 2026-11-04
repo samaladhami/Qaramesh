@@ -4,6 +4,8 @@ Status: staff-only photo-storage metrics and an owner review procedure are imple
 
 Rollout update (November 4, 2026): the user confirmed migration 004 ran successfully and reported **Supabase Free + Vercel Hobby**. A staff usage refresh, usage baseline and provider notification preferences still need confirmation.
 
+The user subsequently confirmed the staff usage report works: **18 images, 2.59 MB known size, largest image 0.27 MB**. These are menu-bucket measurements; whole-organization usage/allowances and notification settings remain to be checked in the provider dashboards. Report numbers and timestamp digits use Latin numerals.
+
 ## Current plan considerations
 
 - **Supabase Free:** review Usage weekly and confirm the billing email. Quota notifications precede Fair Use restrictions; the app's 50%/80% review points are manual, not custom configured email thresholds. See [Supabase billing FAQ](https://supabase.com/docs/guides/platform/billing-faq).
