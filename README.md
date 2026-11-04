@@ -164,3 +164,5 @@ An hourly GitHub Actions workflow is prepared, with scheduling disabled pending 
 - [ ] **TODO: Activate hourly backups.** Add the two public Supabase connection variables in GitHub Actions settings, run **Back up published menu** manually, confirm its backup commit deploys on Vercel, then uncomment the hourly schedule in `.github/workflows/menu-backup.yml`. Changes since the last deployed backup are not covered.
 
 Remaining: operational verification of scheduled backups/recovery and image-upload acceptance, reference-aware image cleanup, usage monitoring, and staff handover.
+
+- [ ] **TODO: Re-enable custom category-icon uploads.** Fix the upload issues, verify iPhone upload/preview/publish behavior, then restore the **رفع أيقونة مخصصة** section. Keep the standard icon picker as the available option until this is verified.
