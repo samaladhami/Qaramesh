@@ -149,7 +149,7 @@ To reorder dishes, use the up/down arrows below each dish on the admin dishes sc
 
 ## Image uploads and storage
 
-Dish photos, custom category icons and offer images now support uploads through a private Supabase Storage bucket. The browser prepares the selected file; the server validates, resizes and compresses it to WebP, strips metadata, and saves a unique immutable object. Draft images remain staff-only until published. Failed uploads preserve the previous image, and old files are retained for revision restoration.
+Dish photos and offer images support uploads through a private Supabase Storage bucket. Category icons use the standard built-in picker; custom-icon uploads are temporarily disabled. The browser prepares the selected file; the server validates, resizes and compresses it to WebP, strips metadata, and saves a unique immutable object. Draft images remain staff-only until published. Failed uploads preserve the previous image, and old files are retained for revision restoration.
 
 Apply `supabase/migrations/002_menu_media.sql` in Supabase SQL Editor, then deploy this milestone. The rollout copy is `tmp/setup-menu-media.sql`. No new credentials or environment settings are needed. See [IMAGE-STORAGE.md](IMAGE-STORAGE.md) for upload limits, setup, caching/privacy, retention and the live acceptance checklist.
 
@@ -163,6 +163,12 @@ An hourly GitHub Actions workflow is prepared, with scheduling disabled pending 
 
 - [ ] **TODO: Activate hourly backups.** Add the two public Supabase connection variables in GitHub Actions settings, run **Back up published menu** manually, confirm its backup commit deploys on Vercel, then uncomment the hourly schedule in `.github/workflows/menu-backup.yml`. Changes since the last deployed backup are not covered.
 
-Remaining: operational verification of scheduled backups/recovery and image-upload acceptance, reference-aware image cleanup, usage monitoring, and staff handover.
+Remaining: scheduled-backup setup and recovery verification, reference-aware image cleanup, usage monitoring, and staff handover. The latest user-reported functional acceptance is recorded below.
 
 - [ ] **TODO: Re-enable custom category-icon uploads.** Fix the upload issues, verify iPhone upload/preview/publish behavior, then restore the **رفع أيقونة مخصصة** section. Keep the standard icon picker as the available option until this is verified.
+
+## Current acceptance and remaining work
+
+November 4, 2026: the user confirmed offer-image replacement works and reported successful testing with no observed defects in the flows tested. The latest upload and offer-ordering milestone passed all 15 backend/image/ordering tests and the production build. Offer images support first/last moves with Arabic confirmation; each up/down arrow pair is stacked vertically and aligned with the change-image button.
+
+The remaining backlog is operational: activate the deferred hourly backups and verify recovery, add safe reference-aware cleanup for unused uploads, monitor Supabase/Vercel storage and traffic usage, and finish staff handover. Custom category-icon uploads remain an optional deferred feature tracked above.

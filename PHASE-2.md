@@ -10,7 +10,7 @@ Status: staff login and shared drafts are configured, and the two-account draft/
 - A category can be deleted only when it contains no dishes. Enforce this in server/database operations as well as the interface, including concurrent dish moves or additions. If deletion is blocked, display: “يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.”
 - Category icons can be selected from the existing icon library, future additions to that library, or a custom uploaded icon. Validate custom icon uploads and provide a preview.
 - All changes, including availability, additions, deletions and category moves, remain drafts until Publish. Deleting or moving draft content must not alter the currently published revision.
-- Proposed mobile editing approach, pending interface review: inline editing for name and price, availability toggles, and a full dish editor for photos and longer details. Inline saves update drafts and show saving, saved and error states.
+- Mobile editing uses the full dish editor: tapping the name, price, photo or edit icon opens it. Inline name/price editing was removed. Availability toggles remain in the dish list, alongside within-category ordering controls.
 - Category and banner ordering is in scope. The exact phone interaction (move controls or drag handles) remains to be selected during interface review.
 
 ## Delivery architecture details

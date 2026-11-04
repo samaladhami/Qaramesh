@@ -51,3 +51,5 @@ After deploying and applying migration 002, verify with staff accounts:
 Live staff-account upload/publish acceptance remains necessary; automated tests use local test identities and a PostgreSQL model of Storage policies rather than the hosted Storage service.
 
 Acceptance update (November 3, 2026): migration 002 ran successfully in Supabase and the read-only image-access check passed. The user confirmed upload, saved draft preview and publication work on the local app. Phone/live-site photo verification remains pending deployment of the image-storage code. Custom-icon, offer-image and real-device failure/restore checks remain in the handover checklist.
+
+Acceptance update (November 4, 2026): the user confirmed offer-image replacement works after the upload changes and reported successful testing with no observed defects in the flows tested. Preparation/upload/save stages, request deadlines, and specific Storage errors are implemented. Custom-icon uploads remain disabled; their re-enable TODO and the operational backup/retention work remain open.
