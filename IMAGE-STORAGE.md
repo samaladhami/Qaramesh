@@ -1,5 +1,7 @@
 # Menu image uploads
 
+Custom category-icon uploads are temporarily hidden from the admin editor. Staff select standard icons from the built-in picker. Existing uploaded assets and revision data are retained. TODO: fix and verify custom-icon uploads before enabling this section again. Dish and offer photo uploads remain available.
+
 Image uploads are implemented for dish photos, custom category icons, and adding/replacing offer slides. They use the existing staff login and `MENU_BACKEND_ENABLED=true`; no service-role key, secret key, or additional environment variable is required.
 
 ## Supabase setup

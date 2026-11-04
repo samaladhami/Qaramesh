@@ -358,9 +358,6 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           </> : <>
             <label>اسم القسم <b>*</b><input required maxLength={100} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
             <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{[...new Set([...initialMenu.categories,...categoryIconNames])].map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
-            {editor.image && <img className="adm-custom-icon" src={editor.image} alt="معاينة أيقونة القسم"/>}
-            <Upload disabled={shared && !mediaReady} shared={shared} kind="category" onBusy={uploadBusy} label="رفع أيقونة مخصصة" onChange={image => setEditor(current=>current ? { ...current, image } : current)}/>
-            <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 25 MB. تُضغط الصورة تلقائياً.</p>
           </>}
           <div className="adm-actions"><button type="submit" className="adm-button"><Icon name="save"/>حفظ المسودة</button><button type="button" className="adm-button secondary" onClick={closeEditor}>إلغاء</button></div>
         </form> : preview ? <section className="adm-preview">
