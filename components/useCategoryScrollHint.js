@@ -28,7 +28,7 @@ export default function useCategoryScrollHint(navRef, controlsRef) {
     }
     function eligible() {
       const bounds = nav.getBoundingClientRect();
-      return !motion.matches && !document.hidden && !manuallyUsed && bounds.top >= 0 && bounds.bottom <= window.innerHeight &&
+      return mode() === 'home' && !motion.matches && !document.hidden && !manuallyUsed && bounds.top >= 0 && bounds.bottom <= window.innerHeight &&
         !controls.contains(document.activeElement) && Math.abs(nav.scrollLeft) < 2 &&
         nav.scrollWidth > nav.clientWidth + 8;
     }
@@ -59,8 +59,6 @@ export default function useCategoryScrollHint(navRef, controlsRef) {
     }
     function onScroll() {
       stop();
-      // Wait until scrolling settles before the sticky row's first hint.
-      if (mode() === 'sticky') schedule();
     }
     function onInteraction(event) {
       const inNav = nav.contains(event.target);
