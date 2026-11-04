@@ -296,4 +296,3 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .restaurant-header:not(:has(section)) + .menu-shell{margin-top:0}
 .menu-controls:not(.is-sticky) .category-card{box-shadow:0 4px 10px #42919822,0 1px 3px #42919814}.menu-controls:not(.is-sticky) .category-card.selected{box-shadow:0 0 0 2px var(--white),0 0 0 3px var(--yellow),0 4px 10px #4291982e}
 .menu-controls:not(.is-sticky) .search-wrap,.menu-controls:not(.is-sticky) .sticky-phone-toggle{box-shadow:0 4px 10px #42919822,0 1px 3px #42919814}
-.menu-shell .dish-card{box-shadow:0 4px 12px #4291982b,0 1px 4px #42919819}
