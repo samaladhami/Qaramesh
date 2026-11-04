@@ -31,4 +31,4 @@ Deletion remains a separate follow-up. It must recheck references immediately be
 
 `npm.cmd run verify:backend` includes PostgreSQL coverage for staff-only access, migration repeatability, read-only behavior, permanently protected icons, legacy uploads, recent files, all saved references, missing ages/unexpected paths, other buckets and capped lists with complete totals. Existing delete/overwrite denial remains in force.
 
-Production migration/application and a real staff report run remain to be confirmed.
+Production acceptance: migration 003 was applied successfully and the user confirmed a staff report showing 18 total images, 18 protected images and 0 candidates. No files were deleted.

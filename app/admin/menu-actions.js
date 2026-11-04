@@ -72,6 +72,16 @@ export async function readMediaCleanupReport() {
     return {report:data};
   } catch(error) {return failure(error);}
 }
+
+export async function readMediaUsage() {
+  try {
+    const client=await staffClient();
+    const {data,error}=await client.rpc('menu_storage_usage');
+    if(error?.code==='PGRST202' || error?.code==='42883') return {error:'يلزم تشغيل تحديث استخدام مساحة الصور (004) في Supabase أولاً.'};
+    if(error) throw error;
+    return {usage:data};
+  } catch(error) {return failure(error);}
+}
 export async function restoreSharedMenu(revision,version) {
   try {
     if(!Number.isSafeInteger(revision) || revision < 1 || !Number.isSafeInteger(version) || version < 1) throw new Error('INVALID_VERSION');

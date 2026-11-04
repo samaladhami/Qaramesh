@@ -9,6 +9,7 @@ import { changedDishOrders, moveDish, restoreDishOrder } from '../../lib/dish-or
 import { withTimeout } from '../../lib/request-timeout.mjs';
 import { moveToEdge } from '../../lib/list-order.mjs';
 import MediaCleanupReport from './MediaCleanupReport';
+import MediaUsageReport from './MediaUsageReport';
 
 const KEY = 'qaramesh-admin-prototype-v1';
 const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
@@ -418,6 +419,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
             </div>}
           </div>}
           {shared && <MediaCleanupReport/>}
+          {shared && <MediaUsageReport/>}
         </>}
         </>}
         </fieldset>

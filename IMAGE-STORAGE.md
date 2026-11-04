@@ -38,6 +38,8 @@ A staff-only, read-only cleanup report is now implemented in migration 003. It p
 
 Published menu exports and uploaded-photo backups are implemented in [BACKUPS.md](BACKUPS.md). The deployed backup can serve its hash-verified published photos during a Supabase outage. Configure the weekly capture workflow and verify deployment to keep that recovery copy current. Uncaptured uploads still depend on Supabase; usage alerts remain separate work.
 
+Photo-storage usage reporting is implemented in migration 004, with an owner review/notification procedure in [USAGE-MONITORING.md](USAGE-MONITORING.md). Provider bandwidth, billing totals and notification settings remain in the provider dashboards; the app does not hold billing-management credentials.
+
 ## Verification
 
 `npm.cmd run verify:backend` covers image processing and PostgreSQL access policies: private draft images, anonymous/nonstaff insert denial, immutable objects, missing-reference rejection, publication visibility, retention and restoration. Processing checks cover WebP output, resize limits, orientation, metadata removal, transparency, bad formats and payload limits. The browser's actual preparation helper is also checked locally using Edge.

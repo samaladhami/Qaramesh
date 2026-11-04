@@ -182,6 +182,12 @@ The remaining backlog is operational: confirm deployment of changed backups, add
 
 Both phases are planned; ordering and card payments are not enabled yet.
 
+## Usage monitoring
+
+The staff-only **النشر → استخدام مساحة الصور** section reports uploaded image counts and known Storage size after migration `004_media_usage_report.sql` is applied (rollout copy: `tmp/setup-media-usage.sql`). It includes links to the provider dashboards. It does not estimate bandwidth, billing or an unknown plan allowance.
+
+Follow [USAGE-MONITORING.md](USAGE-MONITORING.md) for the owner's weekly Supabase/Vercel usage review, baseline, 50%/80% review thresholds and provider notification settings. No paid monitoring service or automatic billing alerts have been configured by the app. Provider settings and the first usage refresh remain to be confirmed.
+
 ## Uploaded-photo cleanup preview
 
 A read-only report is available under admin **النشر → مراجعة الصور غير المستخدمة** after applying `supabase/migrations/003_media_cleanup_report.sql` (rollout copy: `tmp/setup-media-cleanup.sql`). It lists only known dish/offer uploads older than seven days with no saved references. All built-in category icons remain available, and uploaded category icons, legacy/unclassified files, drafts and every retained revision are protected. Nothing is deleted and deletion remains a separate follow-up. See [MEDIA-CLEANUP.md](MEDIA-CLEANUP.md).

@@ -8,7 +8,7 @@ const outsider='22222222-2222-4222-8222-222222222222';
 const filename=index=>`00000000-0000-4000-8000-${String(index).padStart(12,'0')}.webp`;
 const document=index=>({items:[{id:'dish',name:'Dish',category:'A',price:1,available:true,size:'',description:'',shortDescription:'',addOn:'',image:`/media/${filename(index)}`}],categories:[{id:'a',name:'A',icon:'الأطباق',image:`/media/${filename(11)}`}],slides:[]});
 
-test('cleanup report is staff-only, read-only and protects icons, all revisions and unclassified uploads',async()=>{
+test('cleanup and usage reports are staff-only, read-only and preserve icons and saved images',async()=>{
  const db=new PGlite();
  try {
   await db.exec(`create role anon;create role authenticated;create schema auth;
@@ -23,8 +23,9 @@ test('cleanup report is staff-only, read-only and protects icons, all revisions 
     grant usage on schema storage to anon,authenticated;
     grant select on storage.objects to anon,authenticated;
     grant insert,update,delete on storage.objects to authenticated;`);
-  for(const migration of ['001_shared_menu.sql','002_menu_media.sql','003_media_cleanup_report.sql']) await db.exec(await readFile(new URL(`../supabase/migrations/${migration}`,import.meta.url),'utf8'));
+  for(const migration of ['001_shared_menu.sql','002_menu_media.sql','003_media_cleanup_report.sql','004_media_usage_report.sql']) await db.exec(await readFile(new URL(`../supabase/migrations/${migration}`,import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/003_media_cleanup_report.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/004_media_usage_report.sql',import.meta.url),'utf8'));
   await db.query('insert into auth.users values($1,now()),($2,now())',[staff,outsider]);
   await db.query('insert into private.menu_staff values($1)',[staff]);
   const assets=[
@@ -41,14 +42,20 @@ test('cleanup report is staff-only, read-only and protects icons, all revisions 
   await db.query("insert into storage.objects(name,bucket_id,user_metadata,created_at) values($1,'other',$2,now()-interval '14 days')",[filename(12),JSON.stringify({menuKind:'dish'})]);
   await db.query('insert into private.menu_revisions(content) values($1),($2)',[JSON.stringify(document(3)),JSON.stringify(document(2))]);
   await db.query('insert into private.menu_state(draft,published_id) values($1,2)',[JSON.stringify(document(1))]);
+  await db.query('update storage.objects set metadata=$1 where name=$2',[JSON.stringify({}),filename(5)]);
   const report=async()=>(await db.query('select public.menu_media_cleanup_report() as data')).rows[0].data;
-  await db.exec('set role anon');await assert.rejects(report);
+  const usage=async()=>(await db.query('select public.menu_storage_usage() as data')).rows[0].data;
+  await db.exec('set role anon');await assert.rejects(report);await assert.rejects(usage);
   await db.exec('reset role;set role authenticated');
   await db.query("select set_config('request.jwt.claim.sub',$1,false)",[outsider]);
   await assert.rejects(report,/STAFF_REQUIRED/);
+  await assert.rejects(usage,/STAFF_REQUIRED/);
   await db.query("select set_config('request.jwt.claim.sub',$1,false)",[staff]);
   const before=(await db.query('select name,metadata,user_metadata from storage.objects order by name')).rows;
   const result=await report();
+  const storage=await usage();
+  assert.equal(storage.imageCount,11);assert.equal(storage.knownSizeCount,10);assert.equal(storage.unknownSizeCount,1);
+  assert.equal(storage.totalBytes,1300);assert.equal(storage.largestFileBytes,300);assert.equal(storage.scope,'menu-media');assert.equal(storage.readOnly,true);
   assert.equal(result.readOnly,true);assert.equal(result.minimumAgeDays,7);
   assert.equal(result.totalCount,11);assert.equal(result.protectedCount,9);
   assert.equal(result.candidateCount,2);assert.equal(result.candidateBytes,500);
