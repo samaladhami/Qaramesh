@@ -121,8 +121,6 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     setNotices(current=>[...current,{id,message,kind}]);
   }
   const dismissNotice=useCallback(id=>setNotices(current=>current.filter(notice=>notice.id!==id)),[]);
-  const [inline, setInline] = useState(null);
-  const [editAttention, setEditAttention] = useState(false);
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -210,12 +208,12 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   }
 
   useEffect(() => {
-    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || inline || busy || remoteError || uploading;
+    const dirty = (editor && JSON.stringify(editor) !== JSON.stringify(original)) || busy || remoteError || uploading;
     if (!dirty) return;
-    const warn = event => { if(inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) setEditAttention(true); event.preventDefault(); event.returnValue = ''; };
+    const warn = event => { event.preventDefault(); event.returnValue = ''; };
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
-  }, [editor, original, inline, busy, remoteError, uploading]);
+  }, [editor, original, busy, remoteError, uploading]);
 
   useEffect(() => {
     if (shared) { refreshShared(); return; }
@@ -233,7 +231,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   }, [draft, ready, storageKey, shared]);
 
   useEffect(() => {
-    if (!shared || !ready || busy || uploading || remoteError || editor || inline || modal) return;
+    if (!shared || !ready || busy || uploading || remoteError || editor || modal) return;
     let cancelled=false;
     const timer=setInterval(async () => {
       if (document.hidden || workingRef.current || uploadRef.current) return;
@@ -243,7 +241,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       } catch { /* A failed background read must not discard the displayed draft. */ }
     },20000);
     return () => { cancelled=true; clearInterval(timer); };
-  },[shared,ready,busy,uploading,remoteError,editor,inline,modal]);
+  },[shared,ready,busy,uploading,remoteError,editor,modal]);
 
   function update(next) { if (shared && (workingRef.current || remoteError)) return; setDraft(next); setNotice(shared ? 'جارٍ حفظ المسودة…' : 'تم تحديث المسودة'); if(shared) persistShared(next); }
   function undoChange(change) {
@@ -286,19 +284,16 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   }
   function allowNavigation() {
     if(uploadRef.current) {setNotice('انتظر اكتمال رفع الصورة قبل الانتقال.');return false;}
-    if (inline || (editor && JSON.stringify(editor) !== JSON.stringify(original))) {
-      setEditAttention(true);
-      setNotice('احفظ التعديل المحدد بالأحمر أو ألغِه قبل الانتقال.');
+    if (editor && JSON.stringify(editor) !== JSON.stringify(original)) {
+      setNotice('احفظ التعديل أو ألغِه قبل الانتقال.');
       requestAnimationFrame(()=>document.querySelector('[data-active-edit]')?.scrollIntoView({block:'center',behavior:'smooth'}));
       return false;
     }
     return true;
   }
-  function openEditor(type, value) { if(!allowNavigation()) return; const next = { type, ...value }; setInline(null); setEditAttention(false); setOriginal(next); setEditor(next); }
-  function closeEditor() { setEditor(null); setEditAttention(false); }
-  function beginInline(item) { if(!allowNavigation()) return; setEditAttention(false); setInline({id:item.id,name:item.name,price:item.price}); }
-  function cancelInline() { setInline(null); setEditAttention(false); }
-  function navigate(next) { if(!allowNavigation()) return; setEditor(null); setInline(null); setEditAttention(false); setPreview(false); setTab(next); window.scrollTo(0, 0); }
+  function openEditor(type, value) { if(!allowNavigation()) return; const next = { type, ...value }; setOriginal(next); setEditor(next); }
+  function closeEditor() { setEditor(null); }
+  function navigate(next) { if(!allowNavigation()) return; setEditor(null); setPreview(false); setTab(next); window.scrollTo(0, 0); }
   function filterCategory(value) { if(value !== category && !allowNavigation()) return; setCategory(value); }
   function filterQuery(value) { if(value !== query && !allowNavigation()) return; setQuery(value); }
   function headerBack() { if(!allowNavigation()) return; if(editor) closeEditor(); else if(preview) setPreview(false); else window.location.assign('/'); }
@@ -330,12 +325,6 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       if (category === old?.name) setCategory(value.name);
     }
     setEditor(null);
-    setEditAttention(false);
-  }
-  function saveInline(event) {
-    event.preventDefault();
-    if (!inline.name.trim() || !Number.isSafeInteger(Number(inline.price)) || Number(inline.price) < 0) return;
-    update({ ...draft, items: draft.items.map(item => item.id === inline.id ? { ...item, name: inline.name.trim(), price: Number(inline.price) } : item) }); setInline(null); setEditAttention(false);
   }
   const title = preview ? 'معاينة المسودة' : editor ? (editor.type === 'dish' ? 'تعديل الطبق' : 'تعديل القسم') : ({ dishes: 'إدارة القائمة', categories: 'الأقسام', offers: 'العروض', publish: 'مراجعة التغييرات' }[tab]);
   const filtered = draft.items.filter(item => (!category || item.category === category) && item.name.includes(query.trim()));
@@ -348,14 +337,14 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       <div className="adm-prototype">{shared ? 'مسودة مشتركة للفريق · لا تظهر التعديلات للعملاء إلا بعد النشر.' : 'نسخة تجريبية · التعديلات محفوظة على هذا الجهاز فقط ولا تغيّر القائمة العامة.'}</div>
       <div className="adm-toolbar">
         <form action={logoutAction} className="adm-logout" onSubmit={event=>{if(!allowNavigation()) event.preventDefault();}}><button type="submit"><Icon name="logout" width="18" height="18"/>تسجيل الخروج</button></form>
-        {shared && <button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" aria-busy={busy} disabled={busy || uploading || Boolean(editor || inline)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button>}
+        {shared && <button className="adm-icon-button" aria-label="تحديث المسودة" title="تحديث المسودة" aria-busy={busy} disabled={busy || uploading || Boolean(editor)} onClick={() => refreshShared(Boolean(remoteError))}><Icon name="refresh"/></button>}
       </div>
       <main className="adm-main">
         {remoteError && <div role="alert" className="adm-error"><p>{remoteError.error}</p><div className="adm-actions">{ready && !remoteError.conflict && <button className="adm-button" disabled={busy} onClick={() => persistShared(draft)}>إعادة الحفظ</button>}<button className="adm-button secondary" disabled={busy} onClick={() => refreshShared(ready)}>تحميل أحدث مسودة</button>{ready && <button className="adm-button secondary" onClick={exportRecovery}>حفظ نسخة من تعديلاتي</button>}</div></div>}
         <fieldset className="adm-workspace" disabled={uploading || (shared && (busy || Boolean(remoteError)))}>
         {!ready ? <p role="status">جارٍ تحميل المسودة…</p> : <>
         {storageError && <p role="alert" className="adm-error">{storageError}</p>}
-        {editor ? <form onSubmit={saveEditor} className={`adm-editor${editAttention ? ' adm-active-edit needs-attention' : ''}`} data-active-edit>
+        {editor ? <form onSubmit={saveEditor} className="adm-editor" data-active-edit>
           {editor.type === 'dish' ? <>
             <div className="adm-editor-photo">{editor.image ? <img src={editor.image} alt={editor.name || 'صورة الطبق'}/> : <Icon name="dish" width="70" height="70"/>}<Upload disabled={shared && !mediaReady} shared={shared} kind="dish" onBusy={uploadBusy} label="تغيير الصورة" onChange={image => setEditor(current=>current ? { ...current, image } : current)}/></div>
             <label>اسم الطبق <b>*</b><input required maxLength={120} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
@@ -385,11 +374,11 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           <button className="adm-button full" disabled={!draft.categories.length} onClick={() => openEditor('dish', { id: crypto.randomUUID(), name: '', price: '', category: category || draft.categories[0]?.name, size: '', description: '', shortDescription: '', addOn: '', image: '', available: true })}><Icon name="plus"/>إضافة طبق</button>
           {!draft.categories.length && <p>أضف قسماً أولاً من شاشة الأقسام.</p>}
           <p className="adm-order-hint">{query.trim() ? 'امسح البحث لتغيير ترتيب الأطباق داخل القسم.' : 'استخدم الأسهم أسفل كل طبق لترتيبه داخل قسمه. يظهر الترتيب للعملاء بعد النشر.'}</p>
-          <div className="adm-list">{filtered.map(item => <article className={`adm-dish-row${inline?.id === item.id ? ` adm-active-edit${editAttention ? ' needs-attention' : ''}` : ''}`} data-active-edit={inline?.id === item.id ? '' : undefined} key={item.id}>
+          <div className="adm-list">{filtered.map(item => <article className="adm-dish-row" key={item.id}>
             <button className="adm-dish-open" aria-label={`تعديل ${item.name}`} onClick={() => openEditor('dish', item)}>{item.image ? <img src={item.image} alt=""/> : <Icon name="dish"/>}</button>
-            {inline?.id === item.id ? <form className="adm-inline" onSubmit={saveInline}><input aria-label="اسم الطبق" required value={inline.name} onChange={e => setInline({ ...inline, name: e.target.value })}/><input aria-label="سعر الطبق" type="number" min="0" max="999999999" step="1" required value={inline.price} onChange={e => setInline({ ...inline, price: e.target.value })}/><div><button className="adm-icon-button" aria-label="حفظ التعديل" type="submit"><Icon name="check"/></button><button className="adm-icon-button" aria-label="إلغاء التعديل" type="button" onClick={cancelInline}><Icon name="close"/></button></div></form> : <button className="adm-dish-text" onClick={() => beginInline(item)} aria-label={`تعديل اسم وسعر ${item.name}`}><strong>{item.name}</strong><span>{money(item.price)} <small>IQD</small></span></button>}
+            <button className="adm-dish-text" onClick={() => openEditor('dish',item)} aria-label={`تعديل ${item.name}`}><strong>{item.name}</strong><span>{money(item.price)} <small>IQD</small></span></button>
+            <button className="adm-icon-button adm-dish-edit" aria-label={`تحرير تفاصيل ${item.name}`} onClick={() => openEditor('dish', item)}><Icon name="edit" width="24" height="24"/></button>
             <button role="switch" aria-checked={item.available} aria-label={`توفر ${item.name}`} className={`adm-switch ${item.available ? 'on' : ''}`} onClick={() => { if(allowNavigation()) update({ ...draft, items: draft.items.map(value => value.id === item.id ? { ...value, available: !value.available } : value) }); }}><span/></button>
-            <button className="adm-icon-button" aria-label={`تحرير تفاصيل ${item.name}`} onClick={() => openEditor('dish', item)}><Icon name="edit" width="18"/></button>
             <button className="adm-icon-button adm-danger" aria-label={`حذف ${item.name}`} onClick={() => { if(allowNavigation()) setModal({ type: 'deleteDish', value: item }); }}><Icon name="trash" width="18"/></button>
             <div className="adm-dish-order"><span>ترتيب الطبق داخل {item.category}</span><div className="adm-dish-order-controls">{[
               {action:-1,icon:'up',label:'لأعلى',first:true},
