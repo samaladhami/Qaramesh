@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import CategoryIcon from '../CategoryIcon';
+import CategoryIcon, { categoryIconNames } from '../CategoryIcon';
 import { readSharedMenu, saveSharedMenu, publishSharedMenu, sharedMenuHistory, restoreSharedMenu } from '../../app/admin/menu-actions';
 import { uploadMenuImage } from '../../app/admin/media-actions';
 import { prepareImage } from './prepare-image';
@@ -357,7 +357,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
             <label className="adm-availability">متوفر<input type="checkbox" role="switch" checked={editor.available} onChange={e => setEditor({ ...editor, available: e.target.checked })}/></label>
           </> : <>
             <label>اسم القسم <b>*</b><input required maxLength={100} value={editor.name} onChange={e => setEditor({ ...editor, name: e.target.value })}/></label>
-            <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{initialMenu.categories.map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
+            <fieldset><legend>أيقونة القسم</legend><div className="adm-icon-grid">{[...new Set([...initialMenu.categories,...categoryIconNames])].map(name => <button type="button" key={name} className={editor.icon === name && !editor.image ? 'selected' : ''} aria-label={name} aria-pressed={editor.icon === name && !editor.image} onClick={() => setEditor({ ...editor, icon: name, image: '' })}><CategoryIcon name={name}/></button>)}</div></fieldset>
             {editor.image && <img className="adm-custom-icon" src={editor.image} alt="معاينة أيقونة القسم"/>}
             <Upload disabled={shared && !mediaReady} shared={shared} kind="category" onBusy={uploadBusy} label="رفع أيقونة مخصصة" onChange={image => setEditor(current=>current ? { ...current, image } : current)}/>
             <p className="adm-muted">PNG أو JPG أو WebP، بحد أقصى 25 MB. تُضغط الصورة تلقائياً.</p>

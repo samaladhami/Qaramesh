@@ -1,6 +1,21 @@
+import { useId } from 'react';
 import suppliedArt from './category-icon-art.json';
 
 const icons = {
+  'نباتي': <><path d="M9 7 8 23c0 6 3 9 7 12 2 2 2 4 2 7l-1 12c0 6 8 7 8 0l-1-13c0-3 0-5 3-7 4-3 6-6 6-11L30 7M16 7v17M23 7v17M30 49c-6-16 8-23 24-28 3-1 5-3 6-5 3 25-5 36-19 39-6 1-11 1-14 5M27 60c6-15 14-24 25-32"/></>,
+  'الشيف': <><path d="M17 23C6 17 1 29 6 37c2 4 6 6 11 5l1 13c8 5 22 5 30 0l1-13c10 1 16-8 11-16-3-5-8-6-13-3C44 8 21 8 17 23ZM17 23l1 3m29-3-1 3M17 42c6-1 9-6 16-4M44 38c-2 3-2 6-1 9"/><ellipse cx="33" cy="55" rx="15" ry="4"/></>,
+  'المشاوي': <>
+    <path d="M23 9c4 4-3 6 0 10M30 5c4 4-4 7 0 12M37 9c4 4-3 5 0 8M12 32C-2 40 7 57 31 57c24 0 36-14 21-25M7 45c11 11 39 12 49 0"/>
+    <g transform="rotate(-34 32 32)">
+      <path d="M6 25h5m33 0h6M6 40h5m33 0h6"/>
+      <ellipse cx="53" cy="25" rx="3" ry="2"/><ellipse cx="53" cy="40" rx="3" ry="2"/>
+      <rect x="11" y="20" width="11" height="10" rx="3.5"/><rect x="22" y="20" width="11" height="10" rx="3.5"/><rect x="33" y="20" width="11" height="10" rx="3.5"/>
+      <rect x="11" y="35" width="11" height="10" rx="3.5"/><rect x="22" y="35" width="11" height="10" rx="3.5"/><rect x="33" y="35" width="11" height="10" rx="3.5"/>
+      <path strokeWidth="1.4" d="M15 24v2m3-2v2m8-2v2m3-2v2m8-2v2m3-2v2M15 39v2m3-2v2m8-2v2m3-2v2m8-2v2m3-2v2"/>
+    </g>
+  </>,
+  'الوجبات الجاهزة': <><path d="M32 6v5M25 12l-3-4m17 4 3-4M8 31l7-13c1-2 3-3 6-3h23c3 0 5 1 6 3l8 13c3 5 1 9-4 9H39M26 40H11c-5 0-7-4-4-9M19 19l-4 7c-1 2 0 3 2 3h31c2 0 3-1 2-3l-4-7M7 33v6c0 3 2 5 6 5h14M39 44h13c4 0 6-2 6-5v-6M10 44l4 10c1 3 3 4 6 4h26c3 0 5-1 6-4l4-10"/><path d="M29 37h7c2 0 3 1 3 3l-1 4c0 1-1 2-3 2h-5c-2 0-3-1-3-2l-1-4c0-2 1-3 3-3Z"/></>,
+  'الأسماك': <><path d="M24 8c4 5-4 7-1 12M32 5c5 5-4 8 0 13M40 9c4 4-3 6 0 10M9 35c11-13 23-11 38-2 4-5 7-7 11-7-1 4-2 6-4 8 2 3 3 5 3 8-4 0-7-2-10-5-5 4-10 6-15 7M23 45c-6 0-12-4-14-7-1-1-1-2 0-3M23 27c8-7 12-5 16 2M20 31c3 3 3 8 0 11M29 32l-4 5m8-4-3 4m7-2-2 3M23 44c4-2 8-2 9 4-4 1-7-1-9-3ZM7 39C-2 45 8 58 31 58s36-12 28-19M5 46c10 10 43 11 55 0"/><circle cx="15" cy="35" r="1.3" fill="currentColor" stroke="none"/></>,
   'الكل': <><rect x="10" y="10" width="16" height="16" rx="4"/><rect x="38" y="10" width="16" height="16" rx="4"/><rect x="10" y="38" width="16" height="16" rx="4"/><rect x="38" y="38" width="16" height="16" rx="4"/></>,
   'الأطباق': <><path d="M12 44a20 20 0 0 1 40 0M29 24v-2a3 3 0 0 1 6 0v2M7 44h50c0 5-11 8-25 8S7 49 7 44ZM22 17c-4-4 3-6 0-10M32 13c-4-4 3-6 0-10M42 17c-4-4 3-6 0-10"/></>,
   'السندويتشات': <g transform="rotate(35 32 32)"><path d="M19 17v31c0 6 26 6 26 0V17"/><ellipse cx="32" cy="17" rx="13" ry="8"/><path d="m23 17 4-3 5 3 5-3 4 3M23 21l4-2 5 3 5-3 4 2m-21 9 24 6m-24 3 24 6m-16-16 5-5"/></g>,
@@ -24,10 +39,24 @@ const icons = {
   'الأراكيل': <><path d="M25 12h14l-3 8h-8ZM32 20v16M25 36h14l6 15c2 6-28 6-26 0ZM21 46h22M24 10h16M38 29c18 0 21 7 15 16-4 6-1 10 4 10M57 55V43M29 6h6"/></>,
 };
 
+export const categoryIconNames = [...new Set([...Object.keys(icons), ...Object.keys(suppliedArt)])].filter(name => name !== 'الكل');
+
+function ThinnedArt({ art }) {
+  const maskId = `category-icon-${useId()}`;
+  const [x, y, width, height] = art.viewBox.split(' ').map(Number);
+  const paths = art.paths.map((path, index) => <path key={index} d={path} fillRule="evenodd" />);
+  return <>
+    <defs><mask id={maskId} maskUnits="userSpaceOnUse" x={x} y={y} width={width} height={height}>
+      <g fill="white" stroke="black" strokeWidth={art.inset * 2} strokeLinejoin="round">{paths}</g>
+    </mask></defs>
+    <g mask={`url(#${maskId})`}>{paths}</g>
+  </>;
+}
+
 export default function CategoryIcon({ name }) {
   const art = suppliedArt[name];
   if (art) {
-    return <span className="category-icon"><svg viewBox={art.viewBox} width="64" height="64" fill={art.strokeWidth ? 'none' : 'currentColor'} stroke={art.strokeWidth ? 'currentColor' : undefined} strokeWidth={art.strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{art.paths.map((path, index) => <path key={index} d={path} fillRule="evenodd" />)}</svg></span>;
+    return <span className="category-icon"><svg viewBox={art.viewBox} width="64" height="64" fill={art.strokeWidth ? 'none' : 'currentColor'} stroke={art.strokeWidth ? 'currentColor' : undefined} strokeWidth={art.strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{art.inset ? <ThinnedArt art={art}/> : art.paths.map((path, index) => <path key={index} d={path} fillRule="evenodd" />)}</svg></span>;
   }
   return <span className="category-icon"><svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{icons[name] || icons['الكل']}</svg></span>;
 }
