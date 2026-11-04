@@ -181,3 +181,7 @@ The remaining backlog is operational: confirm deployment of changed backups, add
 - **Phase 4: Credit-card payments and receiving orders.** Add secure online payment plus a staff incoming-orders dashboard and order-status workflow. See [PHASE-4.md](PHASE-4.md).
 
 Both phases are planned; ordering and card payments are not enabled yet.
+
+## Uploaded-photo cleanup preview
+
+A read-only report is available under admin **النشر → مراجعة الصور غير المستخدمة** after applying `supabase/migrations/003_media_cleanup_report.sql` (rollout copy: `tmp/setup-media-cleanup.sql`). It lists only known dish/offer uploads older than seven days with no saved references. All built-in category icons remain available, and uploaded category icons, legacy/unclassified files, drafts and every retained revision are protected. Nothing is deleted and deletion remains a separate follow-up. See [MEDIA-CLEANUP.md](MEDIA-CLEANUP.md).

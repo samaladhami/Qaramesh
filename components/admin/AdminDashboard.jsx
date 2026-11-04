@@ -8,6 +8,7 @@ import { prepareImage } from './prepare-image';
 import { changedDishOrders, moveDish, restoreDishOrder } from '../../lib/dish-order.mjs';
 import { withTimeout } from '../../lib/request-timeout.mjs';
 import { moveToEdge } from '../../lib/list-order.mjs';
+import MediaCleanupReport from './MediaCleanupReport';
 
 const KEY = 'qaramesh-admin-prototype-v1';
 const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
@@ -409,6 +410,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div className="adm-change-text"><strong>{change.title}</strong><p>{change.detail}</p></div><button className="adm-icon-button adm-danger" aria-label={`التراجع عن تغيير ${change.title}`} title="التراجع عن التغيير" onClick={() => undoChange(change)}><Icon name="close"/></button></article>)}
           {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
           <div className="adm-actions"><button className="adm-button" disabled={!changes.length || busy} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>{shared ? 'نشر التغييرات' : 'تجربة النشر محلياً'}</button><button className="adm-button secondary" onClick={() => shared ? window.open('/admin/preview','_blank','noopener,noreferrer') : setPreview(true)}><Icon name="eye"/>معاينة</button></div>
+          {shared && <MediaCleanupReport/>}
           {shared && <div className="adm-history">
             <button className="adm-button secondary full" onClick={loadHistory} aria-expanded={Boolean(history)} aria-controls="admin-publish-history">سجل النشر / استعادة نسخة<Icon name={history ? 'up' : 'down'}/></button>
             {history && <div id="admin-publish-history">

@@ -19,7 +19,7 @@ export async function uploadMenuImage(formData) {
   try {
     const client=await createClient();
     const filename=`${randomUUID()}.webp`;
-    const {error}=await client.storage.from(MEDIA_BUCKET).upload(filename,output,{contentType:'image/webp',cacheControl:'31536000',upsert:false});
+    const {error}=await client.storage.from(MEDIA_BUCKET).upload(filename,output,{contentType:'image/webp',cacheControl:'31536000',upsert:false,metadata:{menuKind:kind}});
     if(error) {
       const failure=mediaUploadFailure(error);
       console.error('Menu image upload failed',{code:failure.code});

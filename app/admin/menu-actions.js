@@ -62,6 +62,16 @@ export async function sharedMenuHistory() {
     return { revisions:data };
   } catch(error) { return failure(error); }
 }
+
+export async function readMediaCleanupReport() {
+  try {
+    const client=await staffClient();
+    const {data,error}=await client.rpc('menu_media_cleanup_report');
+    if(error?.code==='PGRST202' || error?.code==='42883') return {error:'يلزم تشغيل تحديث تقرير الصور (003) في Supabase أولاً.'};
+    if(error) throw error;
+    return {report:data};
+  } catch(error) {return failure(error);}
+}
 export async function restoreSharedMenu(revision,version) {
   try {
     if(!Number.isSafeInteger(revision) || revision < 1 || !Number.isSafeInteger(version) || version < 1) throw new Error('INVALID_VERSION');

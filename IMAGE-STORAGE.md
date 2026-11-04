@@ -34,6 +34,8 @@ Uploaded images bypass Next.js image optimization because its internal requests 
 
 Replacing or removing a dish, icon or slide does not delete its files. This preserves all retained rollback revisions and avoids concurrent-reference deletion races. Canceled forms and failed draft saves can leave unused uploads in the private bucket. Automatic garbage collection is deliberately deferred until a reference-aware cleanup/claim workflow is implemented; monitor storage and review old orphan uploads rather than deleting files manually based only on the current menu.
 
+A staff-only, read-only cleanup report is now implemented in migration 003. It protects built-in/unused category icons, all saved image references, recent uploads and unclassified legacy files. No deletion is enabled. See [MEDIA-CLEANUP.md](MEDIA-CLEANUP.md) for setup, candidate rules and the separate deletion-workflow requirements.
+
 Published menu exports and uploaded-photo backups are implemented in [BACKUPS.md](BACKUPS.md). The deployed backup can serve its hash-verified published photos during a Supabase outage. Configure the weekly capture workflow and verify deployment to keep that recovery copy current. Uncaptured uploads still depend on Supabase; usage alerts remain separate work.
 
 ## Verification
