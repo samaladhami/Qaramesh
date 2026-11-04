@@ -2,6 +2,14 @@
 
 Status: staff-only photo-storage metrics and an owner review procedure are implemented. Provider dashboard readings, account plans and notification settings still need owner confirmation. No billing credentials, paid monitoring service, account upgrades, quota changes or automatic pause actions were added.
 
+Rollout update (November 4, 2026): the user confirmed migration 004 ran successfully and reported **Supabase Free + Vercel Hobby**. A staff usage refresh, usage baseline and provider notification preferences still need confirmation.
+
+## Current plan considerations
+
+- **Supabase Free:** review Usage weekly and confirm the billing email. Quota notifications precede Fair Use restrictions; the app's 50%/80% review points are manual, not custom configured email thresholds. See [Supabase billing FAQ](https://supabase.com/docs/guides/platform/billing-faq).
+- **Vercel Hobby:** review Usage and account notification preferences. Pro Spend Management settings are not available on Hobby. See [Vercel Hobby](https://vercel.com/docs/plans/hobby) and [notifications](https://vercel.com/docs/notifications).
+- **Hosting suitability:** Vercel restricts Hobby to non-commercial personal use. The restaurant site needs a commercially permitted hosting arrangement before production handover; the owner must resolve the plan/hosting decision. No subscription or hosting change has been made. See [Vercel Fair Use Guidelines](https://vercel.com/docs/limits/fair-use-guidelines).
+
 ## Admin photo usage
 
 Run `supabase/migrations/004_media_usage_report.sql` as postgres in Supabase SQL Editor. The rollout copy is `tmp/setup-media-usage.sql`. It adds a read-only, staff-only report and can be rerun safely. After deployment, open **النشر → استخدام مساحة الصور → تحديث الاستخدام**.
@@ -38,15 +46,15 @@ For errors, check Vercel runtime/build logs and Supabase service logs promptly. 
 | Field | Current value |
 | --- | --- |
 | Review date and owner | Not yet recorded |
-| Supabase plan / billing period | Owner confirmation pending |
+| Supabase plan / billing period | Free confirmed; period pending |
 | Supabase Storage / allowance | Owner confirmation pending |
 | Supabase database/disk / allowance | Owner confirmation pending |
 | Supabase cached and uncached egress / allowances | Owner confirmation pending |
-| Vercel plan / billing period | Owner confirmation pending |
+| Vercel plan / billing period | Hobby confirmed; period and commercial hosting decision pending |
 | Vercel transfer, compute/invocations, image optimization and builds | Owner confirmation pending |
 | Notification recipient/settings checked | Owner confirmation pending |
 | Next review | One week after baseline |
 
 ## Verification
 
-`npm.cmd run verify:backend` tests staff-only access, repeatable migration, exact bucket-scoped byte/count totals, missing metadata and read-only behavior. The app has no provider management tokens and cannot verify or change provider account notification/billing settings. Deployment, migration 004, an actual staff usage refresh and the owner's dashboard/notification review are the remaining rollout checks.
+`npm.cmd run verify:backend` tests staff-only access, repeatable migration, exact bucket-scoped byte/count totals, missing metadata and read-only behavior. The app has no provider management tokens and cannot verify or change provider account notification/billing settings. Migration 004 is confirmed applied; an actual staff usage refresh, provider baseline/notification review and a commercially suitable hosting arrangement remain to be confirmed.
