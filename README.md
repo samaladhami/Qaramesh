@@ -145,6 +145,8 @@ Run `npm.cmd run verify:backend` for database security/concurrency/publishing an
 
 Both staff accounts have passed the live shared-draft/save/undo check. Publication history and restore behavior have been clarified; final live publication/restore acceptance remains part of handover.
 
+To reorder dishes, use the up/down arrows below each dish on the admin dishes screen, including the All view. The adjacent double arrows move a dish directly to the top or bottom of its category after an Arabic confirmation dialog, preserving the order of the other dishes. Cancel leaves the order unchanged. Each dish moves within its own category; selecting a category is optional. Clear search before reordering. Changes save to the shared draft and appear in preview; Publish makes the order public. The change review lists each reordered category and supports undoing its order while preserving dish edits. No database migration is needed.
+
 ## Image uploads and storage
 
 Dish photos, custom category icons and offer images now support uploads through a private Supabase Storage bucket. The browser prepares the selected file; the server validates, resizes and compresses it to WebP, strips metadata, and saves a unique immutable object. Draft images remain staff-only until published. Failed uploads preserve the previous image, and old files are retained for revision restoration.

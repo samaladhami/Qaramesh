@@ -5,6 +5,7 @@ import CategoryIcon from '../CategoryIcon';
 import { readSharedMenu, saveSharedMenu, publishSharedMenu, sharedMenuHistory, restoreSharedMenu } from '../../app/admin/menu-actions';
 import { uploadMenuImage } from '../../app/admin/media-actions';
 import { prepareImage } from './prepare-image';
+import { changedDishOrders, moveDish, restoreDishOrder } from '../../lib/dish-order.mjs';
 
 const KEY = 'qaramesh-admin-prototype-v1';
 const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
@@ -29,6 +30,8 @@ function Icon({ name, ...props }) {
     info: <><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></>,
     up: <path d="m6 14 6-6 6 6"/>,
     down: <path d="m6 10 6 6 6-6"/>,
+    top: <><path d="m6 11 6-6 6 6"/><path d="m6 18 6-6 6 6"/></>,
+    bottom: <><path d="m6 6 6 6 6-6"/><path d="m6 13 6 6 6-6"/></>,
     eye: <><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
   };
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths[name] || paths.dish}</svg>;
@@ -45,7 +48,7 @@ function TimedNotice({ notice, onDismiss }) {
 function Dialog({ title, children, onClose }) {
   const ref = useRef(null);
   useEffect(() => { ref.current.showModal(); }, []);
-  return <dialog ref={ref} className="adm-dialog" onCancel={event => { event.preventDefault(); onClose(); }}>
+  return <dialog ref={ref} className="adm-dialog" aria-label={title} onCancel={event => { event.preventDefault(); onClose(); }}>
     <div className="adm-dialog-heading"><h2>{title}</h2><button type="button" className="adm-icon-button" aria-label="إغلاق" onClick={onClose}><Icon name="close"/></button></div>{children}
   </dialog>;
 }
@@ -93,6 +96,7 @@ function differences(base, draft) {
   for (const item of base.items) if (!draft.items.some(value => value.id === item.id)) changes.push({ id: item.id, title: item.name, detail: 'حذف طبق', type: 'delete' });
   if (JSON.stringify(base.categories) !== JSON.stringify(draft.categories)) changes.push({ id: 'categories', title: 'الأقسام', detail: 'تعديل الأقسام أو الأيقونات أو ترتيب العرض', type: 'edit' });
   if (JSON.stringify(base.slides) !== JSON.stringify(draft.slides)) changes.push({ id: 'slides', title: 'العروض', detail: 'تعديل صور العروض أو ترتيبها', type: 'edit' });
+  for(const category of changedDishOrders(base,draft)) changes.push({id:`dish-order:${category.id}`,categoryId:category.id,title:`ترتيب أطباق ${category.name}`,detail:'تغيير ترتيب الأطباق داخل القسم',type:'edit'});
   return changes;
 }
 
@@ -243,7 +247,10 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
 
   function update(next) { if (shared && (workingRef.current || remoteError)) return; setDraft(next); setNotice(shared ? 'جارٍ حفظ المسودة…' : 'تم تحديث المسودة'); if(shared) persistShared(next); }
   function undoChange(change) {
-    if (change.id === 'slides') {
+    if(change.categoryId) {
+      const category=draft.categories.find(value=>value.id===change.categoryId);
+      if(category) update({...draft,items:restoreDishOrder(baseline,draft.items,category)});
+    } else if (change.id === 'slides') {
       update({ ...draft, slides: baseline.slides });
     } else if (change.id === 'categories') {
       const restoredItems = draft.items.map(item => {
@@ -296,6 +303,12 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   function filterQuery(value) { if(value !== query && !allowNavigation()) return; setQuery(value); }
   function headerBack() { if(!allowNavigation()) return; if(editor) closeEditor(); else if(preview) setPreview(false); else window.location.assign('/'); }
   function move(key, index, delta) { const values = [...draft[key]]; [values[index], values[index + delta]] = [values[index + delta], values[index]]; update({ ...draft, [key]: values }); }
+  function reorderDish(item,delta) {
+    if(query.trim() || !allowNavigation()) return;
+    if(delta==='top' || delta==='bottom') {setModal({type:'moveDish',value:item,direction:delta});return;}
+    const items=moveDish(draft.items,item.id,delta);
+    if(items!==draft.items) update({...draft,items});
+  }
   function removeCategory(value) {
     if (draft.items.some(item => item.category === value.name)) setModal({ type: 'blocked', value });
     else setModal({ type: 'deleteCategory', value });
@@ -371,12 +384,19 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           <div className="adm-search"><input aria-label="ابحث عن طبق" placeholder="ابحث عن طبق…" value={query} onChange={e => filterQuery(e.target.value)}/><Icon name="search"/></div>
           <button className="adm-button full" disabled={!draft.categories.length} onClick={() => openEditor('dish', { id: crypto.randomUUID(), name: '', price: '', category: category || draft.categories[0]?.name, size: '', description: '', shortDescription: '', addOn: '', image: '', available: true })}><Icon name="plus"/>إضافة طبق</button>
           {!draft.categories.length && <p>أضف قسماً أولاً من شاشة الأقسام.</p>}
+          <p className="adm-order-hint">{query.trim() ? 'امسح البحث لتغيير ترتيب الأطباق داخل القسم.' : 'استخدم الأسهم أسفل كل طبق لترتيبه داخل قسمه. يظهر الترتيب للعملاء بعد النشر.'}</p>
           <div className="adm-list">{filtered.map(item => <article className={`adm-dish-row${inline?.id === item.id ? ` adm-active-edit${editAttention ? ' needs-attention' : ''}` : ''}`} data-active-edit={inline?.id === item.id ? '' : undefined} key={item.id}>
             <button className="adm-dish-open" aria-label={`تعديل ${item.name}`} onClick={() => openEditor('dish', item)}>{item.image ? <img src={item.image} alt=""/> : <Icon name="dish"/>}</button>
             {inline?.id === item.id ? <form className="adm-inline" onSubmit={saveInline}><input aria-label="اسم الطبق" required value={inline.name} onChange={e => setInline({ ...inline, name: e.target.value })}/><input aria-label="سعر الطبق" type="number" min="0" max="999999999" step="1" required value={inline.price} onChange={e => setInline({ ...inline, price: e.target.value })}/><div><button className="adm-icon-button" aria-label="حفظ التعديل" type="submit"><Icon name="check"/></button><button className="adm-icon-button" aria-label="إلغاء التعديل" type="button" onClick={cancelInline}><Icon name="close"/></button></div></form> : <button className="adm-dish-text" onClick={() => beginInline(item)} aria-label={`تعديل اسم وسعر ${item.name}`}><strong>{item.name}</strong><span>{money(item.price)} <small>IQD</small></span></button>}
             <button role="switch" aria-checked={item.available} aria-label={`توفر ${item.name}`} className={`adm-switch ${item.available ? 'on' : ''}`} onClick={() => { if(allowNavigation()) update({ ...draft, items: draft.items.map(value => value.id === item.id ? { ...value, available: !value.available } : value) }); }}><span/></button>
             <button className="adm-icon-button" aria-label={`تحرير تفاصيل ${item.name}`} onClick={() => openEditor('dish', item)}><Icon name="edit" width="18"/></button>
             <button className="adm-icon-button adm-danger" aria-label={`حذف ${item.name}`} onClick={() => { if(allowNavigation()) setModal({ type: 'deleteDish', value: item }); }}><Icon name="trash" width="18"/></button>
+            <div className="adm-dish-order"><span>ترتيب الطبق داخل {item.category}</span><div className="adm-dish-order-controls">{[
+              {action:-1,icon:'up',label:'لأعلى',first:true},
+              {action:1,icon:'down',label:'لأسفل',first:false},
+              {action:'top',icon:'top',label:'إلى أول القسم',first:true},
+              {action:'bottom',icon:'bottom',label:'إلى آخر القسم',first:false},
+            ].map(control=><button key={control.icon} type="button" className="adm-icon-button" aria-label={`نقل ${item.name} ${control.label}`} title={control.label} disabled={Boolean(query.trim()) || (control.first ? draft.items.find(value=>value.category===item.category) : draft.items.findLast(value=>value.category===item.category))?.id===item.id} onClick={()=>reorderDish(item,control.action)}><Icon name={control.icon} width="18"/></button>)}</div></div>
           </article>)}</div>
           {!filtered.length && <div className="adm-empty"><Icon name="search" width="38" height="38"/><h3>لا توجد أطباق</h3><p>جرّب اسماً آخر أو اختر قسماً مختلفاً.</p></div>}
         </> : tab === 'categories' ? <>
@@ -412,7 +432,15 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       <nav className="adm-nav" aria-label="التنقل في إدارة القائمة">{tabs.map(([id, label, icon]) => <button key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(id)}><Icon name={icon}/><span>{label}</span>{id === 'publish' && changes.length > 0 && <i>{changes.length}</i>}</button>)}</nav>
     </div>
     {notices.length > 0 && <div ref={toastRef} className="adm-toast-stack" aria-label="الإشعارات">{notices.map(notice=><TimedNotice key={notice.id} notice={notice} onDismiss={dismissNotice}/>)}</div>}
-    {modal && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
+    {modal?.type==='moveDish' && <Dialog title="تأكيد نقل الطبق" onClose={()=>setModal(null)}>
+      <p>هل أنت متأكد من نقل الطبق «{modal.value.name}» إلى {modal.direction==='top' ? 'أول' : 'آخر'} قسم «{modal.value.category}»؟</p>
+      <div className="adm-actions"><button className="adm-button" disabled={busy || Boolean(remoteError)} onClick={()=>{
+        const items=moveDish(draft.items,modal.value.id,modal.direction);
+        if(items!==draft.items) update({...draft,items});
+        setModal(null);
+      }}>تأكيد النقل</button><button className="adm-button secondary" onClick={()=>setModal(null)}>إلغاء</button></div>
+    </Dialog>}
+    {modal && modal.type!=='moveDish' && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
       <div className="adm-dialog-symbol"><Icon name={modal.type === 'publish' ? 'send' : 'trash'} width="34" height="34"/></div>
       <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? (shared ? 'هل تريد نشر جميع التغييرات المحفوظة؟ ستظهر النسخة الجديدة للعملاء في القائمة العامة.' : 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.') : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>
       <div className="adm-actions"><button className="adm-button" onClick={() => {
