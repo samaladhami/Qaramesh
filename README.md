@@ -157,6 +157,8 @@ The production build, input-processing tests, and PostgreSQL storage-policy test
 
 `npm.cmd run backup:menu` captures the published menu and its uploaded photos without staff credentials. The deployed copy supplies menu and photo fallback during a Supabase outage. `npm.cmd run restore:menu` restores a backup into a clean shared draft for staff review without publishing. The first backup contains revision 6 (145 dishes).
 
-An hourly GitHub Actions workflow is included. Add the two public Supabase connection variables in GitHub Actions settings, run it manually once, and confirm its backup commit deploys on Vercel. It is not active configuration until those variables are set. Captures are periodic; changes since the last deployed backup are not covered. See [BACKUPS.md](BACKUPS.md) for setup, recovery instructions and limits. Run `npm.cmd run verify:backup` for integrity and failure-path checks.
+An hourly GitHub Actions workflow is prepared, with scheduling disabled pending setup. See [BACKUPS.md](BACKUPS.md) for setup, recovery instructions and limits. Run `npm.cmd run verify:backup` for integrity and failure-path checks.
+
+- [ ] **TODO: Activate hourly backups.** Add the two public Supabase connection variables in GitHub Actions settings, run **Back up published menu** manually, confirm its backup commit deploys on Vercel, then uncomment the hourly schedule in `.github/workflows/menu-backup.yml`. Changes since the last deployed backup are not covered.
 
 Remaining: operational verification of scheduled backups/recovery and image-upload acceptance, reference-aware image cleanup, usage monitoring, and staff handover.

@@ -8,7 +8,14 @@ Commit both the manifest and its images, then push and confirm the Vercel deploy
 
 ## Scheduled captures
 
-The **Back up published menu** GitHub Actions workflow runs hourly at minute 23 and can be started manually from the Actions tab. In GitHub → repository Settings → Secrets and variables → Actions → **Variables**, add these repository variables using the same values as Vercel:
+**TODO: Activate hourly backups. Scheduling is currently disabled; the workflow can only be started manually.**
+
+- [ ] Add the two repository variables listed below.
+- [ ] Run **Back up published menu** manually from GitHub Actions and confirm it succeeds.
+- [ ] Confirm the backup commit deploys successfully on Vercel.
+- [ ] Uncomment `schedule` and its cron entry in `.github/workflows/menu-backup.yml`, then commit and push. The prepared schedule runs hourly at minute 23.
+
+In GitHub → repository Settings → Secrets and variables → Actions → **Variables**, add these repository variables using the same values as Vercel:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
