@@ -11,5 +11,5 @@ export default async function PreviewPage() {
   const result=await readSharedMenu();
   if (result.error) return <main style={{padding:30}}><p role="alert">{result.error}</p><Link href="/admin">العودة إلى الإدارة</Link></main>;
   const draft=result.state.draft;
-  return <><div className="draft-preview-banner">معاينة المسودة · ليست القائمة المنشورة <Link href="/admin">العودة إلى الإدارة</Link></div><Menu categories={draft.categories.map(c=>c.name)} categoryRecords={draft.categories} items={draft.items} slides={draft.slides} preview/></>;
+  return <><div className="draft-preview-banner">معاينة المسودة · ليست القائمة المنشورة <Link href="/admin"><span>العودة إلى الإدارة</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></Link></div><Menu categories={draft.categories.map(c=>c.name)} categoryRecords={draft.categories} items={draft.items} slides={draft.slides} preview/></>;
 }

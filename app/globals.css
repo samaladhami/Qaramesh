@@ -291,6 +291,6 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 
 .staff-footer-link{display:inline-flex;align-items:center;justify-content:center;margin:0;color:var(--teal);font-size:inherit;line-height:inherit;text-decoration:underline;text-underline-offset:4px;opacity:.8}.staff-footer-link:hover{opacity:1}
 
-.draft-preview-banner{background:var(--yellow);color:var(--teal);text-align:center;padding:12px;font-size:13px}.draft-preview-banner a{margin-inline-start:16px;color:inherit}
+.draft-preview-banner{background:var(--yellow);color:var(--teal);text-align:center;padding:12px;font-size:13px}.draft-preview-banner a{display:inline-flex;align-items:center;gap:5px;margin-inline-start:16px;color:inherit;text-decoration:underline;text-underline-offset:3px;font-weight:700}.draft-preview-banner a svg{flex-shrink:0}.draft-preview-banner a:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:2px}
 
 .restaurant-header:not(:has(section)) + .menu-shell{margin-top:0}
