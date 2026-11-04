@@ -1,5 +1,7 @@
 # Qaramesh restaurant menu
 
+Arabic handover: [owner checklist](HANDOVER-AR.md), [illustrated staff guide](docs/staff/guide-ar.html) (open locally in a browser), and [shareable PDF](docs/staff/guide-ar.pdf).
+
 Arabic RTL customer menu built with Next.js App Router, React, JavaScript and Tailwind CSS. Supabase powers staff authentication, shared drafts, publishing history and private image uploads. Ordering and checkout are not implemented.
 
 Phase 1 was officially completed and accepted on October 29, 2026. It includes the customer menu, category filtering, Arabic search, promotional carousel, individual dish pages, related dishes, phone links, and responsive mobile navigation. Content currently comes from local JSON files; a cart, checkout, and the proposed “اطلب الآن” action have not been implemented.
