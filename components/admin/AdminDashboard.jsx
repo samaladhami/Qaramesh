@@ -410,14 +410,14 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
           {changes.map(change => <article className="adm-change" key={change.id}><span className={`adm-change-icon ${change.type}`}><Icon name={change.type === 'delete' ? 'trash' : change.type === 'new' ? 'plus' : 'edit'}/></span><div className="adm-change-text"><strong>{change.title}</strong><p>{change.detail}</p></div><button className="adm-icon-button adm-danger" aria-label={`التراجع عن تغيير ${change.title}`} title="التراجع عن التغيير" onClick={() => undoChange(change)}><Icon name="close"/></button></article>)}
           {!changes.length && <div className="adm-empty"><Icon name="check" width="40" height="40"/><h3>كل شيء محدّث</h3><p>ستظهر تعديلاتك هنا لتراجعها.</p></div>}
           <div className="adm-actions"><button className="adm-button" disabled={!changes.length || busy} onClick={() => setModal({ type: 'publish' })}><Icon name="send"/>{shared ? 'نشر التغييرات' : 'تجربة النشر محلياً'}</button><button className="adm-button secondary" onClick={() => shared ? window.open('/admin/preview','_blank','noopener,noreferrer') : setPreview(true)}><Icon name="eye"/>معاينة</button></div>
-          {shared && <MediaCleanupReport/>}
-          {shared && <div className="adm-history">
-            <button className="adm-button secondary full" onClick={loadHistory} aria-expanded={Boolean(history)} aria-controls="admin-publish-history">سجل النشر / استعادة نسخة<Icon name={history ? 'up' : 'down'}/></button>
+          {shared && <div className="adm-media-report adm-history">
+            <button type="button" className="adm-history-toggle" onClick={loadHistory} aria-expanded={Boolean(history)} aria-controls="admin-publish-history"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M10 1 2 6l8 5Z"/></svg>سجل النشر / استعادة نسخة</button>
             {history && <div id="admin-publish-history">
               <p className="adm-history-help">كل نسخة تشمل القائمة كاملة وقت النشر. الاستعادة تغيّر المسودة فقط؛ انشرها لتظهر للعملاء.</p>
               {history.map(revision=><div className="adm-change" key={revision.id}><div className="adm-change-text"><strong>النسخة {revision.id}</strong>{revision.id === publishedId && <p className="adm-current-revision">النسخة المنشورة حالياً</p>}<p>{new Intl.DateTimeFormat('ar-IQ',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Baghdad'}).format(new Date(revision.created_at))}</p></div><button className="adm-button secondary" disabled={revision.id === publishedId && !changes.length} onClick={()=>restoreRevision(revision.id)}>{revision.id === publishedId ? (changes.length ? 'استعادة المنشورة' : 'منشورة حالياً') : 'استعادة كمسودة'}</button></div>)}
             </div>}
           </div>}
+          {shared && <MediaCleanupReport/>}
         </>}
         </>}
         </fieldset>
