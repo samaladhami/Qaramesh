@@ -8,12 +8,12 @@ Commit both the manifest and its images, then push and confirm the Vercel deploy
 
 ## Scheduled captures
 
-Weekly scheduling is enabled in the workflow: **Sunday at 03:23 UTC**. Manual runs remain available. Successful execution still requires the repository variables below; configuration and the first successful run must be verified.
+Weekly scheduling is enabled in the workflow: **Sunday at 03:23 UTC**. Manual runs remain available. On November 4, 2026, the user confirmed that the manual GitHub Actions backup run succeeded after adding the repository variables.
 
 Weekly captures mean changes made since the last successful backup, potentially close to seven days of updates, may be missing from recovery. Run a manual capture after major menu or photo changes when needed.
 
-- [ ] Add the two repository variables listed below.
-- [ ] Run **Back up published menu** manually from GitHub Actions and confirm it succeeds.
+- [x] Add the two repository variables listed below.
+- [x] Run **Back up published menu** manually from GitHub Actions and confirm it succeeds.
 - [ ] Confirm the backup commit deploys successfully on Vercel.
 - [x] Configure a weekly Sunday schedule (`23 3 * * 0`, UTC).
 
