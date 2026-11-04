@@ -31,7 +31,7 @@ Uploaded images bypass Next.js image optimization because its internal requests 
 
 Replacing or removing a dish, icon or slide does not delete its files. This preserves all retained rollback revisions and avoids concurrent-reference deletion races. Canceled forms and failed draft saves can leave unused uploads in the private bucket. Automatic garbage collection is deliberately deferred until a reference-aware cleanup/claim workflow is implemented; monitor storage and review old orphan uploads rather than deleting files manually based only on the current menu.
 
-Operational exports, durable latest-published outage recovery and usage alerts are still separate follow-up work. A Supabase outage can prevent cold image downloads; long-lived caches help warm requests but do not replace a backup.
+Published menu exports and uploaded-photo backups are implemented in [BACKUPS.md](BACKUPS.md). The deployed backup can serve its hash-verified published photos during a Supabase outage. Configure the hourly capture workflow and verify deployment to keep that recovery copy current. Uncaptured uploads still depend on Supabase; usage alerts remain separate work.
 
 ## Verification
 

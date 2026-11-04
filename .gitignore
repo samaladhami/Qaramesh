@@ -8,3 +8,4 @@ node_modules/
 out/
 .DS_Store
 Thumbs.db
+data/published-menu-backup.json.pending

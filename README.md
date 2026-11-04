@@ -1,6 +1,6 @@
-# Qaramesh — Phase 1 complete
+# Qaramesh restaurant menu
 
-Arabic RTL customer menu built with Next.js App Router, React, JavaScript and Tailwind CSS. No backend or ordering features.
+Arabic RTL customer menu built with Next.js App Router, React, JavaScript and Tailwind CSS. Supabase powers staff authentication, shared drafts, publishing history and private image uploads. Ordering and checkout are not implemented.
 
 Phase 1 was officially completed and accepted on October 29, 2026. It includes the customer menu, category filtering, Arabic search, promotional carousel, individual dish pages, related dishes, phone links, and responsive mobile navigation. Content currently comes from local JSON files; a cart, checkout, and the proposed “اطلب الآن” action have not been implemented.
 
@@ -141,7 +141,7 @@ The build and local browser checks cover the footer link, responsive login, unco
 
 The shared-menu integration is implemented behind the server setting `MENU_BACKEND_ENABLED=true`. Supabase contains the initial 145 dishes, 20 categories and 6 hero slides. Staff save a shared versioned draft, review protected preview pages using the actual public components, undo individual review rows, and publish a complete immutable revision. Publication history supports restoring an older revision into a draft before publishing. Public home/dish pages read the cached published snapshot; anonymous access to staff RPC operations is denied. Existing local browser drafts are not automatically imported.
 
-Run `npm.cmd run verify:backend` for database security/concurrency/publishing and image-processing tests, and `npm.cmd run prepare:backend` to generate setup SQL. See [SHARED-MENU.md](SHARED-MENU.md) for rollout, staff acceptance checks, recovery and the snapshot architecture. Cold-request outages fall back to the menu bundled with the deployment, which may be older than the latest publication.
+Run `npm.cmd run verify:backend` for database security/concurrency/publishing and image-processing tests, and `npm.cmd run prepare:backend` to generate setup SQL. See [SHARED-MENU.md](SHARED-MENU.md) for rollout, staff acceptance checks, recovery and the snapshot architecture. Cold-request outages use the deployed published-menu backup; its freshness depends on the last successful backup and deployment.
 
 Both staff accounts have passed the live shared-draft/save/undo check. Publication history and restore behavior have been clarified; final live publication/restore acceptance remains part of handover.
 
@@ -153,4 +153,10 @@ Apply `supabase/migrations/002_menu_media.sql` in Supabase SQL Editor, then depl
 
 The production build, input-processing tests, and PostgreSQL storage-policy tests are the tracked checks. Migration 002 is applied in Supabase; the user confirmed photo upload, draft preview and publication on the local app. Phone/live-site photo checks remain pending deployment, followed by custom-icon, offer-image and real-device failure/restore checks. Automatic unused-upload cleanup is deferred; all assets are retained to protect drafts and rollback revisions.
 
-Next: complete the image-upload acceptance checklist, then add operational backups, durable latest-revision outage recovery, reference-aware image cleanup, and usage monitoring.
+## Published-menu backup and recovery
+
+`npm.cmd run backup:menu` captures the published menu and its uploaded photos without staff credentials. The deployed copy supplies menu and photo fallback during a Supabase outage. `npm.cmd run restore:menu` restores a backup into a clean shared draft for staff review without publishing. The first backup contains revision 6 (145 dishes).
+
+An hourly GitHub Actions workflow is included. Add the two public Supabase connection variables in GitHub Actions settings, run it manually once, and confirm its backup commit deploys on Vercel. It is not active configuration until those variables are set. Captures are periodic; changes since the last deployed backup are not covered. See [BACKUPS.md](BACKUPS.md) for setup, recovery instructions and limits. Run `npm.cmd run verify:backup` for integrity and failure-path checks.
+
+Remaining: operational verification of scheduled backups/recovery and image-upload acceptance, reference-aware image cleanup, usage monitoring, and staff handover.
