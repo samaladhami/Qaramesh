@@ -5,6 +5,7 @@ import { createClient, getStaffUser } from '../../lib/supabase/server';
 import { backendEnabled } from '../../lib/published-menu';
 import { processMenuImage } from '../../lib/process-menu-image.mjs';
 import { MEDIA_BUCKET } from '../../lib/media-path.mjs';
+import { mediaUploadFailure } from '../../lib/media-upload-error.mjs';
 
 export async function uploadMenuImage(formData) {
   if(!backendEnabled() || !await getStaffUser()) return {error:'لا تملك صلاحية رفع الصور. سجّل الدخول مجدداً.'};
@@ -19,7 +20,15 @@ export async function uploadMenuImage(formData) {
     const client=await createClient();
     const filename=`${randomUUID()}.webp`;
     const {error}=await client.storage.from(MEDIA_BUCKET).upload(filename,output,{contentType:'image/webp',cacheControl:'31536000',upsert:false});
-    if(error) return {error:'تعذر رفع الصورة. تحقق من الاتصال وإعداد التخزين ثم حاول مرة أخرى.'};
+    if(error) {
+      const failure=mediaUploadFailure(error);
+      console.error('Menu image upload failed',{code:failure.code});
+      return {error:`${failure.error} (${failure.code})`};
+    }
     return {src:`/media/${filename}`};
-  } catch {return {error:'تعذر الاتصال لرفع الصورة. لم تتغير الصورة السابقة.'};}
+  } catch(error) {
+    const failure=mediaUploadFailure(error);
+    console.error('Menu image upload failed',{code:failure.code});
+    return {error:`${failure.error} (${failure.code})`};
+  }
 }

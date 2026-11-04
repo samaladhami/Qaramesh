@@ -33,3 +33,23 @@ test('browser preparation supports PNG fallback from WebP encoders, transparent 
     await assert.rejects(prepareImage(new File([new Uint8Array(25000001)],'large.png',{type:'image/png'}),'offer'),/25 MB/);
   } finally {globalThis.Image=original.Image;globalThis.document=original.document;}
 });
+
+test('stalled browser decoding and canvas encoding reject instead of leaving uploads busy',async context=>{
+  context.mock.timers.enable({apis:['setTimeout']});
+  const original={Image:globalThis.Image,document:globalThis.document};
+  const input=new File(['image'],'screenshot.png',{type:'image/png'});
+  const canvas={width:0,height:0,getContext:()=>({clearRect(){},drawImage(){}}),toBlob(){}};
+  try {
+    globalThis.Image=class {set src(value){}};
+    const decoding=assert.rejects(prepareImage(input,'offer'),/استغرق فتح الصورة/);
+    context.mock.timers.tick(20001);
+    await decoding;
+    globalThis.Image=class {naturalWidth=1290;naturalHeight=2796;set src(value){this.onload();}};
+    globalThis.document={createElement:()=>canvas};
+    const encoding=assert.rejects(prepareImage(input,'offer'),/توقفت معالجة الصورة/);
+    await Promise.resolve();
+    context.mock.timers.tick(15001);
+    await encoding;
+    assert.equal(canvas.width,0);assert.equal(canvas.height,0);
+  } finally {globalThis.Image=original.Image;globalThis.document=original.document;context.mock.timers.reset();}
+});

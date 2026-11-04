@@ -1,8 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {moveDish,changedDishOrders,restoreDishOrder} from '../lib/dish-order.mjs';
+import {moveToEdge} from '../lib/list-order.mjs';
 
 const base={categories:[{id:'a',name:'A'},{id:'b',name:'B'}],items:[{id:'a1',category:'A',price:1},{id:'b1',category:'B'},{id:'a2',category:'A',price:2},{id:'b2',category:'B'},{id:'a3',category:'A',price:3}]};
+test('offer first/last moves preserve the other images and handle list boundaries',()=>{
+  const slides=[{id:'one',src:'first'},{id:'two',src:'second'},{id:'three',src:'third'}];
+  assert.deepEqual(moveToEdge(slides,'three','top').map(slide=>slide.id),['three','one','two']);
+  assert.deepEqual(moveToEdge(slides,'one','bottom').map(slide=>slide.id),['two','three','one']);
+  assert.equal(moveToEdge(slides,'one','top'),slides);
+  assert.equal(moveToEdge(slides,'three','bottom'),slides);
+  assert.equal(moveToEdge(slides,'missing','top'),slides);
+  assert.deepEqual(slides.map(slide=>slide.src),['first','second','third']);
+});
 test('dish moves respect category boundaries and leave other categories in place',()=>{
   const items=moveDish(base.items,'a2',-1);
   assert.deepEqual(items.map(i=>i.id),['a2','b1','a1','b2','a3']);

@@ -1,9 +1,18 @@
+function imageTask(start, milliseconds, message) {
+  return new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>reject(new Error(message)),milliseconds);
+    const done=value=>{clearTimeout(timer);resolve(value);};
+    const fail=error=>{clearTimeout(timer);reject(error);};
+    try {start(done,fail);} catch(error) {fail(error);}
+  });
+}
+
 export async function prepareImage(file,kind) {
   if(!['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('صيغة الصورة غير مدعومة. اختر PNG أو JPG أو WebP.');
   if(file.size > 25000000) throw new Error('حجم الملف أكبر من 25 MB. اختر نسخة أصغر.');
   const url=URL.createObjectURL(file);
   try {
-    const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('تعذر فتح الصورة. اختر ملف PNG أو JPG أو WebP صالحاً.'));img.src=url;});
+    const image=await imageTask((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('تعذر فتح الصورة. اختر ملف PNG أو JPG أو WebP صالحاً.'));img.src=url;},20000,'استغرق فتح الصورة وقتاً طويلاً. أعد اختيار الصورة وحاول مجدداً.');
     if(!image.naturalWidth || !image.naturalHeight || image.naturalWidth * image.naturalHeight > 40000000) throw new Error('الصورة كبيرة جداً. اختر نسخة أصغر.');
     const max=kind==='category' ? 512 : 1920;
     const scale=Math.min(1,max/image.naturalWidth,max/image.naturalHeight);
@@ -22,13 +31,14 @@ export async function prepareImage(file,kind) {
         };
         draw();
         for(const quality of [.85,.72,.6]) {
-          let blob=await new Promise(resolve=>canvas.toBlob(resolve,format,quality));
+          const encode=()=>imageTask(resolve=>canvas.toBlob(resolve,format,quality),15000,'توقفت معالجة الصورة على هذا الجهاز. أعد اختيار الصورة وحاول مجدداً.');
+          let blob=await encode();
           // Some browsers return PNG when WebP encoding is unavailable.
           // Keep category transparency; use JPEG for photos. The server writes WebP.
           if(format==='image/webp' && blob?.type==='image/png') {
             format=kind==='category' ? 'image/png' : 'image/jpeg';
             draw();
-            blob=await new Promise(resolve=>canvas.toBlob(resolve,format,quality));
+            blob=await encode();
           }
           if(blob && blob.type===format && blob.size<=2000000) {
             const extension={'image/webp':'webp','image/png':'png','image/jpeg':'jpg'}[format];

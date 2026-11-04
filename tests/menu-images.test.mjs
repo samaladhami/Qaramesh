@@ -3,6 +3,17 @@ import assert from 'node:assert/strict';
 import sharp from 'sharp';
 import {processMenuImage} from '../lib/process-menu-image.mjs';
 import {mediaFilename,validMenuImage} from '../lib/media-path.mjs';
+import {mediaUploadFailure} from '../lib/media-upload-error.mjs';
+
+test('upload failures distinguish permission, missing bucket, size, quota and network errors',()=>{
+ assert.equal(mediaUploadFailure({statusCode:'403',message:'row-level security'}).code,'STORAGE_ACCESS_DENIED');
+ assert.equal(mediaUploadFailure({statusCode:'404',message:'Bucket not found'}).code,'STORAGE_BUCKET_MISSING');
+ assert.equal(mediaUploadFailure({statusCode:'413'}).code,'STORAGE_SIZE_LIMIT');
+ assert.equal(mediaUploadFailure({statusCode:'402'}).code,'STORAGE_QUOTA');
+ assert.equal(mediaUploadFailure({name:'StorageUnknownError',originalError:{cause:{code:'EACCES'}}}).code,'STORAGE_NETWORK_EACCES');
+ assert.equal(mediaUploadFailure({name:'TimeoutError'}).code,'STORAGE_TIMEOUT');
+ assert.equal(mediaUploadFailure({statusCode:'500'}).code,'STORAGE_500');
+});
 
 test('image paths accept only known local paths and immutable media filenames',()=>{
  const path='/media/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa.webp';

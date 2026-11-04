@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "verify:data": "node scripts/import-menu.mjs --check",
-    "verify:backend": "node --test tests/shared-menu.test.mjs tests/menu-images.test.mjs tests/prepare-image.test.mjs tests/dish-order.test.mjs",
+    "verify:backend": "node --test tests/shared-menu.test.mjs tests/menu-images.test.mjs tests/prepare-image.test.mjs tests/dish-order.test.mjs tests/request-timeout.test.mjs",
     "prepare:backend": "node scripts/prepare-shared-menu.mjs",
     "backup:menu": "node scripts/backup-menu.mjs",
     "verify:backup": "node --test tests/menu-backup.test.mjs",

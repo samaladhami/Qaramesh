@@ -6,6 +6,8 @@ import { readSharedMenu, saveSharedMenu, publishSharedMenu, sharedMenuHistory, r
 import { uploadMenuImage } from '../../app/admin/media-actions';
 import { prepareImage } from './prepare-image';
 import { changedDishOrders, moveDish, restoreDishOrder } from '../../lib/dish-order.mjs';
+import { withTimeout } from '../../lib/request-timeout.mjs';
+import { moveToEdge } from '../../lib/list-order.mjs';
 
 const KEY = 'qaramesh-admin-prototype-v1';
 const tabs = [['dishes', 'الأطباق', 'dish'], ['categories', 'الأقسام', 'layers'], ['offers', 'العروض', 'image'], ['publish', 'النشر', 'send']];
@@ -56,26 +58,29 @@ function Dialog({ title, children, onClose }) {
 function Upload({ label, onChange, shared = false, kind = 'dish', onBusy, disabled = false }) {
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [stage,setStage]=useState('');
   async function read(event) {
     const input=event.target;
     const file = input.files[0];
     if (!file) return;
-    setError(''); setUploading(true); onBusy?.(true);
+    setError(''); setUploading(true); setStage('جارٍ تجهيز الصورة…'); onBusy?.(true);
     try {
       const prepared=await prepareImage(file,kind);
       if(shared) {
         const formData=new FormData(); formData.set('image',prepared); formData.set('kind',kind);
-        const result=await uploadMenuImage(formData);
+        setStage('جارٍ رفع الصورة…');
+        const result=await withTimeout(uploadMenuImage(formData),60000,'استغرق رفع الصورة وقتاً طويلاً. تحقق من الاتصال وحاول مجدداً. لم تتغير الصورة السابقة.');
         if(result.error) throw new Error(result.error);
+        setStage('جارٍ حفظ الصورة في المسودة…');
         await onChange(result.src);
       } else {
         const src=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(prepared);});
         await onChange(src);
       }
     } catch(error) { setError(error instanceof Error && error.message ? error.message : 'تعذر رفع الصورة. جرّب صورة أخرى.'); }
-    finally {input.value='';setUploading(false);onBusy?.(false);}
+    finally {input.value='';setUploading(false);setStage('');onBusy?.(false);}
   }
-  return <div className="adm-upload"><label><Icon name="image"/>{uploading ? 'جارٍ معالجة ورفع الصورة…' : label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read} disabled={uploading || disabled} aria-label={label}/></label>{disabled && <p className="adm-muted">رفع الصور غير متاح حالياً.</p>}{uploading && <span role="status" className="sr-only">جارٍ رفع الصورة</span>}{error && <p role="alert" className="adm-error">{error}</p>}</div>;
+  return <div className="adm-upload"><label><Icon name="image"/>{uploading ? stage : label}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={read} disabled={uploading || disabled} aria-label={label}/></label>{disabled && <p className="adm-muted">رفع الصور غير متاح حالياً.</p>}{uploading && <span role="status" className="sr-only">{stage}</span>}{error && <p role="alert" className="adm-error">{error}</p>}</div>;
 }
 
 function differences(base, draft) {
@@ -167,7 +172,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     if (workingRef.current) return;
     workingRef.current=true; setBusy(true); setRemoteError(null);
     try {
-      const result=await saveSharedMenu(next,versionRef.current);
+      const result=await withTimeout(saveSharedMenu(next,versionRef.current),60000,'DRAFT_SAVE_TIMEOUT');
       if (result.error) setRemoteError(result);
       else { applyShared(result.state); setNotice('تم حفظ المسودة المشتركة','success'); }
     } catch { setRemoteError({error:'تعذر حفظ المسودة. تعديلاتك باقية هنا؛ حاول مرة أخرى.'}); }
@@ -243,7 +248,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
     return () => { cancelled=true; clearInterval(timer); };
   },[shared,ready,busy,uploading,remoteError,editor,modal]);
 
-  function update(next) { if (shared && (workingRef.current || remoteError)) return; setDraft(next); setNotice(shared ? 'جارٍ حفظ المسودة…' : 'تم تحديث المسودة'); if(shared) persistShared(next); }
+  function update(next) { if (shared && (workingRef.current || remoteError)) return; setDraft(next); setNotice(shared ? 'جارٍ حفظ المسودة…' : 'تم تحديث المسودة'); if(shared) return persistShared(next); }
   function undoChange(change) {
     if(change.categoryId) {
       const category=draft.categories.find(value=>value.id===change.categoryId);
@@ -328,7 +333,7 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
   }
   const title = preview ? 'معاينة المسودة' : editor ? (editor.type === 'dish' ? 'تعديل الطبق' : 'تعديل القسم') : ({ dishes: 'إدارة القائمة', categories: 'الأقسام', offers: 'العروض', publish: 'مراجعة التغييرات' }[tab]);
   const filtered = draft.items.filter(item => (!category || item.category === category) && item.name.includes(query.trim()));
-  function reorderButtons(key, index, length) { return <div className="adm-reorder"><button className="adm-icon-button" aria-label="نقل لأعلى" disabled={!index} onClick={() => move(key, index, -1)}><Icon name="up"/></button><button className="adm-icon-button" aria-label="نقل لأسفل" disabled={index === length - 1} onClick={() => move(key, index, 1)}><Icon name="down"/></button></div>; }
+  function reorderButtons(key, index, length) { return <div className={`adm-reorder${key==='slides' ? ' adm-reorder-offers' : ''}`}><button type="button" className="adm-icon-button" aria-label="نقل لأعلى" disabled={!index} onClick={() => move(key, index, -1)}><Icon name="up"/></button><button type="button" className="adm-icon-button" aria-label="نقل لأسفل" disabled={index === length - 1} onClick={() => move(key, index, 1)}><Icon name="down"/></button>{key==='slides' && <><button type="button" className="adm-icon-button" aria-label={`نقل الصورة ${index+1} إلى أول العروض`} title="نقل إلى أول العروض" disabled={!index} onClick={()=>setModal({type:'moveSlide',value:draft.slides[index],direction:'top'})}><Icon name="top"/></button><button type="button" className="adm-icon-button" aria-label={`نقل الصورة ${index+1} إلى آخر العروض`} title="نقل إلى آخر العروض" disabled={index===length-1} onClick={()=>setModal({type:'moveSlide',value:draft.slides[index],direction:'bottom'})}><Icon name="bottom"/></button></>}</div>; }
 
   return <div className="adm-root">
     <aside className="adm-desktop-brand"><span>QARAMESH</span><p>مساحة إدارة قائمتك</p><small>من أول طبق، إلى آخر تفصيلة.</small></aside>
@@ -418,15 +423,20 @@ export default function AdminDashboard({ initialMenu, initialSlides, staffId, lo
       <nav className="adm-nav" aria-label="التنقل في إدارة القائمة">{tabs.map(([id, label, icon]) => <button key={id} aria-current={tab === id ? 'page' : undefined} onClick={() => navigate(id)}><Icon name={icon}/><span>{label}</span>{id === 'publish' && changes.length > 0 && <i>{changes.length}</i>}</button>)}</nav>
     </div>
     {notices.length > 0 && <div ref={toastRef} className="adm-toast-stack" aria-label="الإشعارات">{notices.map(notice=><TimedNotice key={notice.id} notice={notice} onDismiss={dismissNotice}/>)}</div>}
-    {modal?.type==='moveDish' && <Dialog title="تأكيد نقل الطبق" onClose={()=>setModal(null)}>
-      <p>هل أنت متأكد من نقل الطبق «{modal.value.name}» إلى {modal.direction==='top' ? 'أول' : 'آخر'} قسم «{modal.value.category}»؟</p>
+    {modal && ['moveDish','moveSlide'].includes(modal.type) && <Dialog title={modal.type==='moveSlide' ? 'تأكيد نقل صورة العرض' : 'تأكيد نقل الطبق'} onClose={()=>setModal(null)}>
+      <p>{modal.type==='moveSlide' ? `هل أنت متأكد من نقل هذه الصورة لتصبح ${modal.direction==='top' ? 'أول' : 'آخر'} صورة في العروض؟` : `هل أنت متأكد من نقل الطبق «${modal.value.name}» إلى ${modal.direction==='top' ? 'أول' : 'آخر'} قسم «${modal.value.category}»؟`}</p>
       <div className="adm-actions"><button className="adm-button" disabled={busy || Boolean(remoteError)} onClick={()=>{
-        const items=moveDish(draft.items,modal.value.id,modal.direction);
-        if(items!==draft.items) update({...draft,items});
+        if(modal.type==='moveSlide') {
+          const slides=moveToEdge(draft.slides,modal.value.id,modal.direction);
+          if(slides!==draft.slides) update({...draft,slides});
+        } else {
+          const items=moveDish(draft.items,modal.value.id,modal.direction);
+          if(items!==draft.items) update({...draft,items});
+        }
         setModal(null);
       }}>تأكيد النقل</button><button className="adm-button secondary" onClick={()=>setModal(null)}>إلغاء</button></div>
     </Dialog>}
-    {modal && modal.type!=='moveDish' && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
+    {modal && !['moveDish','moveSlide'].includes(modal.type) && <Dialog title={modal.type === 'blocked' ? 'لا يمكن حذف القسم' : modal.type === 'publish' ? (shared ? 'نشر التغييرات' : 'تجربة النشر محلياً') : 'تأكيد الحذف'} onClose={() => setModal(null)}>
       <div className="adm-dialog-symbol"><Icon name={modal.type === 'publish' ? 'send' : 'trash'} width="34" height="34"/></div>
       <p>{modal.type === 'blocked' ? 'يرجى نقل أو حذف جميع الأطباق في هذا القسم قبل حذفه.' : modal.type === 'publish' ? (shared ? 'هل تريد نشر جميع التغييرات المحفوظة؟ ستظهر النسخة الجديدة للعملاء في القائمة العامة.' : 'ستتم محاكاة نجاح النشر في هذه الجلسة فقط. لن تتغير القائمة العامة ولن تُرسل أي بيانات إلى الخادم.') : `هل تريد حذف «${modal.value.name || modal.value.alt}» من المسودة؟ ستبقى النسخة العامة كما هي.`}</p>
       <div className="adm-actions"><button className="adm-button" onClick={() => {

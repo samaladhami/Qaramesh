@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import { authConfigured, isStaff } from './lib/supabase/access';
+import { timedFetch } from './lib/request-timeout.mjs';
 
 export async function proxy(request) {
   let response = NextResponse.next({ request });
@@ -16,6 +17,7 @@ export async function proxy(request) {
   }
   if (!authConfigured()) return loginPage ? response : deny();
   const client = createServerClient(url, key, {
+    global:{fetch:timedFetch},
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(values) {
