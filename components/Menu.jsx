@@ -8,6 +8,7 @@ import StickyPhone from './StickyPhone';
 import FooterContact from './FooterContact';
 import useCategoryScrollHint from './useCategoryScrollHint';
 import { finishDishSearchFocus } from './dishSearchFocus';
+import useCategoryScrollPosition from './useCategoryScrollPosition';
 const normalize = value => value.normalize('NFKD').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
 export default function Menu({ categories, items, slides, categoryRecords = [], preview = false }) {
   const returnKey = preview ? 'menu-preview-return' : 'menu-return';
@@ -37,6 +38,8 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
   // Enter compact mode and show a populated search in the same render.
   const searchOpen = searchRequested || (isMobile && isSticky && Boolean(query.trim()));
   const compact = isMobile && !dishSearchLanding && (isSticky || searchOpen);
+  const categoryLayout = compact || (isSticky && !dishSearchLanding) ? 'sticky' : 'home';
+  useCategoryScrollPosition(navRef, categoryLayout);
   function rememberMenu() {
     try { sessionStorage.setItem(returnKey, JSON.stringify({ category, query, y: window.scrollY })); } catch {}
   }
@@ -175,16 +178,18 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
   }, []);
   const filtered = useMemo(() => items.filter(item => (category === 'الكل' || item.category === category) && normalize(`${item.name} ${item.category} ${item.shortDescription} ${item.description}`).includes(normalize(query))), [items, category, query]);
   useEffect(() => {
-    if (!isMobile) return;
-    const nav = navRef.current;
-    const button = Array.from(nav.querySelectorAll('button')).find(button => button.dataset.category === activeCategory);
-    if (!button) return;
-    const bounds = button.getBoundingClientRect();
-    const viewport = nav.getBoundingClientRect();
-    if (bounds.left < viewport.left || bounds.right > viewport.right) {
-      nav.scrollBy({ left: bounds.left + bounds.width / 2 - viewport.left - viewport.width / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-    }
-  }, [activeCategory, isMobile, compact]);
+    const frame = requestAnimationFrame(() => {
+      const nav = navRef.current;
+      const button = Array.from(nav.querySelectorAll('button')).find(button => button.dataset.category === activeCategory);
+      if (!button) return;
+      const bounds = button.getBoundingClientRect();
+      const viewport = nav.getBoundingClientRect();
+      if (bounds.left < viewport.left || bounds.right > viewport.right) {
+        nav.scrollBy({ left: bounds.left + bounds.width / 2 - viewport.left - viewport.width / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeCategory, categoryLayout]);
   useEffect(() => {
     if (!compact || category !== 'الكل' || query.trim()) return;
     const cards = Array.from(resultsRef.current.querySelectorAll('[data-dish-category]'));

@@ -267,6 +267,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .sticky-search-row .sticky-phone-toggle svg{width:28px;height:28px;color:var(--teal);fill:none;stroke-width:1.8}
 
 /* Full-width category scrolling, with the first card aligned to the menu. */
+.menu-controls .category-nav{overscroll-behavior-x:none;overflow-anchor:none}
 .menu-controls .category-nav{width:var(--category-viewport-width,100vw);max-width:none;margin-bottom:8px;margin-inline:calc((100% - var(--category-viewport-width,100vw))/2);padding-inline:max(20px,calc((var(--category-viewport-width,100vw) - 1160px)/2))}
 @media(max-width:540px){.menu-controls .category-nav{padding-inline:14px}.menu-controls.is-compact .category-card:first-child{margin-inline-start:0}}
 
