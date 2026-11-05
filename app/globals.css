@@ -297,3 +297,20 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .restaurant-header:not(:has(section)) + .menu-shell{margin-top:0}
 .menu-controls:not(.is-sticky):not(.is-compact) .category-card{box-shadow:0 4px 10px #42919822,0 1px 3px #42919814}.menu-controls:not(.is-sticky):not(.is-compact) .category-card.selected{box-shadow:0 0 0 2px var(--white),0 0 0 3px var(--yellow),0 4px 10px #4291982e}
 .menu-controls:not(.is-sticky) .search-wrap,.menu-controls:not(.is-sticky) .sticky-phone-toggle{box-shadow:0 4px 10px #42919822,0 1px 3px #42919814}
+
+/* Larger sticky categories keep their own natural label widths. */
+.menu-controls.is-sticky:not(.is-compact) .category-nav{gap:4px}
+.menu-controls.is-sticky:not(.is-compact) .category-card{min-width:114.4px}
+.menu-controls.is-sticky:not(.is-compact) .category-icon,.menu-controls.is-sticky:not(.is-compact) .all-icon{height:70.4px}
+.menu-controls.is-sticky:not(.is-compact) .category-icon svg{width:67.1px;height:67.1px}
+.menu-controls.is-sticky:not(.is-compact) .all-icon img{width:59.4px;height:59.4px}
+.menu-controls.is-sticky:not(.is-compact) .category-card>span:last-child{font-size:12.54px}
+@media(max-width:540px){
+  :root{--compact-nav-height:96px}
+  .menu-controls.is-compact .category-nav{gap:0}
+  .menu-controls.is-compact .category-card,.menu-controls.is-compact .category-card:first-child{width:max-content;min-width:70.4px;flex:0 0 auto;height:70.4px;padding-inline:6px}
+  .menu-controls.is-compact .category-card .category-icon,.menu-controls.is-compact .category-card .all-icon{width:45.98px;height:45.98px}
+  .menu-controls.is-compact .category-icon svg{width:39.93px;height:39.93px}
+  .menu-controls.is-compact .all-icon img{width:35.2px;height:35.2px}
+  .menu-controls.is-compact .category-card>span:last-child{font-size:10.45px;line-height:16.72px;white-space:nowrap}
+}
