@@ -299,6 +299,7 @@ button,input,nav,summary,.search-wrap input::placeholder{font-weight:500}
 .menu-controls:not(.is-sticky) .search-wrap,.menu-controls:not(.is-sticky) .sticky-phone-toggle{box-shadow:0 4px 10px #42919822,0 1px 3px #42919814}
 
 /* Larger sticky categories keep their own natural label widths. */
+.menu-controls .search-wrap input::placeholder{color:color-mix(in srgb,var(--teal) 72%,var(--white));opacity:1}
 .menu-controls.is-sticky:not(.is-compact) .category-nav{gap:4px}
 .menu-controls.is-sticky:not(.is-compact) .category-card{min-width:114.4px}
 .menu-controls.is-sticky:not(.is-compact) .category-icon,.menu-controls.is-sticky:not(.is-compact) .all-icon{height:70.4px}
