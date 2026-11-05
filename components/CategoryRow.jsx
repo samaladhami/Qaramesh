@@ -1,10 +1,12 @@
 'use client';
 import { useLayoutEffect, useRef } from 'react';
 import CategoryIcon from './CategoryIcon';
+import useHomeCategoryHint from './useHomeCategoryHint';
 
 export default function CategoryRow({ categories, records, selected, onSelect, visible = true, reserveSpace = false, navRef, variant }) {
   const ownRef = useRef(null);
   const ref = navRef || ownRef;
+  useHomeCategoryHint(ref, variant === 'home', visible);
   useLayoutEffect(() => {
     if (!visible) return;
     const nav = ref.current;
