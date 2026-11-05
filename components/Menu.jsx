@@ -7,6 +7,7 @@ import RestaurantHeader from './RestaurantHeader';
 import StickyPhone from './StickyPhone';
 import FooterContact from './FooterContact';
 import useCategoryScrollHint from './useCategoryScrollHint';
+import { finishDishSearchFocus } from './dishSearchFocus';
 const normalize = value => value.normalize('NFKD').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
 export default function Menu({ categories, items, slides, categoryRecords = [], preview = false }) {
   const returnKey = preview ? 'menu-preview-return' : 'menu-return';
@@ -16,6 +17,7 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
   const [isSticky, setIsSticky] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [searchRequested, setSearchOpen] = useState(false);
+  const [dishSearchLanding, setDishSearchLanding] = useState(false);
   const [visibleCategory, setVisibleCategory] = useState('الكل');
   const controlsRef = useRef(null);
   const navRef = useRef(null);
@@ -34,7 +36,7 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
   const [expandedHeight, setExpandedHeight] = useState(null);
   // Enter compact mode and show a populated search in the same render.
   const searchOpen = searchRequested || (isMobile && isSticky && Boolean(query.trim()));
-  const compact = isMobile && (isSticky || searchOpen);
+  const compact = isMobile && !dishSearchLanding && (isSticky || searchOpen);
   function rememberMenu() {
     try { sessionStorage.setItem(returnKey, JSON.stringify({ category, query, y: window.scrollY })); } catch {}
   }
@@ -53,12 +55,18 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
       if (searchNavigation.current) {
         // Commit the expanded controls before calculating their scroll offset.
         flushSync(() => {
-          setIsMobile(window.matchMedia('(max-width: 540px)').matches);
+          const mobile = window.matchMedia('(max-width: 540px)').matches;
+          setIsMobile(mobile);
+          setDishSearchLanding(mobile);
           setSearchOpen(true);
         });
-        resultsRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+        if (window.matchMedia('(max-width: 540px)').matches) {
+          const top = navRef.current.getBoundingClientRect().top + window.scrollY - 20;
+          window.scrollTo({ top, behavior: 'instant' });
+        } else resultsRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
         frame = requestAnimationFrame(() => {
-          inputRef.current?.focus({ preventScroll: true });
+          const pendingQuery = finishDishSearchFocus(inputRef.current);
+          if (pendingQuery) updateSearch(pendingQuery);
           // Search navigation is a one-time action, not a persistent page mode.
           const url = new URL(window.location.href);
           url.searchParams.delete('search');
@@ -89,6 +97,33 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
   useEffect(() => {
     if (!compact) setSearchOpen(false);
   }, [compact]);
+  useEffect(() => {
+    if (!dishSearchLanding) return;
+    let start = null;
+    function onStart(event) {
+      const touch = event.touches[0];
+      start = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    }
+    function onMove(event) {
+      const touch = event.touches[0];
+      if (!start || !touch) return;
+      const distance = start.y - touch.clientY;
+      // Only a deliberate downward page scroll ends the expanded landing.
+      // Keyboard viewport changes and horizontal category swipes keep it open.
+      if (distance > 8 && distance > Math.abs(touch.clientX - start.x)) setDishSearchLanding(false);
+    }
+    function onWheel(event) {
+      if (event.deltaY > 0 && event.deltaY > Math.abs(event.deltaX)) setDishSearchLanding(false);
+    }
+    window.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove', onMove, { passive: true });
+    window.addEventListener('wheel', onWheel, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onStart);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('wheel', onWheel);
+    };
+  }, [dishSearchLanding]);
   useEffect(() => {
     let touchStart = null;
     let upwardScrollUntil = 0;
@@ -179,7 +214,7 @@ export default function Menu({ categories, items, slides, categoryRecords = [], 
   return <>
     <a className="skip-link" href="#menu">انتقل إلى قائمة الطعام</a>
     <RestaurantHeader slides={slides}/>
-    <main className="menu-shell" id="menu"><div ref={stickyMarker} className="sticky-marker" aria-hidden="true" /><div className="menu-controls-slot" style={{ '--expanded-controls-height': expandedHeight ? `${expandedHeight}px` : undefined }}><div ref={controlsRef} className={`menu-controls${isSticky ? ' is-sticky' : ''}${compact ? ' is-compact' : ''}${searchOpen ? ' search-open' : ''}`}><nav ref={navRef} className="category-nav" aria-label="أقسام القائمة"><button className={`category-card all-category ${activeCategory === 'الكل' ? 'selected' : ''}`} data-category="الكل" aria-pressed={activeCategory === 'الكل'} onClick={() => selectCategory('الكل')}><span className="all-icon" aria-hidden="true"><img src="/logo-badge.webp" alt="" width="320" height="320" /></span><span>كل القائمة</span></button>{categories.map(name => <button key={name} className={`category-card ${activeCategory === name ? 'selected' : ''}`} data-category={name} aria-pressed={activeCategory === name} onClick={() => selectCategory(name)}>{categoryRecords.find(c=>c.name===name)?.image ? <span className="category-icon"><img src={categoryRecords.find(c=>c.name===name).image} alt="" width="48" height="48" style={{objectFit:"contain"}}/></span> : <CategoryIcon name={categoryRecords.find(c=>c.name===name)?.icon || name} />}<span>{name}</span></button>)}</nav><div className="sticky-search-row"><StickyPhone /><div className="search-wrap" onClick={event => { if (event.target.closest('button')) return; inputRef.current.focus({ preventScroll: true }); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg><label className="sr-only" htmlFor="search">ابحث في قائمة الطعام</label><input ref={inputRef} onKeyDown={event => { if (event.key === 'Escape') clearSearch(); }} id="search" type="search" placeholder={compact ? "شنو مشتهي اليوم؟" : "شنو مشتهي اليوم؟ ابحث عن وجبتك…"} value={query} onChange={event => updateSearch(event.target.value)} />{query && <button type="button" className="clear-search" aria-label="مسح البحث" onClick={clearSearch}>×</button>}</div></div>
+    <main className="menu-shell" id="menu"><div ref={stickyMarker} className="sticky-marker" aria-hidden="true" /><div className="menu-controls-slot" style={{ '--expanded-controls-height': expandedHeight ? `${expandedHeight}px` : undefined }}><div ref={controlsRef} className={`menu-controls${isSticky && !dishSearchLanding ? ' is-sticky' : ''}${compact ? ' is-compact' : ''}${searchOpen ? ' search-open' : ''}`}><nav ref={navRef} className="category-nav" aria-label="أقسام القائمة"><button className={`category-card all-category ${activeCategory === 'الكل' ? 'selected' : ''}`} data-category="الكل" aria-pressed={activeCategory === 'الكل'} onClick={() => selectCategory('الكل')}><span className="all-icon" aria-hidden="true"><img src="/logo-badge.webp" alt="" width="320" height="320" /></span><span>كل القائمة</span></button>{categories.map(name => <button key={name} className={`category-card ${activeCategory === name ? 'selected' : ''}`} data-category={name} aria-pressed={activeCategory === name} onClick={() => selectCategory(name)}>{categoryRecords.find(c=>c.name===name)?.image ? <span className="category-icon"><img src={categoryRecords.find(c=>c.name===name).image} alt="" width="48" height="48" style={{objectFit:"contain"}}/></span> : <CategoryIcon name={categoryRecords.find(c=>c.name===name)?.icon || name} />}<span>{name}</span></button>)}</nav><div className="sticky-search-row"><StickyPhone /><div className="search-wrap" onClick={event => { if (event.target.closest('button')) return; inputRef.current.focus({ preventScroll: true }); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg><label className="sr-only" htmlFor="search">ابحث في قائمة الطعام</label><input ref={inputRef} onBlur={() => { if (dishSearchLanding) setDishSearchLanding(false); }} onKeyDown={event => { if (event.key === 'Escape') clearSearch(); }} id="search" type="search" placeholder={compact ? "شنو مشتهي اليوم؟" : "شنو مشتهي اليوم؟ ابحث عن وجبتك…"} value={query} onChange={event => updateSearch(event.target.value)} />{query && <button type="button" className="clear-search" aria-label="مسح البحث" onClick={clearSearch}>×</button>}</div></div>
       </div></div>
       <section ref={resultsRef} className="results" aria-labelledby="results-heading"><div className="results-heading"><div><h2 id="results-heading"><span>{query ? 'نتائج البحث' : category === 'الكل' ? 'من قائمة قراميش' : category}</span><svg className="heading-rays" viewBox="0 0 50 70" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" aria-hidden="true" focusable="false"><path d="m24 8 16 14M8 35h27M24 62l16-14" /></svg></h2></div><span className="result-count" role="status" aria-live="polite">{filtered.length} صنف</span></div>
       {filtered.length ? <div className="dish-grid">{filtered.map(item => <DishCard key={item.id} item={item} onOpen={rememberMenu} basePath={preview ? "/admin/preview/dish" : "/dish"} />)}</div> : <div className="empty-state"><span aria-hidden="true">⌕</span><h3>ما لقينا طبق بهذا البحث</h3><p>جرّب اسم ثاني أو اكتشف باقي الأقسام</p><button onClick={reset}>عرض كل القائمة</button></div>}</section>

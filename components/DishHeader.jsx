@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
+import { beginDishSearchFocus } from './dishSearchFocus';
 
 export default function DishHeader({ menuHref = '/' }) {
   const router = useRouter();
@@ -48,6 +49,8 @@ export default function DishHeader({ menuHref = '/' }) {
   }, [goBack]);
   return <nav className="dish-photo-actions" aria-label="التنقل في الطبق">
     <button className="dish-photo-action" type="button" onClick={goBack} aria-label="إغلاق والعودة إلى القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg></button>
-    <Link className="dish-photo-action" href={`${menuHref}?search=1`} scroll={false} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></svg></Link>
+    <Link className="dish-photo-action" href={`${menuHref}?search=1`} scroll={false} onClick={event => {
+      if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && window.matchMedia('(max-width: 540px)').matches) beginDishSearchFocus();
+    }} aria-label="البحث في القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></svg></Link>
   </nav>;
 }
